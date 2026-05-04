@@ -3,9 +3,11 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <sstream>
 #include <windows.h>
+#include <winhttp.h>
 
-struct Rule { std::string lang, match, level, explain; };
+#pragma comment(lib, "winhttp.lib")
 
 std::string read_file(const std::string& path) {
     std::ifstream f(path, std::ios::binary);
@@ -21,73 +23,96 @@ std::wstring tow(const std::string& s){
     std::wstring w(len,L'\0'); MultiByteToWideChar(CP_UTF8,0,s.c_str(),-1,&w[0],len);
     while(!w.empty()&&w.back()==L'\0') w.pop_back(); return w;
 }
-std::vector<Rule> load_rules(const std::string& path){
+
+struct Rule { std::string lang, match, level, explain; };
+
+std::vector<Rule> load_rules() {
     std::vector<Rule> rules;
-    std::ifstream f(path);
+    std::ifstream f("data/errors.txt");
+    if(!f.is_open()) f.open("D:\\桌面\\error-translator\\data\\errors.txt");
     if(!f.is_open()) return rules;
     std::string line;
     while(std::getline(f,line)){
         if(line.empty()||line[0]=='#') continue;
         size_t a=line.find('|'), b=line.find('|',a+1), c=line.find('|',b+1);
         if(a==std::string::npos||b==std::string::npos||c==std::string::npos) continue;
-        Rule r;
-        r.lang=line.substr(0,a); r.match=line.substr(a+1,b-a-1);
-        r.level=line.substr(b+1,c-b-1); r.explain=line.substr(c+1);
-        rules.push_back(r);
+        Rule r; r.lang=line.substr(0,a); r.match=line.substr(a+1,b-a-1);
+        r.level=line.substr(b+1,c-b-1); r.explain=line.substr(c+1); rules.push_back(r);
     }
     return rules;
 }
-void save_history(const std::deque<std::string>& h){
-    std::ofstream f("history.txt"); for(auto& s:h) f<<s<<"\n----\n";
+
+std::string translate(const std::string& input, const std::vector<Rule>& rules) {
+    const Rule* best=nullptr; size_t bp=std::string::npos;
+    for(auto& r:rules){ size_t p=input.find(r.match); if(p!=std::string::npos&&(bp==std::string::npos||p<bp)){bp=p; best=&r;} }
+    if(!best) return "{\"found\":false}";
+    std::string json="{\"found\":true,\"lang\":\""+best->lang+"\",\"match\":\""+best->match+"\",\"level\":\""+best->level+"\",\"explain\":\""+best->explain+"\"}";
+    return json;
+}
+
+/* 简易URL解码 */
+std::string url_decode(const std::string& s){
+    std::string r;
+    for(size_t i=0;i<s.size();i++){
+        if(s[i]=='%'&&i+2<s.size()){
+            int v; std::string hex=s.substr(i+1,2);
+            std::stringstream ss; ss<<std::hex<<hex; ss>>v;
+            r+=(char)v; i+=2;
+        }else if(s[i]=='+') r+=' ';
+        else r+=s[i];
+    }
+    return r;
+}
+
+/* HTTP 服务器 */
+void run_server(const std::vector<Rule>& rules) {
+    /* 初始化 Winsock */
+    WSADATA wsa; WSAStartup(MAKEWORD(2,2),&wsa);
+    SOCKET sock = socket(AF_INET,SOCK_STREAM,0);
+    sockaddr_in addr={}; addr.sin_family=AF_INET; addr.sin_port=htons(8888); addr.sin_addr.s_addr=INADDR_ANY;
+    bind(sock,(sockaddr*)&addr,sizeof(addr));
+    listen(sock,SOMAXCONN);
+    wprintln(L"  Server running at http://localhost:8888  DA\x2606ZE");
+    wprintln(L"  Open your browser and go to that address.");
+    wprintln(L"  Press Ctrl+C in this window to stop.");
+
+    while(true){
+        SOCKET client = accept(sock,NULL,NULL);
+        char buf[8192]={0}; recv(client,buf,8192,0);
+        std::string req(buf);
+
+        /* 解析请求 */
+        std::string response;
+        if(req.find("GET /translate?q=")!=std::string::npos){
+            size_t s=req.find("GET /translate?q=")+18;
+            size_t e=req.find(" ",s);
+            std::string query = url_decode(req.substr(s,e-s));
+            std::string json = translate(query, rules);
+            response = "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nAccess-Control-Allow-Origin: *\r\n\r\n"+json;
+        }else if(req.find("GET / ")!=std::string::npos||req.find("GET / HTTP")!=std::string::npos){
+            /* 返回网页 */
+            std::string html = read_file("js/index.html");
+            if(html.empty()) html = read_file("D:\\桌面\\error-translator\\js\\index.html");
+            if(html.empty()) html = "<h1>Cannot load index.html qwq</h1>";
+            response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n"+html;
+        }else{
+            response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\n404";
+        }
+        send(client,response.c_str(),response.size(),0);
+        closesocket(client);
+    }
+    closesocket(sock);
+    WSACleanup();
 }
 
 int main(){
     SetConsoleOutputCP(65001);
-    auto rules = load_rules("data/errors.txt");
-    if(rules.empty()) rules = load_rules("D:\\桌面\\error-translator\\data\\errors.txt");
+    auto rules = load_rules();
     if(rules.empty()){ wprintln(L"[FAIL] Cannot read errors.txt qwq"); return 1; }
-
     wprintln(L"=======================================================");
-    wprintln(L"    Error Translator (C++)  DA\x2606ZE");
+    wprintln(L"    Error Translator Server (C++)  DA\x2606ZE");
     wprintln(L"=======================================================");
-    wprintln(L"  Paste an error, get plain explanation.");
-    wprintln(L"  Commands: 'quit' | 'history'");
     wprintln(L"");
-
-    std::deque<std::string> history;
-    std::string line;
-    while(true){
-        wprint(L"> "); std::getline(std::cin, line);
-        if(line=="quit"||line=="exit") break;
-        if(line=="history"){
-            wprintln(L""); wprintln(L"  === History ===");
-            for(auto& h:history) wprintln(L"  "+tow(h));
-            wprintln(L"  ==============="); wprintln(L""); continue;
-        }
-        if(line.empty()) continue;
-        history.push_back(line); if(history.size()>20) history.pop_front();
-        save_history(history);
-
-        const Rule* best = nullptr; size_t best_pos = std::string::npos;
-        for(auto& r:rules){
-            size_t p = line.find(r.match);
-            if(p!=std::string::npos && (best_pos==std::string::npos || p<best_pos)){
-                best_pos=p; best=&r;
-            }
-        }
-        wprintln(L"");
-        if(best){
-            std::wstring emoji = L"🔴";
-            if(best->level=="warning") emoji=L"🟡"; else if(best->level=="fatal") emoji=L"💀";
-            wprintln(L"  "+emoji+L" Language: "+tow(best->lang));
-            wprintln(L"  "+emoji+L" Level   : "+tow(best->level));
-            wprintln(L"  ----------------------------------------");
-            wprintln(L"  "+tow(best->explain));
-            wprintln(L"  ----------------------------------------");
-        }else{
-            wprintln(L"  ❓ No match found. Try full error message, or help expand the library 一w一");
-        }
-        wprintln(L"");
-    }
-    wprintln(L"Bye DA\x2606ZE"); return 0;
+    run_server(rules);
+    return 0;
 }

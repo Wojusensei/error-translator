@@ -40,116 +40,39 @@ button:hover{background:#b4d0fb}
 
 <script>
 (function(){
-  var rules=[
-    ["Python","NameError","error","你用了还没有定义的变量。检查变量名拼写是否正确，或者在用它之前先给它赋值。"],
-    ["Python","IndexError","error","列表或元组的索引超出范围了。你可能多取了一个位置，检查一下长度。"],
-    ["Python","KeyError","error","字典里没有这个键。检查键名拼写，或者先用 .get() 安全取值。"],
-    ["Python","TypeError","error","操作的类型不对。比如把字符串和数字直接相加，或者对不支持的类型用了某个函数。"],
-    ["Python","AttributeError","error","对象没有这个属性或方法。检查对象类型是否正确，或者是否拼错了方法名。"],
-    ["Python","ValueError","error","传入的值有问题，类型对了但内容不合理。比如把字母转成数字。"],
-    ["Python","FileNotFoundError","error","文件路径错误或文件不存在。检查路径拼写，确保文件确实在那个位置。"],
-    ["Python","ImportError","error","导入模块失败了。模块可能没安装，或者名字拼错了。"],
-    ["Python","SyntaxError","fatal","语法错误。通常是少写了括号、引号没闭合、冒号没写等低级拼写问题。"],
-    ["Python","IndentationError","fatal","缩进错误。Python 对空格和 Tab 敏感，检查是否混用了，或者缩进层级不对。"],
-    ["Python","ZeroDivisionError","error","不能除以0。在做除法之前检查除数是否可能为0。"],
-    ["Python","ModuleNotFoundError","error","找不到你导入的模块。先用 pip install 安装对应的库。"],
-    ["Python","RecursionError","fatal","递归太深了。函数一直调用自己没有结束条件，检查递归出口。"],
-    ["Python","PermissionError","error","没有权限访问文件。文件被其他程序占用了，或者需要管理员权限。"],
-    ["Python","StopIteration","warning","迭代器到头了。通常在 next() 调用时触发，可以用 for 循环代替手动迭代。"],
-    ["Python","KeyboardInterrupt","warning","你按了 Ctrl+C 中断了程序。这不是代码的问题，是手动终止的。"],
-    ["Python","UnboundLocalError","error","在函数里用了还没赋值的局部变量。如果你想把外面的全局变量拿进来用，加 global 声明。"],
-    ["Python","EOFError","error","输入到末尾了。通常是用 input() 读取时没收到足够的输入，检查文件或输入流。"],
-    ["JavaScript","ReferenceError","error","引用了不存在的变量。检查变量名拼写，或者确认变量在使用前已经声明了。"],
-    ["JavaScript","TypeError","error","数据的类型不对。常见于对 undefined 或 null 做了操作，或者把非函数当成函数调用。"],
-    ["JavaScript","SyntaxError","fatal","语法错误。可能是少写了逗号、括号不匹配、引号没闭合。"],
-    ["JavaScript","RangeError","error","某个值超出允许的范围了。比如数组长度给了一个非法值，或者递归次数过多。"],
-    ["JavaScript","is not defined","error","这个变量不存在。检查是否声明过，或者变量在作用域之外。"],
-    ["JavaScript","Cannot read propert","error","你在对 undefined 或 null 取值。在这之前先检查对象是否存在。"],
-    ["JavaScript","is not a function","error","你当成函数调用的东西不是一个函数。检查变量是否被覆盖了。"],
-    ["JavaScript","undefined is not an object","error","你在对一个 undefined 做对象操作。检查前面的变量是否正确初始化了。"],
-    ["JavaScript","Cannot set properties of undefined","error","你在给 undefined 赋值。检查变量是否已经声明并初始化。"],
-    ["JavaScript","Unexpected token","fatal","代码里出现了意外的符号。常见原因：少了逗号、多了括号、字符串没闭合。"],
-    ["JavaScript","undefined has no properties","error","你在访问 undefined 的属性。先确认对象存在再操作。"],
-    ["Java","cannot find symbol","error","找不到这个变量或方法。检查拼写，或者忘记声明变量、忘记导入类了。"],
-    ["Java","NullPointerException","error","空指针错误。你对一个 null 对象做了操作，在操作前检查对象是否为空。"],
-    ["Java","ArrayIndexOutOfBoundsException","error","数组下标越界。你访问了一个不存在的数组位置，检查下标范围。"],
-    ["Java","ClassNotFoundException","error","找不到这个类。检查是否导入了对应的 jar 包，或者类路径配置是否正确。"],
-    ["Java","';' expected","fatal","缺少分号。Java 的每条语句结尾必须有分号。"],
-    ["Java","StackOverflowError","fatal","栈溢出了。通常是无限递归导致的，检查递归函数的终止条件。"],
-    ["Java","ArithmeticException","error","数学运算出错了。最常见的是除以0，做除法前检查除数。"],
-    ["Java","NumberFormatException","error","字符串转数字失败。检查字符串里是否包含非数字字符。"],
-    ["Java","IllegalArgumentException","error","传给方法的参数不合法。检查参数是否符合方法的要求。"],
-    ["C++","undefined reference","fatal","链接时找不到函数定义。检查头文件是否包含、函数名拼写是否正确、库是否链接上了。"],
-    ["C++","was not declared in this scope","error","这个变量或函数没有声明。检查头文件是否 #include，或者变量是否在作用域内。"],
-    ["C++","Segmentation fault","fatal","段错误。访问了不该访问的内存，常见原因：空指针操作、数组越界、释放后继续使用。"],
-    ["C++","expected ';'","fatal","缺少分号。C++ 的每条语句结尾必须有分号，检查上一行末尾。"],
-    ["C++","expected '}'","fatal","缺少花括号。检查花括号是否成对出现，可能某个 { 没有对应的 }。"],
-    ["C++","redefinition of","error","重复定义了同一个东西。变量、函数或类名和已有的冲突了。"],
-    ["C++","is private within this context","error","访问了私有的成员。检查是不是在类外部调用了 private 方法或变量。"],
-    ["C","undefined reference","fatal","链接时找不到函数定义。检查头文件是否包含、库是否正确链接。"],
-    ["C","implicit declaration","warning","使用了没有声明的函数。忘记 #include 对应的头文件了。"],
-    ["C","Segmentation fault","fatal","段错误。访问了不该访问的内存，检查指针是否初始化、数组是否越界、是否访问了已释放的内存。"],
-    ["C","expected ';'","fatal","缺少分号。C 语言的每条语句结尾必须有分号。"],
-    ["C","unused variable","warning","声明了变量但没使用。删掉或者如果暂时不用可以加编译指令忽略。"],
-    ["C","incompatible pointer","warning","指针类型不兼容。你把一种类型的指针赋给了另一种，可能需要强制类型转换。"],
-    ["C","dereferencing pointer","error","解引用了不完整的类型。检查结构体定义是否正确，或者头文件是否包含。"],
-    ["Go","undefined:","error","这个变量没有定义。检查变量名拼写，或者变量在使用前没有声明。"],
-    ["Go","cannot use","error","类型不匹配。你把一种类型的数据当成另一种来用了。"],
-    ["Go","imported and not used","error","导入的包没有被使用。Go强制要求不用的包不能导入，删掉或者加 _ 前缀。"],
-    ["Go","not enough arguments","error","函数调用的参数不够。检查函数定义需要几个参数，调用时传了几个。"],
-    ["Go","too many arguments","error","函数调用的参数太多了。检查函数定义，减少传入的参数。"],
-    ["Go","syntax error","fatal","语法错误。Go 很严格，检查花括号、分号省略是否正确，关键字是否拼错。"],
-    ["Go","declared and not used","error","声明了变量但没有使用。Go 强制要求所有变量都要被使用，删掉或赋给 _。"],
-    ["C#","does not exist","error","这个名字在当前上下文中不存在。检查拼写，或者缺少 using 导入。"],
-    ["C#","NullReferenceException","error","空引用。你对一个 null 对象做了操作，先判空再使用。"],
-    ["C#","; expected","fatal","缺少分号。C# 的每条语句结尾必须有分号。"],
-    ["C#","IndexOutOfRangeException","error","数组索引越界。你访问了一个不存在的数组位置。"],
-    ["C#","Cannot implicitly convert","error","类型不能隐式转换。需要显式转换或者检查两个类型是否兼容。"],
-    ["C#","not all code paths return a value","error","不是所有代码路径都有返回值。检查函数是否在所有情况下都 return 了。"],
-    ["Ruby","NoMethodError","error","对象没有这个方法。检查方法名拼写，或者对象类型不对。"],
-    ["Ruby","NameError","error","未定义的变量或常量。检查拼写，或者确认已经赋值过。"],
-    ["Ruby","syntax error","fatal","语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了。"],
-    ["Ruby","ArgumentError","error","传给方法的参数数量或类型不对。检查方法签名和调用时的参数。"],
-    ["Ruby","LoadError","error","加载文件或库失败。require 的文件路径不对或 gem 没安装。"],
-    ["PHP","Undefined variable","warning","使用了未定义的变量。使用前先初始化，或者加上 isset() 判断。"],
-    ["PHP","Parse error","fatal","语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合。"],
-    ["PHP","Fatal error","fatal","致命错误。常见原因：调用不存在的函数、实例化不存在的类。"],
-    ["PHP","syntax error, unexpected end of file","fatal","文件意外结束。某个花括号或 PHP 标签没闭合。"],
-    ["PHP","Call to undefined function","fatal","调用了不存在的函数。检查函数名拼写，或者对应的扩展没有启用。"],
-    ["Rust","cannot find","error","找不到这个变量或类型。检查拼写，或者确认 use 语句是否正确。"],
-    ["Rust","mismatched types","error","类型不匹配。Rust 是强类型语言，不能自动转换，需要显式转型。"],
-    ["Rust","cannot borrow","error","借用规则冲突。Rust 的所有权系统不允许同时可变借用和不可变借用。"],
-    ["Rust","does not live long enough","error","生命周期不够长。变量在借用者还存在时就被销毁了，检查变量的存活范围。"],
-    ["Rust","use of moved value","error","使用了已经被移动的值。Rust 所有权规则下，被 move 后的变量不能再使用。"]
-  ];
-
   var hlist=[];
 
   function doit(){
     var input=document.getElementById('box').value.trim();
     if(!input) return;
-    var best=null, bp=999999;
-    for(var i=0; i<rules.length; i++){
-      var r=rules[i];
-      var p=input.indexOf(r[1]);
-      if(p!==-1 && p<bp){ bp=p; best=r; }
-    }
-    var resEl=document.getElementById('res');
-    if(best){
-      var lv=best[2];
-      var cls=(lv==='warning')?'lw':(lv==='fatal')?'lf':'le';
-      var em=(lv==='warning')?'🟡':(lv==='fatal')?'💀':'🔴';
-      resEl.innerHTML='<div class="lang">'+em+' '+best[0]+' — '+best[1]+'</div><span class="level '+cls+'">'+lv.toUpperCase()+'</span><p class="explain">'+best[3]+'</p>';
-    }else{
-      resEl.innerHTML='<p class="nm">❓ No match found. Try the full error message 一w一</p>';
-    }
-    resEl.classList.add('show');
-    hlist.unshift(input);
-    if(hlist.length>10) hlist.pop();
-    var histEl=document.getElementById('hist');
-    var s='<h3>📋 History</h3>';
-    for(var j=0; j<hlist.length; j++){ s+='<div class="hi">'+hlist[j]+'</div>'; }
-    histEl.innerHTML=s;
+
+    fetch('/translate?q='+encodeURIComponent(input))
+      .then(function(r){return r.json();})
+      .then(function(data){
+        var resEl=document.getElementById('res');
+        if(data.found){
+          var lv=data.level;
+          var cls=(lv==='warning')?'lw':(lv==='fatal')?'lf':'le';
+          var em=(lv==='warning')?'🟡':(lv==='fatal')?'💀':'🔴';
+          resEl.innerHTML='<div class="lang">'+em+' '+data.lang+' — '+data.match+'</div><span class="level '+cls+'">'+lv.toUpperCase()+'</span><p class="explain">'+data.explain+'</p>';
+        }else{
+          resEl.innerHTML='<p class="nm">❓ No match found. Try the full error message 一w一</p>';
+        }
+        resEl.classList.add('show');
+
+        hlist.unshift(input);
+        if(hlist.length>10) hlist.pop();
+
+        var histEl=document.getElementById('hist');
+        var s='<h3>📋 History</h3>';
+        for(var j=0;j<hlist.length;j++){s+='<div class="hi">'+hlist[j]+'</div>';}
+        histEl.innerHTML=s;
+      })
+      .catch(function(){
+        var resEl=document.getElementById('res');
+        resEl.innerHTML='<p class="nm">❌ Server not running. Please start translator.exe first qwq</p>';
+        resEl.classList.add('show');
+      });
   }
 
   document.getElementById('btn').addEventListener('click', doit);
