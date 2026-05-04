@@ -1,0 +1,455 @@
+{
+  "version": "1.0",
+  "languages": {
+    "python": {
+      "name": "Python",
+      "patterns": {
+        "NameError": {
+          "match": "NameError",
+          "level": "error",
+          "explain": "你用了还没有定义的变量。检查变量名拼写是否正确，或者在用它之前先给它赋值。"
+        },
+        "IndexError": {
+          "match": "IndexError",
+          "level": "error",
+          "explain": "列表或元组的索引超出范围了。你可能多取了一个位置，检查一下长度。"
+        },
+        "KeyError": {
+          "match": "KeyError",
+          "level": "error",
+          "explain": "字典里没有这个键。检查键名拼写，或者先用 .get() 安全取值。"
+        },
+        "TypeError": {
+          "match": "TypeError",
+          "level": "error",
+          "explain": "操作的类型不对。比如把字符串和数字直接相加，或者对不支持的类型用了某个函数。"
+        },
+        "AttributeError": {
+          "match": "AttributeError",
+          "level": "error",
+          "explain": "对象没有这个属性或方法。检查对象类型是否正确，或者是否拼错了方法名。"
+        },
+        "ValueError": {
+          "match": "ValueError",
+          "level": "error",
+          "explain": "传入的值有问题，类型对了但内容不合理。比如把字母转成数字。"
+        },
+        "FileNotFoundError": {
+          "match": "FileNotFoundError",
+          "level": "error",
+          "explain": "文件路径错误或文件不存在。检查路径拼写，确保文件确实在那个位置。"
+        },
+        "ImportError": {
+          "match": "ImportError",
+          "level": "error",
+          "explain": "导入模块失败了。模块可能没安装，或者名字拼错了。"
+        },
+        "SyntaxError": {
+          "match": "SyntaxError",
+          "level": "fatal",
+          "explain": "语法错误。通常是少写了括号、引号没闭合、冒号没写等低级拼写问题。"
+        },
+        "IndentationError": {
+          "match": "IndentationError",
+          "level": "fatal",
+          "explain": "缩进错误。Python 对空格和 Tab 敏感，检查是否混用了，或者缩进层级不对。"
+        },
+        "ZeroDivisionError": {
+          "match": "ZeroDivisionError",
+          "level": "error",
+          "explain": "不能除以0。在做除法之前检查除数是否可能为0。"
+        },
+        "ModuleNotFoundError": {
+          "match": "ModuleNotFoundError",
+          "level": "error",
+          "explain": "找不到你导入的模块。先用 pip install 安装对应的库。"
+        },
+        "RecursionError": {
+          "match": "RecursionError",
+          "level": "fatal",
+          "explain": "递归太深了。函数一直调用自己没有结束条件，检查递归出口。"
+        },
+        "PermissionError": {
+          "match": "PermissionError",
+          "level": "error",
+          "explain": "没有权限访问文件。文件被其他程序占用了，或者需要管理员权限。"
+        },
+        "StopIteration": {
+          "match": "StopIteration",
+          "level": "warning",
+          "explain": "迭代器到头了。通常在 next() 调用时触发，可以用 for 循环代替手动迭代。"
+        },
+        "KeyboardInterrupt": {
+          "match": "KeyboardInterrupt",
+          "level": "warning",
+          "explain": "你按了 Ctrl+C 中断了程序。这不是代码的问题，是手动终止的。"
+        },
+        "UnboundLocalError": {
+          "match": "UnboundLocalError",
+          "level": "error",
+          "explain": "在函数里用了还没赋值的局部变量。如果你想把外面的全局变量拿进来用，加 global 声明。"
+        },
+        "EOFError": {
+          "match": "EOFError",
+          "level": "error",
+          "explain": "输入到末尾了。通常是用 input() 读取时没收到足够的输入，检查文件或输入流。"
+        }
+      }
+    },
+    "javascript": {
+      "name": "JavaScript",
+      "patterns": {
+        "ReferenceError": {
+          "match": "ReferenceError",
+          "level": "error",
+          "explain": "引用了不存在的变量。检查变量名拼写，或者确认变量在使用前已经声明了。"
+        },
+        "TypeError": {
+          "match": "TypeError",
+          "level": "error",
+          "explain": "数据的类型不对。常见于对 undefined 或 null 做了操作，或者把非函数当成函数调用。"
+        },
+        "SyntaxError": {
+          "match": "SyntaxError",
+          "level": "fatal",
+          "explain": "语法错误。可能是少写了逗号、括号不匹配、引号没闭合。"
+        },
+        "RangeError": {
+          "match": "RangeError",
+          "level": "error",
+          "explain": "某个值超出允许的范围了。比如数组长度给了一个非法值，或者递归次数过多。"
+        },
+        "undefined_is_not": {
+          "match": "is not defined",
+          "level": "error",
+          "explain": "这个变量不存在。检查是否声明过，或者变量在作用域之外。"
+        },
+        "cannot_read": {
+          "match": "Cannot read propert",
+          "level": "error",
+          "explain": "你在对 undefined 或 null 取值。在这之前先检查对象是否存在。"
+        },
+        "not_a_function": {
+          "match": "is not a function",
+          "level": "error",
+          "explain": "你当成函数调用的东西不是一个函数。检查变量是否被覆盖了。"
+        },
+        "undefined_is_not_a": {
+          "match": "undefined is not an object",
+          "level": "error",
+          "explain": "你在对一个 undefined 做对象操作。检查前面的变量是否正确初始化了。"
+        },
+        "cannot_set": {
+          "match": "Cannot set properties of undefined",
+          "level": "error",
+          "explain": "你在给 undefined 赋值。检查变量是否已经声明并初始化。"
+        },
+        "unexpected_token": {
+          "match": "Unexpected token",
+          "level": "fatal",
+          "explain": "代码里出现了意外的符号。常见原因：少了逗号、多了括号、字符串没闭合。"
+        },
+        "undefined_has_no": {
+          "match": "undefined has no properties",
+          "level": "error",
+          "explain": "你在访问 undefined 的属性。先确认对象存在再操作。"
+        }
+      }
+    },
+    "java": {
+      "name": "Java",
+      "patterns": {
+        "cannot_find_symbol": {
+          "match": "cannot find symbol",
+          "level": "error",
+          "explain": "找不到这个变量或方法。检查拼写，或者忘记声明变量、忘记导入类了。"
+        },
+        "null_pointer": {
+          "match": "NullPointerException",
+          "level": "error",
+          "explain": "空指针错误。你对一个 null 对象做了操作，在操作前检查对象是否为空。"
+        },
+        "array_index": {
+          "match": "ArrayIndexOutOfBoundsException",
+          "level": "error",
+          "explain": "数组下标越界。你访问了一个不存在的数组位置，检查下标范围。"
+        },
+        "class_not_found": {
+          "match": "ClassNotFoundException",
+          "level": "error",
+          "explain": "找不到这个类。检查是否导入了对应的 jar 包，或者类路径配置是否正确。"
+        },
+        "semicolon": {
+          "match": "';' expected",
+          "level": "fatal",
+          "explain": "缺少分号。Java 的每条语句结尾必须有分号。"
+        },
+        "stack_overflow": {
+          "match": "StackOverflowError",
+          "level": "fatal",
+          "explain": "栈溢出了。通常是无限递归导致的，检查递归函数的终止条件。"
+        },
+        "arithmetic": {
+          "match": "ArithmeticException",
+          "level": "error",
+          "explain": "数学运算出错了。最常见的是除以0，做除法前检查除数。"
+        },
+        "number_format": {
+          "match": "NumberFormatException",
+          "level": "error",
+          "explain": "字符串转数字失败。检查字符串里是否包含非数字字符。"
+        },
+        "illegal_argument": {
+          "match": "IllegalArgumentException",
+          "level": "error",
+          "explain": "传给方法的参数不合法。检查参数是否符合方法的要求。"
+        }
+      }
+    },
+    "cpp": {
+      "name": "C++",
+      "patterns": {
+        "undefined_reference": {
+          "match": "undefined reference",
+          "level": "fatal",
+          "explain": "链接时找不到函数定义。检查头文件是否包含、函数名拼写是否正确、库是否链接上了。"
+        },
+        "undeclared": {
+          "match": "was not declared in this scope",
+          "level": "error",
+          "explain": "这个变量或函数没有声明。检查头文件是否 #include，或者变量是否在作用域内。"
+        },
+        "segmentation": {
+          "match": "Segmentation fault",
+          "level": "fatal",
+          "explain": "段错误。访问了不该访问的内存，常见原因：空指针操作、数组越界、释放后继续使用。"
+        },
+        "expected_semicolon": {
+          "match": "expected ';'",
+          "level": "fatal",
+          "explain": "缺少分号。C++ 的每条语句结尾必须有分号，检查上一行末尾。"
+        },
+        "expected_brace": {
+          "match": "expected '}'",
+          "level": "fatal",
+          "explain": "缺少花括号。检查花括号是否成对出现，可能某个 { 没有对应的 }。"
+        },
+        "redefinition": {
+          "match": "redefinition of",
+          "level": "error",
+          "explain": "重复定义了同一个东西。变量、函数或类名和已有的冲突了。"
+        },
+        "private_within": {
+          "match": "is private within this context",
+          "level": "error",
+          "explain": "访问了私有的成员。检查是不是在类外部调用了 private 方法或变量。"
+        }
+      }
+    },
+    "c": {
+      "name": "C",
+      "patterns": {
+        "undefined_reference": {
+          "match": "undefined reference",
+          "level": "fatal",
+          "explain": "链接时找不到函数定义。检查头文件是否包含、库是否正确链接。"
+        },
+        "implicit_declaration": {
+          "match": "implicit declaration",
+          "level": "warning",
+          "explain": "使用了没有声明的函数。忘记 #include 对应的头文件了。"
+        },
+        "segmentation": {
+          "match": "Segmentation fault",
+          "level": "fatal",
+          "explain": "段错误。访问了不该访问的内存，检查指针是否初始化、数组是否越界、是否访问了已释放的内存。"
+        },
+        "expected_semicolon": {
+          "match": "expected ';'",
+          "level": "fatal",
+          "explain": "缺少分号。C 语言的每条语句结尾必须有分号。"
+        },
+        "unused_variable": {
+          "match": "unused variable",
+          "level": "warning",
+          "explain": "声明了变量但没使用。删掉或者如果暂时不用可以加编译指令忽略。"
+        },
+        "incompatible_pointer": {
+          "match": "incompatible pointer",
+          "level": "warning",
+          "explain": "指针类型不兼容。你把一种类型的指针赋给了另一种，可能需要强制类型转换。"
+        },
+        "dereferencing": {
+          "match": "dereferencing pointer",
+          "level": "error",
+          "explain": "解引用了不完整的类型。检查结构体定义是否正确，或者头文件是否包含。"
+        }
+      }
+    },
+    "go": {
+      "name": "Go",
+      "patterns": {
+        "undefined": {
+          "match": "undefined:",
+          "level": "error",
+          "explain": "这个变量没有定义。检查变量名拼写，或者变量在使用前没有声明。"
+        },
+        "cannot_use": {
+          "match": "cannot use",
+          "level": "error",
+          "explain": "类型不匹配。你把一种类型的数据当成另一种来用了。"
+        },
+        "imported_not_used": {
+          "match": "imported and not used",
+          "level": "error",
+          "explain": "导入的包没有被使用。Go强制要求不用的包不能导入，删掉或者加 _ 前缀。"
+        },
+        "not_enough_args": {
+          "match": "not enough arguments",
+          "level": "error",
+          "explain": "函数调用的参数不够。检查函数定义需要几个参数，调用时传了几个。"
+        },
+        "too_many_args": {
+          "match": "too many arguments",
+          "level": "error",
+          "explain": "函数调用的参数太多了。检查函数定义，减少传入的参数。"
+        },
+        "syntax_error": {
+          "match": "syntax error",
+          "level": "fatal",
+          "explain": "语法错误。Go 很严格，检查花括号、分号省略是否正确，关键字是否拼错。"
+        },
+        "variable_declared_not_used": {
+          "match": "declared and not used",
+          "level": "error",
+          "explain": "声明了变量但没有使用。Go 强制要求所有变量都要被使用，删掉或赋给 _。"
+        }
+      }
+    },
+    "csharp": {
+      "name": "C#",
+      "patterns": {
+        "does_not_exist": {
+          "match": "does not exist",
+          "level": "error",
+          "explain": "这个名字在当前上下文中不存在。检查拼写，或者缺少 using 导入。"
+        },
+        "null_reference": {
+          "match": "NullReferenceException",
+          "level": "error",
+          "explain": "空引用。你对一个 null 对象做了操作，先判空再使用。"
+        },
+        "semicolon": {
+          "match": "; expected",
+          "level": "fatal",
+          "explain": "缺少分号。C# 的每条语句结尾必须有分号。"
+        },
+        "index_out_of_range": {
+          "match": "IndexOutOfRangeException",
+          "level": "error",
+          "explain": "数组索引越界。你访问了一个不存在的数组位置。"
+        },
+        "cannot_convert": {
+          "match": "Cannot implicitly convert",
+          "level": "error",
+          "explain": "类型不能隐式转换。需要显式转换或者检查两个类型是否兼容。"
+        },
+        "not_all_paths_return": {
+          "match": "not all code paths return a value",
+          "level": "error",
+          "explain": "不是所有代码路径都有返回值。检查函数是否在所有情况下都 return 了。"
+        }
+      }
+    },
+    "ruby": {
+      "name": "Ruby",
+      "patterns": {
+        "no_method": {
+          "match": "NoMethodError",
+          "level": "error",
+          "explain": "对象没有这个方法。检查方法名拼写，或者对象类型不对。"
+        },
+        "name_error": {
+          "match": "NameError",
+          "level": "error",
+          "explain": "未定义的变量或常量。检查拼写，或者确认已经赋值过。"
+        },
+        "syntax_error": {
+          "match": "syntax error",
+          "level": "fatal",
+          "explain": "语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了。"
+        },
+        "argument_error": {
+          "match": "ArgumentError",
+          "level": "error",
+          "explain": "传给方法的参数数量或类型不对。检查方法签名和调用时的参数。"
+        },
+        "load_error": {
+          "match": "LoadError",
+          "level": "error",
+          "explain": "加载文件或库失败。require 的文件路径不对或 gem 没安装。"
+        }
+      }
+    },
+    "php": {
+      "name": "PHP",
+      "patterns": {
+        "undefined_variable": {
+          "match": "Undefined variable",
+          "level": "warning",
+          "explain": "使用了未定义的变量。使用前先初始化，或者加上 isset() 判断。"
+        },
+        "parse_error": {
+          "match": "Parse error",
+          "level": "fatal",
+          "explain": "语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合。"
+        },
+        "fatal_error": {
+          "match": "Fatal error",
+          "level": "fatal",
+          "explain": "致命错误。常见原因：调用不存在的函数、实例化不存在的类。"
+        },
+        "unexpected_end": {
+          "match": "syntax error, unexpected end of file",
+          "level": "fatal",
+          "explain": "文件意外结束。某个花括号或 PHP 标签没闭合。"
+        },
+        "call_to_undefined": {
+          "match": "Call to undefined function",
+          "level": "fatal",
+          "explain": "调用了不存在的函数。检查函数名拼写，或者对应的扩展没有启用。"
+        }
+      }
+    },
+    "rust": {
+      "name": "Rust",
+      "patterns": {
+        "cannot_find": {
+          "match": "cannot find",
+          "level": "error",
+          "explain": "找不到这个变量或类型。检查拼写，或者确认 use 语句是否正确。"
+        },
+        "mismatched_types": {
+          "match": "mismatched types",
+          "level": "error",
+          "explain": "类型不匹配。Rust 是强类型语言，不能自动转换，需要显式转型。"
+        },
+        "borrow": {
+          "match": "cannot borrow",
+          "level": "error",
+          "explain": "借用规则冲突。Rust 的所有权系统不允许同时可变借用和不可变借用。"
+        },
+        "doesnt_live_long_enough": {
+          "match": "does not live long enough",
+          "level": "error",
+          "explain": "生命周期不够长。变量在借用者还存在时就被销毁了，检查变量的存活范围。"
+        },
+        "use_of_moved": {
+          "match": "use of moved value",
+          "level": "error",
+          "explain": "使用了已经被移动的值。Rust 所有权规则下，被 move 后的变量不能再使用。"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+NameError
+----
+IndentationError
+----
+NullPointerException
+----
+ReferenceError
+----
+undefined reference
+----
+undefined:
+----
+abcdefg
+----
