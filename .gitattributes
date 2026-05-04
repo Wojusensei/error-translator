@@ -1,0 +1,3 @@
+*.exe linguist-vendored
+*.class linguist-vendored
+*.o linguist-vendored
