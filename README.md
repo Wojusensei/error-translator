@@ -66,7 +66,7 @@ error-translator/
 
 ---
 
-## 从源码编译：
+## 从源码编译
 
 ### 需要准备
 - g++ 编译器(MinGW 或 MSYS2)
