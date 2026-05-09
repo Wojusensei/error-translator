@@ -42,6 +42,7 @@
 ## 项目结构
 
 error-translator/
+
 ├── cpp/ ← C++ 核心服务器（主程序）
 │ ├── main.cpp ← 源代码
 │ └── translator.exe ← 编译好的可执行文件
@@ -65,7 +66,7 @@ error-translator/
 
 ---
 
-## 从源码编译
+## 从源码编译：
 
 ### 需要准备
 - g++ 编译器(MinGW 或 MSYS2)
