@@ -42,22 +42,29 @@
 ## 项目结构
 
 error-translator/
+|
 ├── cpp/ ← C++ 核心服务器（主程序）
 │ ├── main.cpp ← 源代码
 │ └── translator.exe ← 编译好的可执行文件
+|
 ├── python/ ← Python 辅助脚本
 │ ├── build_errors.py ← 解释库构建器
 │ └── translator.py ← Python 调用示例
+|
 ├── js/ ← 网页前端
 │ ├── index.html ← 网页界面（双击或用服务器打开）
 │ └── translator.js ← Node.js 调用示例
+|
 ├── java/ ← Java 示例
 │ ├── ErrorMatcher.java ← 独立匹配引擎
 │ └── Translator.java ← 调用服务器的示例
+|
 ├── go/ ← Go 示例
 │ └── matcher.go ← 独立匹配引擎
+|
 ├── csharp/ ← C# 示例
 │ └── Translator.cs ← 调用服务器的示例
+|
 ├── data/ ← 数据文件
 │ └── errors.txt ← 报错规则库（核心数据）
 └── README.md ← 本说明文档
