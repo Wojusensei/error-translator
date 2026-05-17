@@ -4,6 +4,7 @@
 #include <vector>
 #include <deque>
 #include <sstream>
+#include <regex>
 #include <windows.h>
 #include <winhttp.h>
 
@@ -42,15 +43,97 @@ std::vector<Rule> load_rules() {
     return rules;
 }
 
+std::string extract_keywords(const std::string& input) {
+    std::string result = input;
+
+    size_t colon = result.find(": ");
+    if (colon != std::string::npos) {
+        result = result.substr(colon+2);
+    }
+
+    size_t bracket = result.find("[");
+    if (bracket != std::string::npos) {
+        result = result.substr(0, bracket);
+        while (!result.empty() && result.back() == ' ') result.pop_back();
+    }
+
+    if (result.empty()) result = input;
+
+    size_t nl = result.find('\n');
+    if (nl != std::string::npos) result = result.substr(0, nl);
+
+    return result;
+}
+
 std::string translate(const std::string& input, const std::vector<Rule>& rules) {
+    std::string target = extract_keywords(input);
+
     const Rule* best=nullptr; size_t bp=std::string::npos;
-    for(auto& r:rules){ size_t p=input.find(r.match); if(p!=std::string::npos&&(bp==std::string::npos||p<bp)){bp=p; best=&r;} }
+    for(auto& r:rules){
+        std::string matches = r.match;
+        size_t pos = 0;
+        while(pos < matches.size()){
+            size_t next = matches.find("||", pos);
+            std::string token = (next==std::string::npos) ? matches.substr(pos) : matches.substr(pos, next-pos);
+            size_t star = token.find(".*");
+            if(star != std::string::npos){
+                std::string prefix = token.substr(0, star);
+                std::string suffix = token.substr(star+2);
+                size_t p = target.find(prefix);
+                if(p != std::string::npos){
+                    size_t q = target.find(suffix, p+prefix.size());
+                    if(q != std::string::npos && (bp==std::string::npos || p<bp)){
+                        bp=p; best=&r;
+                    }
+                }
+            }else{
+                size_t p = target.find(token);
+                if(p!=std::string::npos && (bp==std::string::npos || p<bp)){
+                    bp=p; best=&r;
+                }
+            }
+            if(next == std::string::npos) break;
+            pos = next+2;
+        }
+    }
+
+    if(!best){
+        for(auto& r:rules){
+            std::string matches = r.match;
+            size_t pos = 0;
+            while(pos < matches.size()){
+                size_t next = matches.find("||", pos);
+                std::string token = (next==std::string::npos) ? matches.substr(pos) : matches.substr(pos, next-pos);
+                size_t star = token.find(".*");
+                if(star != std::string::npos){
+                    std::string prefix = token.substr(0, star);
+                    std::string suffix = token.substr(star+2);
+                    size_t p = input.find(prefix);
+                    if(p != std::string::npos){
+                        size_t q = input.find(suffix, p+prefix.size());
+                        if(q != std::string::npos && (bp==std::string::npos || p<bp)){
+                            bp=p; best=&r;
+                        }
+                    }
+                }else{
+                    size_t p = input.find(token);
+                    if(p!=std::string::npos && (bp==std::string::npos || p<bp)){
+                        bp=p; best=&r;
+                    }
+                }
+                if(next == std::string::npos) break;
+                pos = next+2;
+            }
+            if(best) break;
+        }
+    }
+
     if(!best) return "{\"found\":false}";
+
     std::string json="{\"found\":true,\"lang\":\""+best->lang+"\",\"match\":\""+best->match+"\",\"level\":\""+best->level+"\",\"explain\":\""+best->explain+"\"}";
     return json;
 }
 
-/* 简易URL解码 */
 std::string url_decode(const std::string& s){
     std::string r;
     for(size_t i=0;i<s.size();i++){
@@ -64,9 +147,7 @@ std::string url_decode(const std::string& s){
     return r;
 }
 
-/* HTTP 服务器 */
 void run_server(const std::vector<Rule>& rules) {
-    /* 初始化 Winsock */
     WSADATA wsa; WSAStartup(MAKEWORD(2,2),&wsa);
     SOCKET sock = socket(AF_INET,SOCK_STREAM,0);
     sockaddr_in addr={}; addr.sin_family=AF_INET; addr.sin_port=htons(8888); addr.sin_addr.s_addr=INADDR_ANY;
@@ -74,14 +155,13 @@ void run_server(const std::vector<Rule>& rules) {
     listen(sock,SOMAXCONN);
     wprintln(L"  Server running at http://localhost:8888  DA\x2606ZE");
     wprintln(L"  Open your browser and go to that address.");
-    wprintln(L"  Press Ctrl+C in this window to stop.");
+    wprintln(L"");
 
     while(true){
         SOCKET client = accept(sock,NULL,NULL);
         char buf[8192]={0}; recv(client,buf,8192,0);
         std::string req(buf);
 
-        /* 解析请求 */
         std::string response;
         if(req.find("GET /translate?q=")!=std::string::npos){
             size_t s=req.find("GET /translate?q=")+18;
@@ -90,7 +170,6 @@ void run_server(const std::vector<Rule>& rules) {
             std::string json = translate(query, rules);
             response = "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nAccess-Control-Allow-Origin: *\r\n\r\n"+json;
         }else if(req.find("GET / ")!=std::string::npos||req.find("GET / HTTP")!=std::string::npos){
-            /* 返回网页 */
             std::string html = read_file("js/index.html");
             if(html.empty()) html = read_file("D:\\桌面\\error-translator\\js\\index.html");
             if(html.empty()) html = "<h1>Cannot load index.html qwq</h1>";
