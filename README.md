@@ -1,6 +1,6 @@
 # 🔍 Error Translator（报错翻译机）
 
-多语言程序报错翻译工具，**粘贴报错信息，返回解释和修复建议**，不用再去搜索引擎查了
+多语言程序报错翻译工具，**粘贴报错信息，返回解释和修复建议**，不用去搜索引擎查
 
 目前支持 **10 种编程语言**，覆盖 **75 种报错类型**，能识别 **200 多种真实报错变体**
 
@@ -81,7 +81,9 @@ error-translator/
 ### 编译命令
 ```bash
 g++ -o cpp/translator.exe cpp/main.cpp -lwinhttp -lws2_32 -static -mconsole
-- 运行：cpp/translator.exe
+```
+### 运行
+cpp/translator.exe
 
 
 
