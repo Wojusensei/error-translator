@@ -1,10 +1,10 @@
-# 🔍 Error Translator（报错翻译机）
+# 🔍 Error Translator
 
 多语言程序报错翻译工具，**粘贴报错信息，返回解释和修复建议**，不用去搜索引擎查
 
-目前支持 **10 种编程语言**，覆盖 **75 种报错类型**，能识别 **200 多种真实报错变体**
+目前支持 10 种编程语言，覆盖 75 种报错类型，能识别 200 多种真实报错变体，当然过于复杂的没做匹配
 
-WebUI懒得写，vibe出来的，gpt得了mvp！
+这是个很烂的小项目，后端代码都是写着玩的，所以理所当然ui扔给llm处理了
 
 ---
 
@@ -16,7 +16,7 @@ WebUI懒得写，vibe出来的，gpt得了mvp！
 2. 浏览器地址栏输入 `http://localhost:8888`
 3. 把报错信息粘贴到输入框
 4. 点 **Translate DA☆ZE** 按钮
-5. 立刻看到：语言，错误等级，解释
+5. 语言，错误等级，解释等出现
 
 ### 方式二：命令行版
 
@@ -40,9 +40,11 @@ WebUI懒得写，vibe出来的，gpt得了mvp！
 | Rust        | 5  | `mismatched types`、`cannot borrow`、`use of moved value`                       |
 
 ---
+当然都是最为普通的报错，也就是没啥用的意思
 
 ## 项目结构
 
+```
 error-translator/
 |
 ├── cpp/ ← C++ 核心服务器（主程序）
@@ -70,7 +72,7 @@ error-translator/
 ├── data/ ← 数据文件
 │ └── errors.txt ← 报错规则库（核心数据）
 └── README.md ← 本说明文档
-
+```
 
 ---
 
