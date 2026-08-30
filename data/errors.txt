@@ -1,6 +1,6 @@
 Python|NameError|error|你用了还没有定义的变量。检查变量名拼写是否正确，或者在用它之前先给它赋值。
 Python|IndexError||list index out of range||tuple index out of range||string index out of range||list assignment index out of range|error|列表、元组或字符串的索引超出范围了。你可能多取了一个位置，检查一下长度，或者用 len() 确认边界。
-Python|KeyError|error|字典里没有这个键。检查键名拼写，或者先用 .get() / in 判断键是否存在。
+Python|KeyError:|error|字典里没有这个键。检查键名拼写，或者先用 .get() / in 判断键是否存在。
 Python|TypeError|error|操作的类型不对。比如把字符串和数字直接相加，或者对不支持的类型用了某个函数。
 Python|AttributeError||has no attribute|error|对象没有这个属性或方法。检查对象类型是否正确，或者是否拼错了方法名。
 Python|ValueError|error|传入的值有问题，类型对了但内容不合理。检查数据的格式和取值范围。
@@ -78,6 +78,26 @@ Python|No matching distribution found|error|源里没有这个包。确认包名
 Python|Microsoft Visual C++ 14.0|error|安装源码包需要 C 编译环境。装 Visual Studio Build Tools，或优先选择对应平台的 wheel 包。
 Python|externally-managed-environment|error|系统 Python 受保护不让直接 pip 装。用虚拟环境 venv，或加 pipx 管理命令行工具。
 Python|yaml.scanner.ScannerError||could not find expected ':'||mapping values are not allowed|error|YAML 配置文件格式不对。常见于冒号后缺空格、缩进用 Tab、引号没闭合。
+Python|ImproperlyConfigured|error|Django 配置不完整或有误。看提示里的具体设置项，检查 settings.py。
+Python|DisallowedHost|error|请求的 Host 不在 ALLOWED_HOSTS 里。把域名加进 settings.py 的白名单。
+Python|NoReverseMatch||Reverse for|error|reverse 反查不到这个 URL。检查 name 是否一致、参数是否齐全。
+Python|TemplateDoesNotExist|error|找不到模板文件。检查应用是否注册、DIRS/APP_DIRS 配置和模板路径。
+Python|didn't return an HttpResponse|error|视图没有返回 HttpResponse。确认每个分支都 return 了 render/redirect 等响应。
+Python|unapplied migration|error|有迁移没有执行。运行 python manage.py migrate。
+Python|Matching query does not exist||DoesNotExist|error|查不到这条记录。get() 找不到会抛异常，改用 filter().first() 并判空。
+Python|returned more than 1|error|get() 查到了多条记录。加过滤条件，或改用 filter() 处理列表。
+Python|django.db.utils|error|数据库操作出错。看具体异常类型：OperationalError 多为连接，IntegrityError 多为约束。
+Python|CSRF verification failed|error|CSRF 校验失败。表单要带 csrf_token，API 场景检查 CSRF_TRUSTED_ORIGINS。
+Python|Working outside of application context||Working outside of request context|error|在上下文之外访问了 app/request。用 with app.app_context(): 包裹，或放到请求处理里。
+Python|TemplateNotFound|error|Jinja 找不到模板。检查 templates 目录位置和 render_template 的路径。
+Python|TemplateSyntaxError|error|模板语法错误。检查 {% %} 配对、变量分隔符和 end 标签。
+Python|UndefinedError|error|模板里用了未定义的变量。检查传参，或用 default 过滤器兜底。
+Python|validation error|error|数据校验失败，报错列出了每个不符合的字段和原因。对照修正输入数据。
+Python|fixture '|error|pytest 找不到这个 fixture。检查函数名拼写、是否在 conftest.py，或作用域不对。
+Python|The requested URL was not found on the server|error|路由不存在（404）。检查路由注册和请求路径、方法是否匹配。
+Python|unregistered task|error|worker 里没有注册这个任务。检查任务名和 include 配置，确认 worker 加载了该模块。
+Python|attempted relative import with no known parent package|error|相对导入越出了包边界。以模块方式运行（python -m 包.模块），或改用绝对导入。
+Python|Can't get attribute|error|反序列化时找不到类定义。类被移动或改名了，保持原路径或自定义 unpickler。
 JavaScript|ReferenceError|error|引用了不存在的变量。检查变量名拼写，或者确认变量在使用前已经声明了。
 JavaScript|TypeError|error|数据的类型不对。常见于对 undefined 或 null 做了操作，或者把非函数当成函数调用。
 JavaScript|SyntaxError|fatal|语法错误。可能是少写了逗号、括号不匹配、引号没闭合，看报错里的行列号定位。
@@ -158,6 +178,24 @@ JavaScript|Illegal invocation|error|DOM API 的 this 指向不对。常见于把
 JavaScript|ResizeObserver loop limit exceeded|warning|布局在一帧内被 ResizeObserver 反复触发的良性警告，一般可忽略。若频繁出现，检查是否有布局抖动。
 JavaScript|net::ERR_NAME_NOT_RESOLVED|error|浏览器 DNS 解析失败。检查域名拼写、网络连接和代理设置。
 JavaScript|net::ERR_CONNECTION_REFUSED|error|浏览器连接被拒绝，目标端口没有服务在监听。确认服务已启动且端口正确。
+JavaScript|Can't resolve|fatal|打包器解析不了这个导入。检查路径大小写、别名配置和依赖是否安装。
+JavaScript|Module parse failed|fatal|这个文件不是有效的 JS 模块。检查是否把非 JS 文件导入了，或需要相应 loader。
+JavaScript|Parsing error|fatal|ESLint 解析失败。代码可能有语法错误，或解析器配置（ecmaVersion/parser）不匹配。
+JavaScript|Support for the experimental syntax|fatal|用了实验性语法但没启用插件。按提示在 babel 配置里加对应插件。
+JavaScript|regeneratorRuntime is not defined|fatal|babel 转译 async/generator 后缺少运行时。安装 @babel/plugin-transform-runtime 并配置。
+JavaScript|error during build|fatal|Vite 构建失败。看上面的具体错误：导入解析、语法或插件问题。
+JavaScript|Outdated Optimize Dep|error|依赖预构建缓存过期。重启 dev server，必要时 rm -rf node_modules/.vite。
+JavaScript|Maximum update depth exceeded|fatal|setState 触发了无限循环重渲染。检查 useEffect 的依赖数组和渲染函数里的直接 setState。
+JavaScript|state update on an unmounted component|warning|组件卸载后还在 setState。在清理函数里取消订阅/请求，或用 ref 标记。
+JavaScript|Exceeded timeout of|error|测试超时。异步断言没有 await，或用例真的太慢，设置更长超时。
+JavaScript|trouble with your network connection|error|yarn 下载失败。检查网络和镜像源，重试即可。
+JavaScript|compiled against a different Node.js version|error|原生模块和 Node 版本不匹配。npm rebuild 重编译，或换用匹配的模块版本。
+JavaScript|wrong version number|error|TLS 握手失败，常见于用 https 请求了 http 端口。检查协议和端口。
+JavaScript|write EPIPE|error|输出管道已关闭还在写数据，比如进程输出被截断。检查下游消费者的生命周期。
+JavaScript|Parse Error: Expected HTTP/|error|收到的不是合法 HTTP 响应。检查目标是不是 HTTP 服务、代理配置是否正确。
+JavaScript|PayloadTooLargeError|error|请求体超过大小限制。调整 body-parser 的 limit 配置或压缩上传内容。
+JavaScript|Timeout of|error|测试用例超时。异步操作没完成或超时设置太短，检查 this.timeout()。
+JavaScript|Cannot GET ||Cannot POST |error|Express 没有注册这个路由。检查路由定义的路径和 HTTP 方法。
 Java|NullPointerException||Cannot invoke.*because||Cannot read field.*because|error|空指针错误。你对一个 null 对象做了操作，报错里会指出哪个变量为 null，在调用前先判空。
 Java|ArrayIndexOutOfBoundsException||Index.*out of bounds for length|error|数组下标越界。你访问了一个不存在的数组位置，检查下标范围，注意数组从 0 开始。
 Java|StringIndexOutOfBoundsException||String index out of range|error|字符串下标越界。substring/charAt 的索引超过了字符串长度，先检查 length()。
@@ -238,6 +276,19 @@ Java|SSLHandshakeException||PKIX path building failed|error|SSL 握手失败。�
 Java|BindException||Address already in use|error|端口绑定失败，已被占用。换端口或结束占用端口的旧进程。
 Java|MissingFormatArgumentException|error|String.format 的占位符比参数多。检查格式串里 %s 等占位符和参数是否一一对应。
 Java|Application run failed|fatal|Spring Boot 启动失败。往下看 caused by 的第一个异常，通常是配置或 Bean 的问题。
+Java|Failed to configure a DataSource|fatal|Spring Boot 没配好数据源。检查 application.yml 的 spring.datasource 配置和驱动依赖。
+Java|was already in use|fatal|Web 服务端口被占用。换 server.port 或结束占用端口的进程。
+Java|expected single matching bean but found|error|自动装配时有多个候选 Bean。用 @Primary 或 @Qualifier 指定。
+Java|marked as rollback-only|error|内层事务抛异常把外层事务标记为只读回滚了。检查嵌套事务的异常处理，别在内部吞掉异常。
+Java|No runnable methods|error|测试类里没有可运行的 @Test 方法。检查注解和 JUnit 版本（4/5 注解不通用）。
+Java|initializationError|error|测试类初始化失败。看 caused by：常见为构造函数、静态块或注解使用错误。
+Java|The forked VM terminated|error|surefire 的测试进程崩溃了。多为内存不足或 System.exit，调大 argLine 或排查测试代码。
+Java|invalid target release|fatal|编译目标版本比当前 JDK 新。换 JDK 或降低 maven.compiler.target。
+Java|NoSuchFileException|error|NIO 找不到文件。检查路径拼写和相对路径基准。
+Java|AccessDeniedException|error|没有文件访问权限。检查权限设置和运行身份。
+Java|Found one Java-level deadlock|fatal|JVM 检测到死锁。jstack 输出会指出互相等待的锁，统一加锁顺序。
+Java|sleep interrupted|error|线程在休眠时被中断。处理 InterruptedException 或检查中断逻辑。
+Java|error in opening zip file|error|jar/zip 文件损坏或不完整。重新下载或构建依赖。
 C++|was not declared in this scope||was not declared||use of undeclared identifier|error|这个变量或函数没有声明。检查头文件是否 #include，或者变量是否在作用域内、名字空间是否写对。
 C++|expected ';' before||expected ';'|fatal|缺少分号。C++ 的每条语句结尾必须有分号，检查报错指向的位置和上一行末尾。
 C++|expected '}' at end of input||expected '}'|fatal|缺少花括号。检查花括号是否成对出现，可能某个 { 没有对应的 }。
@@ -271,7 +322,7 @@ C++|std::out_of_range||vector::_M_range_check||map::at||vector subscript out of 
 C++|std::length_error|fatal|容器长度超过了最大限制。检查是否误传了负数或超大值作为大小。
 C++|std::bad_function_call|fatal|调用了空的 std::function。调用前用 operator bool 判断是否已绑定可调用对象。
 C++|terminate called after throwing an instance of|fatal|有异常抛出但没有被捕获，程序直接终止。看异常类型和 what() 内容，补上 try/catch。
-C++|uncaught exception|fatal|异常没有被捕获。检查 main 或线程入口是否缺少 try/catch 保护。
+C++|terminate called without an active exception||std::terminate|fatal|异常没有被捕获。检查 main 或线程入口是否缺少 try/catch 保护。
 C++|abort() has been called|fatal|程序调用了 abort。常见于 assert 失败、未捕获异常或 CRT 检测到错误。
 C++|Debug Assertion Failed|fatal|MSVC 调试版的运行时断言失败。看 Expression 提示，常见为迭代器失效、空指针、越界。
 C++|invalid null pointer|fatal|把空指针传给了要求非空的函数。使用前判断指针是否为空。
@@ -290,7 +341,7 @@ C++|lvalue required|error|赋值号的左边必须是可以修改的对象。检
 C++|discards qualifiers|error|把 const 对象传给了会修改它的非 const 方法。把方法声明为 const 或去掉对象的 const。
 C++|expected initializer|fatal|声明处语法不对。检查变量声明格式和类型名拼写。
 C++|expected primary-expression before|fatal|这里需要一个表达式。常见于模板依赖名没写 typename、把类型名当成了变量。
-C++|cannot be used as a function|error|你把不是函数的东西当函数调用，或对象与函数同名冲突。检查名字冲突和括号位置。
+C++|cannot be used as a function||called object type|error|你把不是函数的东西当函数调用，或对象与函数同名冲突。检查名字冲突和括号位置。
 C++|static assertion failed|fatal|编译期断言失败。看提示的消息文本，检查类型大小、模板参数等编译期条件。
 C++|narrowing conversion|error|初始化列表里发生了可能丢数据的窄化转换。改成显式转换，或使用相同宽度的类型。
 C++|may be used uninitialized|warning|变量在某些路径下可能未初始化就被使用。声明时初始化，或补全赋值分支。
@@ -318,6 +369,25 @@ C++|non-const reference|error|不能把临时值/常量绑定到非 const 引用
 C++|C2027|error|MSVC：使用了只有前向声明的类型。包含完整定义的头文件。
 C++|invalid static_cast|error|这两个类型之间不能用 static_cast。检查类型关系，或改用 dynamic_cast/reinterpret_cast。
 C++|stack memory associated with local variable||address of local variable|error|返回了局部变量的引用或地址，函数返回后它就失效了。返回值、智能指针或由调用方提供的对象。
+C++|type redefinition|error|类型被重复定义。检查头文件保护宏和重复包含。
+C++|C2061|error|MSVC：标识符前有语法错误，通常是类型没声明。检查头文件包含顺序。
+C++|C2039|error|MSVC：该类型不是这个类/名字空间的成员。检查拼写和包含的头文件版本。
+C++|LNK2001|fatal|MSVC：无法解析的外部符号。函数声明了没实现，或库没链接。
+C++|LNK2005|fatal|MSVC：符号重复定义。检查重复包含的实现文件和全局变量。
+C++|LNK2019|fatal|MSVC：无法解析的外部符号。检查函数签名、调用约定和链接库。
+C++|does not match any in class|error|函数定义与类内声明不匹配。对照声明检查参数和 const。
+C++|out-of-line definition does not match|error|类外定义与声明不一致。检查签名、模板参数和 const。
+C++|candidate constructor not viable||candidate function not viable|error|候选构造/重载函数不可行。看每个候选被拒的原因（参数个数/类型）。
+C++|no viable conversion|error|没有可行的类型转换。检查构造函数是否 explicit、类型是否兼容。
+C++|indirection requires pointer operand|error|对非指针用 *。检查变量是不是忘了取地址或声明类型。
+C++|unterminated conditional directive|fatal|#if/#ifdef 没有对应的 #endif。检查预处理指令配对。
+C++|invalid use of void expression|error|void 函数的返回值被使用了。void 调用不能作为值参与运算。
+C++|void value not ignored as it ought to be|error|void 返回值被赋值/使用。检查函数返回类型与调用处的期望。
+C++|deleting object of polymorphic class type|error|通过基类指针 delete 多态对象但析构不是虚函数。给基类加 virtual 析构。
+C++|specialization after instantiation|error|模板特化必须在首次实例化之前声明。调整代码顺序。
+C++|C2259|error|MSVC：不能实例化抽象类。实现全部纯虚函数或用具体子类。
+C++|C2660|error|MSVC：函数不接受这个个数的参数。对照签名检查。
+C++|C2079|error|MSVC：使用了只有前向声明的类型。包含完整定义。
 C|implicit declaration of function||implicit declaration of built-in|warning|使用了没有声明的函数。忘记 #include 对应的头文件了，或者函数名拼写错误。
 C|use of undeclared identifier|error|这个变量或函数没声明过。检查拼写，确认头文件已包含、变量在使用前已定义。
 C|unknown type name|error|类型名没被识别。检查头文件是否包含，结构体类型是否漏了 struct 关键字。
@@ -478,6 +548,19 @@ Go|requires Go 1.|error|当前 Go 版本太旧，不满足依赖要求。升级 
 Go|no Go files in|error|目录里没有 .go 文件。检查导入路径是否指向了正确的包目录。
 Go|flag provided but not defined|error|命令行传了程序没定义的 flag。检查 flag 定义和调用参数，子命令要在 flag.Parse 前处理。
 Go|defined and not used|error|定义了 label 却没使用。删掉，或补上 goto/continue 用法。
+Go|cannot infer type arguments|error|泛型参数推不出来。显式写出类型参数，如 f[int](x)。
+Go|assignment copies lock value|warning|赋值复制了含锁的结构体。改用指针传递，避免锁被复制失效。
+Go|negative WaitGroup counter|fatal|WaitGroup 的 Add/Done 不配对。检查 Done 是否重复调用。
+Go|unlock of unlocked mutex|fatal|解锁了没有加锁的 mutex。检查锁的配对逻辑。
+Go|close of nil channel|fatal|对 nil channel 调 close。channel 要先 make 初始化。
+Go|i/o timeout|error|网络读写超时。检查下游响应速度，调大 timeout。
+Go|driver: bad connection|error|数据库连接已失效。开启连接池健康检查或重试。
+Go|does not satisfy|error|类型不满足泛型约束。检查类型是否实现了约束要求的接口。
+Go|found packages|error|同一目录里有不同 package 名的文件。统一目录下所有文件的 package 声明。
+Go|ambiguous import|error|这个包能从多个模块解析，歧义了。统一依赖版本或显式指定。
+Go|tls: failed to verify certificate|error|TLS 证书校验失败。更新系统证书，内网自签证书加入信任池。
+Go|SECURITY ERROR|error|依赖校验和与 go.sum 不符。确认来源可信后执行 go mod tidy 更新。
+Go|panic: test timed out|fatal|测试超时被杀。看 panic 栈里卡住的 goroutine，检查死锁或过慢的用例。
 C#|CS0103|error|这个名字在当前上下文中不存在。检查拼写，确认变量已声明，或缺少 using 导入。
 C#|CS0246||CS0234|error|找不到类型或命名空间。缺少 using 引用或项目引用，也可能没装对应的 NuGet 包。
 C#|CS1061|error|该类型没有这个成员。检查方法/属性名拼写，确认是调用的对象类型正确。
@@ -512,8 +595,8 @@ C#|NullReferenceException||Object reference not set|error|空引用。你对一�
 C#|IndexOutOfRangeException||Index was outside the bounds|error|数组索引越界。你访问了一个不存在的数组位置，检查索引范围。
 C#|ArgumentOutOfRangeException||Index was out of range. Must be non-negative||Index and length must refer|error|参数超出允许范围。常见于 Substring 的索引超出字符串长度，先检查长度。
 C#|ArgumentNullException||Value cannot be null|error|把 null 传给了不允许为空的方法参数。调用前先判空。
-C#|ArgumentException|error|方法收到了不合理的参数值。看报错里的参数名和消息定位。
-C#|InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element|error|对象当前状态下不允许这个操作。常见于：遍历时修改集合、LINQ 取不到元素、连接未打开。
+C#|System.ArgumentException||ArgumentException:|error|方法收到了不合理的参数值。看报错里的参数名和消息定位。
+C#|InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element||There is already an open DataReader||Operation is not valid due to the current state|error|对象当前状态下不允许这个操作。常见于：遍历时修改集合、LINQ 取不到元素、连接未打开。
 C#|DivideByZeroException|error|整数除以零。整数除法不做浮点处理，除法前检查除数。
 C#|FormatException||Input string was not in a correct format|error|字符串格式转换失败。int.Parse 收到了不是数字的内容，用 TryParse 更安全。
 C#|InvalidCastException||Unable to cast object of type|error|强制转换失败。对象实际类型和目标类型不兼容，先 as/is 判断再转换。
@@ -525,7 +608,7 @@ C#|KeyNotFoundException||The given key was not present|error|字典里没有这�
 C#|TimeoutException|error|操作超时。检查下游服务是否阻塞，或调大超时时间。
 C#|TaskCanceledException||OperationCanceledException||A task was canceled|error|任务被取消了。可能是超时控制或用户取消，捕获后按业务处理。
 C#|AggregateException||One or more errors occurred|error|并行任务里抛出了多个异常的聚合。看 InnerExceptions 找到每个真实错误。
-C#|ObjectDisposedException||Cannot access a disposed object|error|对象已被 Dispose 还在使用。检查 using 块的范围，不要在释放后继续访问。
+C#|ObjectDisposedException||Cannot access a disposed object||Cannot access a closed|error|对象已被 Dispose 还在使用。检查 using 块的范围，不要在释放后继续访问。
 C#|SocketException||No connection could be made||actively refused it|error|网络连接失败。目标机器拒绝连接，确认服务已启动、IP 端口和防火墙正确。
 C#|SqlException||network-related or instance-specific|error|数据库操作出错。看 Number 和 Message：连接、语法或约束问题各有不同处理。
 C#|Incorrect syntax near|error|SQL 语法错误。检查关键字拼写、逗号括号和 T-SQL 写法。
@@ -537,12 +620,12 @@ C#|Conversion failed when converting|error|SQL 类型转换失败。比如把非
 C#|IOException||used by another process|error|文件 IO 失败。常见于文件被其他进程占用，或目录不存在，确认文件已释放再操作。
 C#|DirectoryNotFoundException|error|目录不存在。检查路径是否正确，必要时先创建目录。
 C#|UnauthorizedAccessException||Access to the path is denied|error|没有访问权限。检查文件是否只读、是否需要管理员权限运行。
-C#|FileNotFoundException||Could not load file or assembly||Could not find file|error|文件或程序集找不到。检查 DLL 是否在输出目录、NuGet 包是否还原成功。
+C#|FileNotFoundException||Could not load file or assembly||Could not find file||Could not load type|error|文件或程序集找不到。检查 DLL 是否在输出目录、NuGet 包是否还原成功。
 C#|BadImageFormatException||incorrect format|error|程序集架构不匹配。x86/x64/AnyCPU 不一致，统一项目的目标平台。
 C#|TypeInitializationException|error|静态构造函数抛了异常。看 InnerException 定位静态初始化代码的问题。
 C#|HttpRequestException||No such host is known||does not indicate success|error|HTTP 请求失败。检查网络、DNS 和接口地址；5xx 看响应内容定位服务端问题。
 C#|JsonException||JsonSerializationException||Self referencing loop|error|JSON 序列化/反序列化失败。字段类型不匹配或循环引用，检查数据结构。
-C#|CS4033|error|await 只能用在 async 方法里。给方法加上 async 修饰符。
+C#|CS4033||CS4032|error|await 只能用在 async 方法里。给方法加上 async 修饰符。
 C#|CS1998|warning|async 方法里没有 await，会同步执行。补上 await 调用，或去掉 async。
 C#|CS4014|warning|异步调用没有被 await，异常会丢失且执行顺序不可控。加上 await 或显式丢弃。
 C#|CS5001|error|找不到程序入口 Main 方法。检查入口类是否正确、签名是否为 static Main。
@@ -558,6 +641,17 @@ C#|not recognized as a valid DateTime|error|日期字符串解析失败。用 Da
 C#|forcibly closed by the remote host|error|连接被服务端强制断开。检查服务端日志，网络是否稳定，加自动重连。
 C#|TargetInvocationException|error|反射调用的方法内部抛了异常。看 InnerException 找到真实原因。
 C#|CS0162|warning|检测到无法执行的代码。前面可能已经 return 或 throw，检查控制流。
+C#|Unable to create an object of type|error|EF Core 无法构造 DbContext。检查构造函数参数和 DI 注册。
+C#|Collection was of a fixed size|error|对固定大小集合做增删。换用 List 等可变集合。
+C#|Nullable object must have a value|error|对 null 的可空类型取 .Value。先 HasValue 判断或用 GetValueOrDefault。
+C#|Sequence contains more than one element|error|Single() 查到了多条记录。改用 First/FirstOrDefault，或加过滤条件。
+C#|Arithmetic operation resulted in an overflow|error|算术运算溢出。检查数值范围，必要时换更大的类型或 checked 控制。
+C#|The SSL connection could not be established||Could not create SSL/TLS secure channel|error|TLS 建立失败。更新证书链和 TLS 版本配置，检查系统时间。
+C#|MSB3073|error|MSBuild 调用的命令以非零退出。看上方命令的实际输出定位。
+C#|Assets file ... not found||NU1004||Assets file|error|project.assets.json 不存在。先 dotnet restore 还原依赖。
+C#|CS1520|fatal|方法必须声明返回类型。检查函数签名是否漏了 void 或类型。
+C#|CS0501|error|非抽象/extern 方法必须有方法体。补上大括号体或声明为 abstract。
+C#|CS0123|error|没有重载与委托签名匹配。对照委托定义检查方法签名。
 Ruby|NoMethodError||undefined method for nil:NilClass||private method called|error|对象没有这个方法。特别注意对 nil 调方法的情况，往上找它为什么是 nil。
 Ruby|NameError||uninitialized constant||undefined local variable or method|error|未定义的变量、方法或常量。检查拼写和作用域，确认已定义或已 require。
 Ruby|syntax error, unexpected|fatal|语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了，看指向的行号。
@@ -596,7 +690,7 @@ Ruby|RegexpError||end pattern with unmatched parenthesis|error|正则表达式�
 Ruby|Encoding::UndefinedConversionError|error|编码转换时目标编码表示不了某些字符。统一编码为 UTF-8，或设置 replace 参数。
 Ruby|Encoding::InvalidByteSequenceError||invalid byte sequence|error|字节序列不是合法的当前编码。确认文件实际编码，用正确编码打开。
 Ruby|incompatible character encodings||Encoding::CompatibilityError|error|两种编码的字符串做拼接/比较。用 force_encoding 统一编码再操作。
-Ruby|KeyError||key not found|error|Hash 里没有这个键。用 fetch 给默认值，或先判断 key? 再取。
+Ruby|KeyError:||key not found|error|Hash 里没有这个键。用 fetch 给默认值，或先判断 key? 再取。
 Ruby|IndexError|error|下标越界。数组取值超出了范围，先检查 size。
 Ruby|StopIteration|warning|迭代器用完了。loop 会自动捕获它结束循环，手动 next 则需自行处理。
 Ruby|ThreadError||deadlock; recursive locking|error|线程使用有误。比如同一个线程重复加锁，检查 Mutex 的使用范围。
@@ -638,6 +732,13 @@ Ruby|shadowing outer local variable|warning|内层变量遮蔽了外层同名变
 Ruby|assigned but unused variable|warning|变量赋值了但没使用。删除或用 _ 前缀命名。
 Ruby|possibly useless use of|warning|这个表达式的结果没有被使用，比如单独写 a == b。改成赋值或删除。
 Ruby|ambiguous first argument|warning|第一个参数的写法有歧义，解释器可能理解成别的含义。给参数加括号明确。
+Ruby|Missing `secret_key_base`|fatal|生产环境缺少 secret_key_base。配置 credentials 或环境变量。
+Ruby|DEPRECATION WARNING|warning|Rails 提示用了将废弃的 API。按提示迁移，未来版本会报错。
+Ruby|translation missing|warning|I18n 缺少对应翻译。在 locale 文件里补上这个键。
+Ruby|Association named|error|模型上没有这个关联。检查 has_many/belongs_to 声明和关联名拼写。
+Ruby|ConnectionTimeoutError|error|连接池耗尽。调大 pool 配置，或检查是否有连接泄漏。
+Ruby|ActiveRecord::Deadlocked|error|数据库死锁，事务被回滚。统一加锁顺序并加重试。
+Ruby|Failed to build gem native extension|fatal|gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。
 PHP|Parse error||syntax error, unexpected|fatal|语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合，看指向的行号。
 PHP|unexpected end of file|fatal|文件意外结束。某个花括号或 PHP 标签没闭合，配对检查大括号和 <?php 标签。
 PHP|Fatal error|fatal|致命错误，脚本直接终止。看后面的 Uncaught Error 描述定位问题。
@@ -718,6 +819,17 @@ PHP|Cannot call abstract method|fatal|调用了没有实现的抽象方法。实
 PHP|Parameter must be an array|warning|count() 收到的不是数组。检查数据来源，null 要先给默认空数组。
 PHP|Creating default object from empty value|warning|给空值赋属性隐式创建了对象。先 $obj = new stdClass() 明确创建。
 PHP|could not find driver|fatal|PHP 没有加载对应的数据库驱动扩展。安装并启用 pdo_mysql / pdo_pgsql 等扩展。
+PHP|The given data was invalid|error|Laravel 表单验证失败。看 errors 里的字段提示修正输入。
+PHP|TokenMismatchException|error|CSRF token 不匹配或过期。检查表单 @csrf 和 session 配置。
+PHP|Unresolvable dependency|fatal|容器解析不了构造参数。检查类型提示和接口绑定。
+PHP|Error establishing a database connection|fatal|WordPress 连不上数据库。检查 wp-config.php 的账号密码主机和 MySQL 状态。
+PHP|non-existent service|fatal|容器里没有这个服务。检查 services.yaml 配置和自动装配。
+PHP|Variable ".*" does not exist|fatal|模板里用了没传入的变量。控制器补传，或用 default 过滤器。
+PHP|No tests executed|warning|没有匹配到任何测试。检查 --filter 参数和测试文件命名。
+PHP|Class 'PDO' not found|fatal|PHP 没启用 PDO 扩展。安装 php-pdo 并启用对应驱动。
+PHP|The uploaded file exceeds|error|上传文件超过限制。调大 upload_max_filesize 和 post_max_size。
+PHP|POST Content-Length of|error|POST 数据超过 post_max_size。调大该配置并重启服务。
+PHP|Malformed UTF-8 characters|warning|json_encode 的内容含非法 UTF-8。检查数据来源编码，必要时转码。
 Rust|borrow of moved value||use of moved value|error|使用了已经被移动的值。Rust 所有权规则下，被 move 后的变量不能再使用，改用克隆或借用。
 Rust|cannot move out of|error|不能从这里把值移动走。部分引用类型或非 Copy 类型不能直接解引用取值，用克隆或 .clone()。
 Rust|cannot borrow|error|借用规则冲突。同一时间只能有一个可变借用，或可变与不可变借用不能共存，调整借用范围。
@@ -798,6 +910,19 @@ Rust|call to unsafe function|error|调用 unsafe 函数需要 unsafe 块。确�
 Rust|didn't exit successfully|error|程序非零退出。cargo run/test 时进程崩溃或返回了错误码，看上面的输出定位。
 Rust|borrowed data escapes|error|借用的数据逃逸出了闭包或函数的作用域。检查返回值和生命周期约束。
 Rust|cannot add||cannot multiply|error|这两个类型之间不支持该运算。检查操作数类型，或为自定义类型实现对应的运算 trait。
+Rust|Tokio runtime|fatal|在 Tokio 运行时之外调用了异步 API。用 #[tokio::main] 或 block_on 包裹。
+Rust|cannot be sent between threads safely|error|future 跨线程传递但内部持有非 Send 的引用。检查跨 await 持有的变量，必要时用 Arc/Mutex 或重排作用域。
+Rust|missing field `.*` at line||missing field|error|反序列化的数据缺少必填字段。补全数据，或给字段标 #[serde(default)]。
+Rust|invalid type: |error|JSON 字段类型和结构体定义不符。看实际类型和期望类型的差异。
+Rust|unknown field `|error|数据里有结构体没定义的字段。补字段，或加 #[serde(deny_unknown_fields)] 的反面：ignore。
+Rust|closure may outlive the current function|error|闭包可能活得比捕获的引用久。加 move 关键字转移所有权。
+Rust|size known at compile-time|error|编译期大小未知。用 Box<dyn Trait>/&dyn Trait 或 Arc 包装。
+Rust|recursive type has infinite size|error|类型递归包含自己。用 Box/Rc 间接持有打断无限大小。
+Rust|cannot be made into an object|error|trait 有泛型方法/静态方法，不能做 dyn 对象。重构方法签名或用泛型。
+Rust|cannot be indexed|error|这个类型没有实现 Index。检查类型，或改用对应方法取值。
+Rust|no default toolchain configured|fatal|rustup 没有默认工具链。运行 rustup default stable。
+Rust|link.exe not found|fatal|Windows 缺 MSVC 链接工具。安装 Visual Studio Build Tools 或改用 GNU 工具链。
+Rust|recursion limit reached|error|宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = "256"]。
 TypeScript|TS2304|error|找不到这个名字。检查变量/类型是否已声明、import 是否正确，或缺少 @types 声明包。
 TypeScript|TS2307|error|找不到模块或类型声明。检查路径拼写、是否安装了包和对应的 @types，路径别名是否配置。
 TypeScript|TS2339|error|这个类型上没有该属性。检查属性名拼写，或接口定义里漏了这个字段。
@@ -878,6 +1003,15 @@ TypeScript|TS1208|fatal|isolatedModules 下不允许某些写法（如 const enu
 TypeScript|Failed to resolve import|fatal|构建工具解析不了这个导入路径。检查路径大小写、别名配置和依赖是否安装。
 TypeScript|does not provide an export named|fatal|模块没有提供要导入的成员。检查导出名和导出方式是否匹配。
 TypeScript|TS2722|error|对象可能是 undefined，不能直接调用。先判空或用可选链。
+TypeScript|not under 'rootDir'|fatal|引用了 rootDir 之外的文件。调整 tsconfig 的 rootDir/include，或移动文件。
+TypeScript|Could not resolve the path|fatal|找不到输入文件的路径。检查 tsc 命令参数和文件是否存在。
+TypeScript|would overwrite input file|fatal|编译输出会覆盖源文件。配置 outDir 把产物输出到别的目录。
+TypeScript|react/jsx-runtime|fatal|找不到新的 JSX 运行时。升级 React 到 17+ 并确认 types 和 jsx 配置匹配。
+TypeScript|spread argument|error|展开传参要求元组类型。给数据标注 as const 或元组类型。
+TypeScript|specified more than once|warning|对象展开时后面的属性会覆盖前面显式写的同名属性。调整顺序确认意图。
+TypeScript|Do you need to change your target library|error|缺少对应的类型定义（如 @types/node）。安装或调整 tsconfig 的 lib/types。
+TypeScript|JSDoc types|error|JSDoc 类型标注只能用于注释上下文。检查 .ts 文件里的写法。
+TypeScript|File '.*' not found|fatal|tsc 找不到指定的输入文件。检查路径和 include 配置。
 Kotlin|Unresolved reference|error|找不到这个引用。检查导入、包名和类名拼写，确认依赖已添加到 build.gradle。
 Kotlin|Unresolved reference: R|error|R 类没生成。通常是资源文件有错误导致构建中断，先修复 XML 资源错误再 Rebuild。
 Kotlin|type mismatch: inferred type is|error|类型不匹配。看推断出的类型和期望类型，修改变量类型或转换赋值。
@@ -958,6 +1092,17 @@ Kotlin|Missing class|error|R8 混淆时缺少类引用。补依赖，或在 prog
 Kotlin|Cannot resolve symbol|error|IDE 解析不了这个符号。Sync/Rebuild 项目、清除缓存，或检查依赖是否引入。
 Kotlin|An operation is not implemented|fatal|执行到了 TODO() 占位。补上具体实现。
 Kotlin|Cannot find a parameter with this name|error|函数没有这个命名参数。检查参数名拼写，或调用处是否传多了参数。
+Kotlin|Type inference failed|error|推不出表达式类型。显式标注类型或拆分链式调用。
+Kotlin|Cannot figure out how to save this field|error|Room 不知道怎么存这个字段。加 TypeConverter，或改成 Room 支持的类型。
+Kotlin|Unable to create converter for class|error|Retrofit 缺少转换器。添加 Gson/Moshi converter factory。
+Kotlin|Expected BEGIN_OBJECT but was STRING|error|JSON 结构和实体类对不上：期望对象却拿到了字符串。检查数据格式。
+Kotlin|Activity has leaked window|error|Activity 退出时 Dialog 还在显示。在 onDestroy 前关闭 Dialog。
+Kotlin|too much work on its main thread|warning|主线程负担过重导致掉帧/ANR。把耗时逻辑移到子线程或协程。
+Kotlin|NetworkOnMainThreadException|fatal|Android 禁止主线程发网络请求。用协程/Retrofit/WorkManager 异步处理。
+Kotlin|Unable to instantiate activity|fatal|Activity 无法创建。检查类名/包名、构造函数和 Application 初始化。
+Kotlin|already has a parent|fatal|同一个 View 同时挂在两个父容器上。先从旧父容器 removeView 再添加。
+Kotlin|Resources\$NotFoundException|fatal|资源 ID 不存在。检查 R.xxx 引用和资源文件是否编译进包。
+Kotlin|Unable to add window|fatal|在 Activity 已销毁或 context 不对时弹窗。确认用 Activity context 且页面还存活。
 Swift|in scope||use of unresolved identifier|error|这个名字在当前作用域找不到。检查拼写、导入模块，确认变量/函数已定义。
 Swift|Expected declaration|fatal|这里应该写类型/函数声明，却出现了语句。常见于多写了大括号，把代码挤出了类型体。
 Swift|'{' in body of||Expected '{' in body|fatal|缺少函数体的左花括号。检查 func 声明后面是否漏了 {。
@@ -1013,7 +1158,6 @@ Swift|Undefined symbol|fatal|链接时找不到符号。检查是否漏了实现
 Swift|No profiles for|fatal|找不到匹配的描述文件。在开发者账号里生成对应 Bundle ID 的 profile 并下载。
 Swift|requires a development team|fatal|没有配置签名团队。在 Signing & Capabilities 里选择你的开发者账号。
 Swift|Unable to find a destination|error|找不到匹配的运行设备。检查模拟器/真机列表和 scheme 的目标设置。
-Swift|unrecognized selector sent to|fatal|调用了对象不存在的方法（ObjC 运行时崩溃）。检查 target-action 选择器签名和对象类型。
 Swift|Could not cast value of type|fatal|运行时强转失败。从 storyboard/ nib 取出的对象类型和代码声明不一致，检查关联。
 Swift|Precondition failed|fatal|前置条件不成立导致崩溃。看断言消息，检查为什么数据不符合预期。
 Swift|EXC_BAD|fatal|访问了已释放或非法的内存。检查循环引用、已释放对象的使用（可用僵尸对象调试）。
@@ -1038,6 +1182,13 @@ Swift|no accessible initializers|error|类型没有可访问的初始化器。�
 Swift|can only be used as a generic constraint|error|带关联类型的协议（PAT）不能直接当类型用。用 some/any 关键字，或把协议改成泛型约束。
 Swift|was never used|warning|初始化了变量但从未使用。删除或补上使用逻辑。
 Swift|Extra trailing closure|error|传了多余的尾随闭包。检查函数签名，或把闭包写进参数列表。
+Swift|No value associated with key|fatal|Codable 解码缺少必填字段。数据里补字段，或把属性声明成 Optional。
+Swift|Expected to decode|fatal|JSON 字段类型和模型声明不符。看 expected/found 的类型差异。
+Swift|Modifying state during view update|fatal|在 body 里直接改 @State 会引发循环。把状态修改移到按钮回调/onAppear。
+Swift|String index is out of bounds|fatal|字符串下标越界。注意 Swift 的 String.Index 不是整数，用 index(offsetBy:)。
+Swift|must call a designated initializer of the superclass|error|子类 init 必须调用父类的指定初始化器，而不是 convenience。
+Swift|super.init isn't called before returning|error|初始化器结束前没调 super.init。补上父类初始化调用。
+Swift|must be initialized before calling super.init|error|先初始化自己的所有存储属性，再调 super.init。
 Dart/Flutter|Undefined class||Undefined name|error|这个名字没定义。检查类名/变量拼写和 import 是否写了，flutter pub get 后再试。
 Dart/Flutter|isn't defined|error|该类型上没有这个方法或 getter。检查拼写，确认调用的对象类型正确。
 Dart/Flutter|Target of URI doesn't exist|error|导入的文件或包不存在。检查路径拼写，依赖要先在 pubspec.yaml 里声明并 pub get。
@@ -1118,6 +1269,11 @@ Dart/Flutter|type arguments|error|泛型参数个数不对。对照类型定义�
 Dart/Flutter|can't be instantiated|error|抽象类不能直接 new。实例化它的具体实现类。
 Dart/Flutter|SDK location not found|error|找不到 Android SDK。在 local.properties 配置 sdk.dir，或设置 ANDROID_HOME。
 Dart/Flutter|TimeoutException|error|异步操作超时。检查网络与接口性能，或调大超时时间。
+Dart/Flutter|MissingPluginException|error|插件的原生实现没注册。热重载无效，重新运行 app（stop 后再 run）。
+Dart/Flutter|PlatformException|error|原生平台代码抛了异常。看 code 和 message，通常是权限或原生层配置问题。
+Dart/Flutter|Stream has already been listened to|error|单订阅流被重复监听。改用 asBroadcastStream()，或每次创建新 Stream。
+Dart/Flutter|Could not find a generator for route|fatal|命名路由没找到页面生成器。检查 onGenerateRoute/routes 里注册的名字。
+Dart/Flutter|UnimplementedError|fatal|执行到了 throw UnimplementedError() 占位。补上具体实现。
 SQL|ERROR 1064||error in your SQL syntax|error|SQL 语法错误（MySQL）。检查关键字拼写、逗号括号、引号和表名是否用了保留字。
 SQL|ERROR 1054||Unknown column|error|表里没有这个列（MySQL）。检查列名拼写、是否加了表名前缀，或字段还没加进表。
 SQL|Table '.*' doesn't exist||ERROR 1146|error|表不存在（MySQL）。检查库名表名、连接的数据库是否正确，建表脚本是否执行过。
@@ -1246,18 +1402,6 @@ Shell|Connection timed out|error|连接超时。目标不可达或被防火墙�
 Shell|unable to resolve host address|error|域名解析失败（wget）。检查 DNS 和网址拼写。
 Shell|connect to host|error|SSH 连不上目标主机。检查 IP、端口、sshd 是否运行和防火墙规则。
 Shell|ssh_exchange_identification|error|SSH 握手被对端拒绝。可能被 hosts.allow/deny 或 fail2ban 拦截了。
-Shell|not a git repository|error|当前目录不是 git 仓库。cd 到项目根目录，或先 git init。
-Shell|failed to push some refs||fetch first|error|推送被拒绝，远端有你没有的提交。先 git pull --rebase 再推送。
-Shell|would be overwritten by|error|本地有未提交的修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。
-Shell|refusing to merge unrelated histories|error|两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。
-Shell|remote origin already exists|error|origin 已经配置过了。用 git remote set-url 修改地址。
-Shell|did not match any file(s) known to git|error|git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。
-Shell|CONFLICT (|error|合并冲突。编辑冲突文件解决 <<<<<<< 标记的内容，git add 后继续。
-Shell|Cannot connect to the Docker daemon|fatal|Docker 守护进程没在运行。启动 docker 服务（systemctl start docker）再试。
-Shell|port is already allocated|error|端口已被别的容器/进程占用。停掉占用方或换个端口映射。
-Shell|Got permission denied while trying to connect|error|当前用户无权访问 docker。把用户加进 docker 组，或用 sudo。
-Shell|container name|error|容器名已被使用。先 docker rm 旧容器，或换名字。
-Shell|pull access denied|error|镜像拉取被拒。镜像可能不存在或需要 docker login，检查镜像名。
 Shell|Not found in archive|error|要提取的文件不在压缩包里。tar -t 列出包内文件确认路径。
 Shell|does not look like a tar archive|error|文件不是 tar 包。可能下载错了或是 gzip 包，加 -z 或用对应的解压命令。
 Shell|Unexpected EOF in archive|error|压缩包不完整或损坏了。重新下载/传输。
@@ -1278,3 +1422,569 @@ Shell|Temporary failure in name resolution|error|DNS 暂时不可用。检查 /e
 Shell|Unable to locate package|error|软件源里找不到这个包（apt）。先 apt update，或检查包名和源配置。
 Shell|bash: .*: No such file or directory|error|bash 找不到脚本/命令文件。检查路径是否正确、文件是否存在。
 Shell|bind: |error|绑定端口失败，已被占用或权限不足。换端口，或结束占用进程。
+R|object '.*' not found|error|找不到这个对象。变量名拼写错误，或者它是在别的函数/环境里创建的还没加载。
+R|could not find function|error|找不到这个函数。先 library() 加载对应的包，或检查函数名拼写。
+R|unexpected symbol|fatal|语法错误，这个位置不该出现标识符。常见于缺逗号、缺括号或赋值符写错。
+R|unexpected ')'||unexpected '}'|fatal|括号不匹配。检查是否有多的右括号，或上一行漏了内容。
+R|unexpected string constant||unexpected numeric constant|fatal|这个位置不该出现字符串或数字。常见于函数参数间少了逗号。
+R|unexpected input in|fatal|代码里混入了非法字符，常见于中文引号、全角空格或从网页复制时带上的特殊符号。
+R|unexpected end of input|fatal|代码写到一半就结束了，括号或引号没闭合。R 控制台一直显示 + 就是这个原因。
+R|unexpected 'else'|fatal|else 必须紧跟 if 块的右花括号，不能单独起一行。把 } else 写在同一行。
+R|undefined columns selected|error|数据框里没有这些列。检查列名拼写和大小写，用 colnames() 看看实际有哪些列。
+R|subscript out of bounds|error|下标越界。取的行/列超出了数据框或向量的范围，先用 nrow/ncol/length 确认边界。
+R|missing value where TRUE/FALSE needed|error|if 的条件里含有 NA，R 不知道真假。判断前用 is.na() 过滤，或用 %in% 代替 ==。
+R|condition has length|warning|if 的条件长度大于 1，只用了第一个元素。想逐个判断用 ifelse() 或向量化写法。
+R|argument is of length zero|error|if 的条件是空向量，长度为 0 不是合法的布尔值。检查上游数据是不是空的。
+R|longer object length is not a multiple of shorter object length|warning|两个向量长度不成倍数，循环时会错位。检查两列数据是不是没对齐。
+R|replacement has|warning|赋值的两边长度不一致，数据会被截断或循环填充。检查替换值和目标是不是同样大小。
+R|cannot coerce|error|类型转换失败。比如把文字转成数字，检查数据里是不是混入了非数字内容。
+R|non-numeric argument to mathematical function|error|数学函数收到了非数字参数。检查传入的列是不是字符型，先用 as.numeric() 转换。
+R|unused argument|error|函数没有这个参数。检查参数名拼写，或确认用的包版本支持这个参数。
+R|matched by multiple actual arguments|error|同一个形参被传了两次值。检查是不是位置参数和命名参数重复指定了。
+R|arguments imply differing number of rows|error|构造 data.frame 的各列行数不一致。检查每列的数据长度是否相同。
+R|must be size|error|dplyr/tidyr 要求这个值长度为 1 或与数据行数一致。检查 mutate/filter 里的表达式。
+R|no applicable method for|error|这个对象类型没有对应的方法。检查对象是不是预期的类型，比如把向量传给了只接受 data.frame 的函数。
+R|is not subsettable|error|你对函数用了 $ 或 []。常见于写 x$mean 时 x 是函数名，检查变量是不是被覆盖了。
+R|cannot open the connection||cannot open file|error|文件打不开。检查路径是否正确（注意工作目录 getwd()）和文件权限。
+R|incomplete final line|warning|文件最后一行没有换行符。不影响读取，想消除就在文件末尾补一个回车。
+R|more columns than column names|error|数据行比表头列数多。常见为分隔符不对，指定正确的 sep 参数。
+R|did not contain|error|读文件时某行的字段数和预期不一致。检查分隔符和缺失值标记，或加 fill=TRUE。
+R|duplicate 'row.names'|error|行名重复了。读取时用 row.names=NULL 让 R 自动编号。
+R|invalid factor level, NA generated|warning|给因子赋了不存在的水平值，变成了 NA。新值要先用 levels() 或 forcats 添加水平。
+R|standard unambiguous format|error|as.Date 认不出这个日期字符串。用 format 参数指定格式，比如 as.Date(x, format='%d/%m/%Y')。
+R|'origin' must be supplied|error|把数值转日期必须指定起始日，如 as.Date(n, origin='1970-01-01')。
+R|Do not know how to convert|error|不知道怎么把这个类型转成目标类型。检查 as.* 的目标类型是否合理。
+R|plot.new has not been called|error|画图设备还没准备好。可能是没有可用的图形设备，或在非交互环境要先开 png()/pdf()。
+R|figure margins too large|error|画布太小放不下图。把绘图窗口放大，或用 par(mar=) 调小边距。
+R|plot region too small|error|绘图区域太小。调整窗口大小或 par 参数，分页画图。
+R|need finite 'ylim' values|error|坐标轴范围里有 NA 或 Inf。检查数据是否含缺失值，或手动设置 ylim。
+R|to a <ggplot> object|error|不能用 + 把这个对象加到 ggplot 上。检查是不是把函数名当对象用了（写成 geom_point 而不是 geom_point()）。
+R|Aesthetics must be either length 1 or the same as the data|error|映射的向量长度和数据行数对不上。检查 aes 里传入的变量。
+R|requires the following missing aesthetics|error|这个几何对象需要必填的美学映射。比如 geom_bar 要 x，geom_point 要 x 和 y。
+R|containing non-finite values|warning|有 NA/Inf 的行被画图时剔除了。数据里有缺失值，先处理再画。
+R|Discrete value supplied to continuous scale||Continuous value supplied to discrete scale|error|数据和坐标轴的类型不匹配。连续列要用连续标度，分类列用离散标度，检查列类型。
+R|Can't subset columns that don't exist|error|dplyr 找不到这些列。检查 select()/mutate() 里的列名拼写。
+R|fitted probabilities numerically 0 or 1|warning|逻辑回归出现完美分离，拟合值是 0 或 1。检查是否存在完全区分的变量，考虑正则化。
+R|algorithm did not converge|warning|迭代没收敛就停了。增加 maxit 或检查数据尺度和模型设定。
+R|cannot allocate vector of size|error|内存不够分配了。数据太大，分块处理或用 data.table/arrow，或加大内存。
+R|C stack usage|error|C 栈接近上限，通常是递归太深或包之间冲突。减小递归深度或调大栈限制。
+R|there is no package called||is not available|error|这个包没安装。install.packages() 装一下；装了还报错检查是否用对了 R 版本的库路径。
+R|had non-zero exit status|error|包安装时编译失败。Windows 通常缺 Rtools，macOS 缺 Xcode 命令行工具，看上面具体的编译报错。
+R|Rtools is required|warning|Windows 上编译源码包需要 Rtools。去 CRAN 下载对应 R 版本的 Rtools 安装。
+R|are masked|warning|后加载的包里有同名函数，把先前的遮住了。用 包名::函数名 明确调用。
+R|is already loaded, but|error|已加载的包版本太旧，不满足依赖要求。重启 R 会话后更新这个包。
+R|invalid model formula|error|模型公式写错了。检查变量名、交互项符号 * 和 : 的用法。
+R|variable lengths differ|error|公式里各变量的长度不一致，数据里有 NA 被丢掉了。先用 na.omit 清理数据再建模。
+R|has new levels|error|预测时出现了训练数据里没有的因子水平。合并前统一水平或用 xgboost 等能处理的模型。
+R|rank-deficient|warning|设计矩阵不满秩，有些系数不可估。常见于变量共线或样本太少，检查特征。
+R|NAs introduced by coercion|warning|转换时无法解析的值变成了 NA。检查数据里混入的文字、空格或特殊字符。
+R|is deprecated|warning|这个函数已被弃用。按提示改用新函数，未来版本会移除。
+R|cannot change working directory|error|工作目录不存在。检查 setwd() 的路径拼写，Windows 路径要用 / 或双反斜杠。
+R|invalid multibyte string|error|字符串里有损坏的多字节字符。文件编码不是 UTF-8，用 iconv 转换或指定 fileEncoding。
+R|attempt to apply non-function|error|把不是函数的东西当函数调用了。检查变量名是否覆盖了函数。
+R|incorrect number of dimensions|error|下标的维数和数组不匹配。对矩阵要用 [i, j] 两个下标，或先确认对象类型。
+R|do not match the length of object|error|dim 设置的总元素数和数据长度不一致。检查 dim() 乘积是否等于向量长度。
+R|number of items to replace is not a multiple of replacement length|warning|替换值的个数和被替换的位置数不成倍数，数据会循环填充。检查两边长度。
+R|NAs are not allowed in subscripted assignments|error|用 NA 当下标赋值不行。先处理 NA，或用 which(is.na(x)) 定位。
+R|is in use and will not be installed|warning|包正在被使用，无法覆盖安装。重启 R 会话（Ctrl+Shift+F10）再装。
+R|package or namespace load failed||.onLoad failed in loadNamespace|error|包加载失败。看具体原因：常见为依赖缺失、R 版本不匹配或缺系统库。
+R|not an exported object|error|这个函数不是包的公开接口。用 包名:::函数名 调内部函数，或找公开替代。
+R|invalid type.*for variable|error|公式里的变量类型不对，比如传了整个列表。检查数据框列的类型。
+R|contrasts can be applied only to factors with 2 or more levels|error|模型里的因子只有一个水平。检查分组变量是不是被误过滤成了单一取值。
+R|(non-NA) cases|error|有效样本太少，模型无法估计。检查 NA 的比例和样本量。
+R|wrong sign in 'by' argument|error|seq 的步进方向和起止范围矛盾，比如 seq(1, 10, by=-1)。检查 by 的正负号。
+R|NA/NaN argument|error|函数收到了 NA/NaN 参数。上游数据有缺失，先处理再计算。
+R|must specify uniquely valid columns|error|merge 的 by 参数写错了。确认两个表用于连接的列名都存在。
+R|cannot compute exact p-value with ties|warning|数据有重复值，精确检验算不了。结果仍可用，必要时改用近似方法。
+R|the standard deviation is zero|warning|数据没有波动，相关系数算不出来。检查这列是不是全是同一个值。
+R|missing values and NaN's not allowed if 'na.rm' is FALSE|error|数据里有 NA 但没开启剔除。加 na.rm=TRUE 或先清理缺失值。
+R|unable to access index for repository|warning|连不上 CRAN 镜像。换一个镜像源 options(repos=...) 或检查网络。
+R|cannot open URL|error|下载 URL 打不开。检查网络、代理和链接有效性。
+R|unable to load shared object|fatal|加载编译好的包组件失败。通常是系统库缺失或架构不匹配，看具体缺哪个 .dll/.so。
+R|no lines available in input|error|读到的文件是空的。检查文件路径和工作目录，确认文件有内容。
+Scala|type mismatch|error|类型不匹配。报错里有 found 和 required，对照修正变量类型或转换。
+Scala|not found: value||not found: type|error|这个值或类型找不到。检查拼写、import 是否写了，或包名是否正确。
+Scala|not found: object|error|找不到这个 object。检查包路径和依赖是否引入。
+Scala|ambiguous reference to overloaded definition|error|重载调用有歧义。显式指定参数类型帮助编译器选择。
+Scala|with alternatives|error|没有重载能匹配这次调用。报错列出了所有备选签名，对照检查参数。
+Scala|too many arguments for|error|参数传多了。对照方法签名减少参数。
+Scala|not enough arguments for|error|必填参数没传够。补全参数或给参数加默认值。
+Scala|missing parameter type|error|推不出这个参数的类型。给抽象类型、匿名函数参数显式标注类型。
+Scala|missing argument list|error|方法需要参数列表，可能漏了 ()，或想传方法本身要用 _ 转成函数。
+Scala|wrong number of|error|参数或类型参数的个数不对。对照定义检查 <> 和 () 里的数量。
+Scala|match may not be exhaustive|warning|match 没覆盖所有可能，运行时会抛 MatchError。补全 case 或加兜底分支。
+Scala|do not conform to|error|类型参数不满足上界约束。检查泛型实参是否符合 <: 声明。
+Scala|does not take parameters|error|这个东西不接受参数。检查是不是把无参方法当函数值用了。
+Scala|is not a member of|error|这个对象上没有该成员。检查拼写、import，或是不是访问了别的类型。
+Scala|object creation impossible||needs to be abstract|error|类没有实现继承要求的抽象成员，不能实例化。补全实现或声明为 abstract。
+Scala|needs `override' modifier||needs `override` modifier|error|重写父类成员必须加 override 关键字。
+Scala|cannot override final member|error|父类成员是 final 的，不能重写。
+Scala|is of incompatible type|error|重写方法的返回类型和父类不兼容。保持类型一致或协变。
+Scala|inherit from final|error|final 类不能被继承。去掉 final 或改用组合。
+Scala|illegal inheritance|error|继承关系不合法。比如 final/sealed 类、self-type 不满足等，看具体提示。
+Scala|inherits conflicting members|error|多个父 trait 有同名成员且没指定用哪个。用 override 或明确 super[T].method。
+Scala|could not find implicit value||No implicit view available||could not find given||no given instance|error|编译器找不到需要的隐式实例。检查 implicit 定义的作用域和类型签名是否匹配。
+Scala|diverging implicit expansion||ambiguous implicit values|error|隐式解析出错：要么无限递归，要么多个候选歧义。精简 implicit 定义并标注类型。
+Scala|pattern type is incompatible|error|case 的模式类型和匹配对象不兼容。检查类型拼写或添加运行时判断。
+Scala|None.get|fatal|对 None 调了 get，抛 NoSuchElementException。用 getOrElse、map 或模式匹配处理空值。
+Scala|head of empty list||tail of empty list||last of empty list|fatal|集合是空的还取了 head/tail。先判断 nonEmpty，或用 headOption。
+Scala|scala.MatchError|fatal|match 没有任何分支命中。编译期的非穷尽警告变成了运行时崩溃，补全 case。
+Scala|reassignment to val|error|val 是只读的，不能重新赋值。需要修改用 var。
+Scala|cyclic reference involving||illegal cyclic reference|error|定义互相引用形成了循环。检查类/对象之间的依赖顺序。
+Scala|double definition||is defined twice|error|同名成员重复定义了。删掉一个或重命名。
+Scala|after erasure|error|两个方法擦除泛型后签名相同，JVM 分不清。给其中一个方法改名或换参数类型。
+Scala|occurs in contravariant position|error|协变类型参数出现在了不允许的位置（比如方法参数）。调整型变标注或改用不变。
+Scala|expected but|fatal|语法错误，这个位置应该是提示里的符号。检查括号配对和缺的分号逗号。
+Scala|illegal start of simple expression||illegal start of definition|fatal|表达式起始位置不合法。常见于括号没配对、修饰符放错位置。
+Scala|`: _*' annotation||`: _* annotation|error|把序列展开传给变参方法要用 seq: _* 语法。检查展开写法。
+Scala|unexpected token|fatal|出现了不该出现的符号。检查括号配对和关键字拼写。
+Scala|unexpected char|fatal|代码里混入了非法字符，常见于中文标点或看不见的特殊符号。
+Scala|not allowed here|error|这个修饰符用在了不合法的位置。检查 open/implicit/lazy 等修饰符的适用范围。
+Scala|overrides nothing|error|标了 override 但父类里没有这个成员。删掉 override 或检查签名。
+Scala|needs result type|error|递归方法必须显式声明返回类型，编译器推不出来。给方法加上 : Type。
+Scala|does nothing in statement position|warning|这个表达式算了但没人用结果，比如单独一行 1 + 2。删除或赋值。
+Scala|discarded non-Unit value|warning|表达式有返回值却被丢弃了。想忽略用 val _ = 或确认没漏掉后续逻辑。
+Scala|expected class or object definition|fatal|这里需要类或对象定义。检查是否把语句写在了包级别，或少了 class/object 关键字。
+Scala|missing indentation|fatal|Scala 3 用缩进划分代码块。检查这一行的缩进层级是否正确。
+Scala|auto-application|warning|Scala 3 里无参方法不再自动加 ()。显式写上方法调用括号。
+Scala|TASTy file|error|TASTy 文件版本和编译器不兼容。依赖是用更老或更新的 Scala 编译的，统一版本。
+Scala|class file needed by|error|缺少依赖的 class 文件。检查依赖 jar 是否完整引入。
+Scala|missing dependency|error|编译需要某个类型但找不到。检查依赖版本和 classpath。
+Scala|bad symbolic reference|error|依赖是用不兼容的 Scala 版本编译的。统一项目和依赖的 Scala 版本。
+Scala|unresolved dependency|error|sbt 找不到这个依赖。检查坐标拼写和仓库配置，执行 sbt update。
+Scala|not a valid key||Not a valid command|error|sbt 不认识这个命令或设置键。检查拼写，或插件没有把该 key 引入。
+Scala|A problem occurred|error|构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。
+Scala|BUILD FAILED|error|构建失败。往上看 * What went wrong 部分，定位具体任务和原因。
+Scala|not found in root project|error|这个 task 不存在。gradlew tasks 查看可用任务，检查拼写和插件。
+Scala|Timeout waiting to lock|error|Gradle 的锁被别的进程占着。结束其他 gradle 进程，或删除 .gradle 里的锁文件。
+Scala|daemon disappeared unexpectedly|error|Gradle 守护进程被杀了，常见为内存不足。调大 org.gradle.jvmargs 或清理系统内存。
+Scala|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查 -Xmx 等内存参数是否超出机器可用内存，JAVA_HOME 是否正确。
+Scala|Could not reserve enough space for object heap|fatal|给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。
+Scala|given input columns|error|Spark SQL 找不到这个列。检查列名大小写，用 printSchema 看实际结构。
+Scala|Task not serializable|fatal|闭包引用了不可序列化的对象（常见是 outer class 或连接对象）。在算子内部创建连接，或把依赖提取为局部变量。
+Scala|Job aborted due to stage failure|fatal|某个 stage 失败导致整个 Job 放弃。看 caused by 里第一个真正的异常。
+Scala|exceeding memory limits|fatal|容器内存超限被 YARN 杀掉。调大 executor 内存或减少并行度。
+Scala|No configuration setting found for key|error|Typesafe Config 里没有这个配置项。检查 application.conf 的路径和键名。
+Scala|Broker may not be available|error|Kafka 连不上 broker。检查 bootstrap.servers、网络和安全协议配置。
+Scala|was not equal to|error|ScalaTest 断言失败。报错直接展示了期望值和实际值，对照排查。
+Scala|does not take type parameters|error|这个类型不接受泛型参数。检查 <> 的使用。
+Scala|unbound placeholder parameter|error|下划线占位符用在了推不出类型的位置。补全参数类型或改用具名参数。
+Scala|repeated modifier|error|同一个修饰符重复写了，或修饰符组合冲突。检查声明头部。
+Scala|AnalysisException|error|Spark SQL 分析阶段失败。看消息里的具体列/表名，检查 schema 和查询写法。
+Scala|ExecutorLostFailure|fatal|Spark executor 掉线了，常见为内存超限被 YARN 杀掉或节点故障。调大内存或开启重试。
+Scala|Cannot run program|error|启动外部进程失败。检查命令是否在 PATH 里、路径是否写对。
+Scala|NotSerializableException|fatal|对象没有实现 Serializable 却被发送/序列化了。实现接口，或把不可序列化的依赖移出闭包。
+Scala|KryoException|fatal|Kryo 序列化失败。注册对应的类，或检查字段是否可序列化。
+Scala|empty.reduceLeft|fatal|对空集合调用了 reduce。用 fold 提供初始值，或先判断非空。
+Lua|attempt to index|fatal|对 nil 做了下标访问。变量没初始化、函数没返回值，或字段名写错了，往上游找它为什么是 nil。
+Lua|attempt to concatenate|fatal|字符串拼接的操作数是 nil 或表。先 tostring() 转换，或检查变量为什么没值。
+Lua|attempt to call|fatal|把 nil 当函数调用了。函数名拼错、没 require 对应模块，或变量被覆盖成了 nil。
+Lua|attempt to perform arithmetic on|fatal|对不能做运算的值（nil、字符串、表）做了算术运算。先 tonumber() 转换或检查数据。
+Lua|attempt to compare|fatal|比较的两个值类型不匹配，比如 number 和 string。统一类型再比较，注意 Lua 不自动转换。
+Lua|bad argument #|fatal|调用内置函数时参数不对，报错里写了期望的类型和实际收到的。检查参数个数和类型。
+Lua|wrong number of arguments|fatal|标准库函数的参数个数不对，比如 table.insert。对照文档检查参数。
+Lua|table index is nil|fatal|用 nil 当表的键。Lua 不允许，键必须是 number/string/table 等。
+Lua|table index is NaN|fatal|用 NaN 当表的键。NaN 是无效键，检查数值计算哪里产生了 NaN。
+Lua|invalid order function for sorting|fatal|table.sort 的比较函数不满足严格弱序，比如对相等元素返回 true。改比较逻辑或加并列判断。
+Lua|in table for 'concat'|fatal|table.concat 的表里有 number/string 以外的元素。过滤或先转换类型。
+Lua|too many results to unpack|fatal|unpack 的结果超出了能处理的范围。限制表大小或手动取需要的值。
+Lua|unexpected symbol near||unexpected number near|fatal|语法错误，这个位置不该有这个符号。检查缺逗号、缺括号或关键字拼写。
+Lua|expected near||<eof>||expected (to close|fatal|这里缺少提示的符号，或代码到结尾还没写完。检查括号、end 是否配对。
+Lua|unfinished string|fatal|字符串引号没闭合。检查字符串结尾，或字符串里有未转义的引号。
+Lua|malformed number|fatal|数字字面量写错了。检查小数点、指数格式或混入了非法字符。
+Lua|invalid escape sequence||decimal escape too large|fatal|字符串转义序列不对。检查反斜杠后面的字符是否是合法转义。
+Lua|ambiguous syntax|fatal|这行代码既像函数调用又像新语句，Lua 分不清。给函数调用加括号或分号。
+Lua|too many local variables||too many registers||too many syntax levels||too many upvalues|fatal|函数里的局部变量/嵌套层级超过 Lua 上限。拆分函数或用表存变量。
+Lua|module '.*' not found||error loading module|fatal|require 找不到这个模块。检查模块名拼写和 package.path/cpath 配置，文件是否真的存在。
+Lua|loop or previous error loading module|fatal|模块互相 require 形成循环，或上次加载出错了。把公共逻辑抽到独立模块。
+Lua|not enough memory|fatal|Lua 内存耗尽。检查是否有大表没有释放、死循环累积数据。
+Lua|C stack overflow|fatal|C 栈溢出，通常是元方法递归触发（比如 __index 指向自己）。检查元方法逻辑。
+Lua|stack overflow|fatal|Lua 栈溢出。递归没有终止条件，检查递归出口。
+Lua|dead coroutine|fatal|协程已经运行结束，不能再 resume。检查协程的生命周期管理。
+Lua|non-suspended coroutine|fatal|协程正在运行或已挂起别的状态，不能 resume。检查协程调度逻辑。
+Lua|attempt to yield across a C-call boundary|fatal|在 C 函数调用的栈帧里 yield 不行。把 yield 挪到纯 Lua 栈层，或用协程包装。
+Lua|assign to const variable|fatal|给 <const> 常量赋值了。去掉 const 或去掉赋值。
+Lua|attempt to perform 'n%0'||attempt to perform 'n//0'|fatal|对 0 取模。检查除数是不是变量计算成了 0。
+Lua|number has no integer representation|fatal|这个数字不是整数却被要求整数，比如 math.floor 之外的位置。先取整再传入。
+Lua|error in error handling|fatal|错误处理流程里又抛了错。检查 error/pcall 的嵌套逻辑。
+Lua|jumps into the scope|fatal|goto 跳进了局部变量的作用域里，不允许。调整标签位置。
+Lua|no visible label|fatal|goto 的标签不存在或不在可见范围内。检查标签拼写和作用域。
+Lua|break outside a loop|fatal|break 必须在循环里使用。检查代码块结构。
+Lua|to 'format'|fatal|string.format 的格式符不对。检查 %d/%s 等占位符和参数是否对应。
+Lua|malformed pattern|fatal|Lua 模式匹配串写错了。检查括号、% 转义是否配对完整。
+Lua|invalid capture index||unfinished capture|fatal|模式里的捕获组下标越界或没写完。检查 %1 引用和捕获括号。
+Lua|invalid key to 'next'|fatal|遍历时修改了表的键结构。先收集要删的键，遍历完再处理。
+Lua|'for' step is zero|fatal|数字 for 的步长是 0，会死循环。检查步长计算。
+Lua|'for' initial value must be a number||'for' limit must be a number|fatal|for 的起点/终点必须是数字。检查变量是不是 nil 或字符串。
+Lua|attempt to use a closed file||file is already closed|fatal|文件已 close 还在读写。检查文件句柄的生命周期。
+Lua|attempt to modify a readonly table|fatal|环境表/元表被设为只读，不能修改。检查 setfenv/_ENV 的保护逻辑。
+Lua|cannot change a protected metatable|fatal|这个表的元表被 __metatable 保护了，不能 setmetatable。
+Lua|function arguments expected|fatal|函数调用语法不完整。检查是否漏了括号和参数。
+Lua|attempt to get length of|fatal|对 nil/布尔等取长度。先确认变量是字符串或表。
+Lua|attempt to perform bitwise|fatal|对非整数做了位运算。先用 math.type 确认是整数，必要时取整。
+Lua|no literal representation|fatal|这个值没有字面量表示，不能按 %s 输出。用 tostring 转换或改用合适的格式符。
+Lua|No results matching query|error|luarocks 上找不到这个包。检查包名拼写，或搜索确认包是否存在。
+Lua|Error executing lua|fatal|Neovim 执行 Lua 脚本出错。往上看具体的 lua 错误行定位。
+Perl|Bareword|fatal|裸词不被允许，通常是字符串忘了加引号，或开启了 strict 后引用未声明的词。
+Perl|requires explicit package name|fatal|use strict 下变量必须先用 my/our 声明。给变量加 my，或检查是不是漏了 $ @ % 符号。
+Perl|Can't locate object method|fatal|调用对象上不存在的方法。检查方法名拼写，类是否已 use，或版本里有没有这个方法。
+Perl|in @INC|fatal|在 @INC 里找不到模块。检查模块名大小写（文件名必须一致）、包是否安装、lib 路径。
+Perl|Undefined subroutine|fatal|调用了不存在的函数。检查函数名拼写，或模块有没有导出这个函数。
+Perl|on an undefined value|fatal|对 undef 调用方法。上游返回了 undef（比如查询没结果），先 defined 判断再调用。
+Perl|on unblessed reference|fatal|对普通引用调方法，它不是对象。检查是不是忘了 bless，或对象构造出错。
+Perl|Not a CODE reference|fatal|把非代码引用当函数调用。检查 & 引用或回调变量。
+Perl|Not a.*reference||use an undefined value as an|fatal|解引用类型不对：把标量/未定义值当数组或哈希解引用了。检查变量类型和引用层级。
+Perl|Illegal division by zero|fatal|除以零。做除法前检查除数。
+Perl|Illegal modulus zero|fatal|对 0 取模。检查除数。
+Perl|Modification of a read-only value|fatal|试图修改只读值，常见于想改字面量或只读参数。先复制到变量再改。
+Perl|syntax error at|fatal|语法错误。看指向的行号，常见为漏分号、括号引号不配对。
+Perl|Missing right curly or square bracket|fatal|花括号/方括号没有闭合。配对检查整个文件。
+Perl|runaway multi-line|fatal|多行字符串没有结尾，可能是引号没闭合或忘了结束分隔符。
+Perl|found where operator expected|fatal|字符串或数字出现在需要运算符的位置。常见为字符串没加引号，或漏了运算符。
+Perl|pattern not terminated||Substitution replacement not terminated|fatal|正则/替换表达式的定界符没闭合。检查 / / 或 s/// 的完整配对。
+Perl|Can't find string terminator|fatal|heredoc 的结束标记没找到。检查 <<EOF 的结束行是否顶格写且拼写一致。
+Perl|Possible attempt to separate words with commas|warning|qw() 里不该有逗号。qw 按空白分词，去掉逗号。
+Perl|used only once: possible typo|warning|变量只出现一次，多半是拼写错误。检查 $ 符号和名字是否一致。
+Perl|Use of uninitialized value|warning|用了未初始化的变量。上游可能返回了 undef，用 // '' 或 defined 判断兜底。
+Perl|substr outside of string|warning|substr 的偏移超出字符串范围。检查长度计算。
+Perl|Deep recursion on subroutine|warning|递归深度超过 100 层。可能是数据太大或缺少终止条件，检查递归逻辑。
+Perl|Odd number of elements|warning|哈希赋值的键值个数是奇数。检查数组里是不是有 undef 或漏了元素。
+Perl|Useless use of|warning|表达式的结果没有被使用，比如单独一行 $a + $b。删除或赋值。
+Perl|isn't numeric|warning|字符串当数字用了，内容不是数字。检查数据来源，必要时校验格式。
+Perl|Invalid conversion in|warning|printf/sprintf 的格式符不对。检查 %d/%s 与参数类型。
+Perl|No such file or directory.* at |fatal|文件或目录不存在。open 失败时 $! 里就是它，检查路径拼写。
+Perl|Base class package .* is empty||Base class package|fatal|use base/parent 指定的父类没加载成功。检查父类模块是否安装。
+Perl|is experimental|warning|用到了实验性特性，未来可能变化。生产代码避免使用，或显式 no warnings。
+Perl|Prototype mismatch|warning|函数原型和之前的定义不一致。统一原型声明。
+Perl|Not enough arguments for||Too many arguments for|fatal|函数原型要求的参数个数和调用不符。检查调用处参数个数。
+Perl|length() used on|warning|对数组用 length()，应该用 scalar(@array)。检查函数选择。
+Perl|Maybe you should just omit the defined|fatal|defined(@array) 是旧写法已移除。判断空数组直接用 @array 或 scalar(@array)。
+Perl|Can't modify constant item|fatal|给常量赋值。检查是不是漏了 my 声明，或变量名写成了字面量。
+Perl|Can't return outside a subroutine|fatal|return 只能在函数内使用。检查代码块结构。
+Perl|with n > m in regex|fatal|正则的量词 {n,m} 里 n 比 m 大。交换或修正量词。
+Perl|Unmatched ( in regex||Unmatched [ in regex|fatal|正则的括号没闭合。检查 ( 和 [ 的配对，需要字面括号时转义。
+Perl|didn't return a numeric value|warning|sort 的比较函数没返回 -1/0/1。检查 <=> 写法，别用 cmp 比数字。
+Perl|Attempt to reload|fatal|模块被重复加载且两次内容不同。检查是否同名模块出现在多个路径。
+Perl|Compilation failed in require||compilation aborted|fatal|被 require 的模块自己编译失败了。往上找模块内部的具体语法/运行错误。
+Perl|Subroutine .* redefined|warning|函数被重复定义，后者覆盖前者。检查是否重复 use 或 require 了同文件。
+Perl|Wide character in|warning|输出含宽字符但输出流不是 UTF-8。加 binmode(STDOUT, ':utf8') 或统一编码层。
+Perl|Malformed UTF-8|warning|字节序列不是合法 UTF-8。检查文件编码，输入时用 Encode 解码。
+Perl|DBI connect|fatal|数据库连接失败。看具体 driver 的错误：账号密码、主机端口或网络问题。
+Perl|execute failed|fatal|SQL 执行失败。检查 SQL 语法、参数绑定和数据内容。
+Perl|install_driver|fatal|找不到 DBD 驱动模块。安装对应的 DBD::xxx 包。
+Perl|closed filehandle|warning|文件句柄已关闭还在读写。检查 close 的时机和句柄作用域。
+Perl|malformed JSON string|fatal|JSON 解析失败。内容可能不是合法 JSON，打印原文检查。
+Perl|Died at|fatal|脚本调用了 die 但没给消息。检查调用栈上哪个环节抛出了异常。
+Perl|glob failed|warning|外部 glob 命令执行失败。检查 shell 环境和通配符。
+Perl|Insecure dependency|fatal|Taint 模式下使用了未清洗的外部输入。对数据做正则提取后再使用。
+Perl|A thread exited while|warning|有线程还在运行主线程就结束了。join 所有线程再退出。
+Perl|panic:|fatal|Perl 内部错误。通常是 XS 模块或核心 bug，尝试复现最小用例并上报。
+Perl|Illegal seek|warning|对流式句柄做 seek，比如管道。管道只能顺序读。
+Perl|The experimental postfix dereference|warning|后置解引用还是实验特性。避免使用或接受警告。
+Perl|Smartmatch is experimental|warning|智能匹配行为不稳定。改用显式比较。
+Perl|Can't take log of|fatal|对负数或 0 取对数。检查输入值范围。
+Perl|Range iterator outside integer range|fatal|范围超出整数上限。数据太大，换算法或分批。
+Perl|Can't modify non-lvalue subroutine call|fatal|函数调用结果不能作为左值。先取出到变量再修改。
+Perl|Out of memory!|fatal|Perl 内存耗尽。检查是否有超大结构或死循环累积数据。
+Perl|exited with status|warning|外部命令以非 0 状态退出。检查子进程自己的输出和返回码。
+Perl|Broken pipe|warning|下游已经关闭还在往管道写。检查接收方的生命周期。
+Perl|Alarm clock|warning|alarm 定时器到点触发了 SIGALRM。检查超时逻辑，必要时重新设置。
+Perl|chdir: |warning|切换目录失败。检查路径是否存在。
+Perl|did not return a true value|fatal|模块最后一行没返回真值。确认文件末尾有 1;
+Perl|Character in 'C' column wrapped|warning|字节操作遇上了宽字符，可能截断 UTF-8。先解码再处理字符。
+Perl|does not map to Unicode|warning|字节序列映射不到 Unicode 字符。检查编码是否声明正确。
+Perl|Character in 'C' column|warning|对 UTF-8 字符串按字节操作会出错。先 decode 成字符再 substr。
+Perl|Can't modify glob|fatal|给文件句柄类型团赋值的方式不对。用 open 或词法句柄。
+Perl|Unmatched ( in regex; marked|fatal|正则里的左括号没有对应的右括号。检查分组配对。
+Perl|is a directory|warning|把目录当文件打开了。检查路径最后是不是文件。
+Objective-C|unrecognized selector sent to|fatal|调用了对象不存在的方法（ObjC 运行时崩溃）。检查 selector 拼写、对象实际类型和 target-action 签名。
+Objective-C|Terminating app due to uncaught exception|fatal|未捕获的 NSException 导致崩溃。看括号里的异常类型和 reason 定位。
+Objective-C|key value coding-compliant for the key|fatal|这个类没有报错里说的属性。Storyboard/XIB 的 Outlet 连接断了或指向了已删除的属性，断开重连。
+Objective-C|Could not load NIB in bundle|fatal|XIB/NIB 加载失败。检查文件名拼写和是否加进了 target。
+Objective-C|Unknown class .* in Interface Builder file|error|Interface Builder 里指定的类在运行时找不到。检查类名拼写和模块（Module）字段是否为空。
+Objective-C|No visible @interface for|error|编译器认为该对象上没有这个方法。检查方法声明、类名拼写和 import。
+Objective-C|Property '.*' not found on object|error|对象上没有这个属性。检查属性声明和头文件 import。
+Objective-C|Method definition for|warning|声明了协议方法但没有实现。补上实现，否则运行时 unrecognized selector。
+Objective-C|not available in automatic reference counting mode|fatal|ARC 下不能手动 retain/release/dealloc。删掉这些调用，用弱引用管理生命周期。
+Objective-C|ARC forbids|fatal|ARC 禁止这个内存管理操作。改用 ARC 的方式（weak/strong）管理引用。
+Objective-C|requires a bridging cast|fatal|Objective-C 对象和 C 指针之间转换需要 __bridge 等桥接。按所有权选择 __bridge/__bridge_retained。
+Objective-C|Library not loaded||Symbol not found|fatal|动态库加载失败。检查 Embedded Binaries、@rpath 设置和 Frameworks 是否完整。
+Objective-C|was mutated while being enumerated|fatal|遍历集合时又修改了它。用 copy 遍历副本，或先收集再修改。
+Objective-C|beyond bounds|fatal|数组下标越界。报错里有索引和数组大小，检查索引来源（常见于空的 table 数据源）。
+Objective-C|object cannot be nil||insert nil object from|fatal|往 NSArray/NSDictionary 里插入了 nil，容器不允许 nil。插入前判空。
+Objective-C|The model used to open the store is incompatible|fatal|Core Data 模型文件改了但旧数据还在。做轻量迁移或删除旧存储。
+Objective-C|The Internet connection appears to be offline|error|设备没有网络连接。检查网络状态，必要时给出离线提示。
+Objective-C|specified hostname could not be found||The request timed out|error|域名解析不了或请求超时。检查接口地址、网络权限（NSAppTransportSecurity）。
+Objective-C|deallocated while key value observers were still registered|fatal|对象释放时还有 KVO 观察者没移除。在 dealloc 里移除观察者。
+Objective-C|Unable to simultaneously satisfy constraints||will attempt to recover by breaking constraint|error|自动布局约束互相矛盾。看日志里列出的约束，删掉或降低优先级。
+Objective-C|whose view is not in the window view hierarchy|fatal|在视图还没上屏时做了 present 等操作。放到 viewDidAppear 或等窗口就绪后再调用。
+Objective-C|unable to dequeue a cell with identifier|fatal|dequeueReusableCellWithIdentifier 找不到这个标识。先 registerNib/registerClass，或检查 identifier 拼写。
+Objective-C|has no segue with identifier|fatal|Storyboard 里没有这个标识的 segue。检查连线是否存在、identifier 是否一致。
+Objective-C|could not instantiate|fatal|无法实例化 storyboard 里的类。检查类名和 Module 设置是否正确。
+Objective-C|message sent to deallocated instance|fatal|向已释放的对象发消息（僵尸对象）。开启 Zombies 检测，检查引用计数和弱引用。
+Objective-C|Cannot find protocol declaration|error|找不到协议声明。import 协议所在的头文件，或检查协议名拼写。
+Objective-C|Cannot find interface declaration|error|找不到类声明。检查 @class 前向声明和 import。
+Objective-C|NSInternalInconsistencyException|fatal|内部状态不一致导致的异常，常见于 NSAssert 失败。看 reason 里的断言信息。
+Objective-C|Invalid parameter not satisfying|fatal|NSParameterAssert 检查的参数不满足条件。看断言表达式，检查为什么参数不合法。
+Objective-C|App Transport Security has blocked|error|iOS 禁止明文 HTTP 请求。改用 HTTPS，或在 Info.plist 配置例外域。
+Objective-C|does not contain bitcode|fatal|三方库没带 bitcode。让库方提供，或把工程和 target 的 Enable Bitcode 关掉。
+Objective-C|Could not build module||Module '.*' not found|fatal|模块编译/导入失败。检查 pod install、framework search path 和头文件循环引用。
+Objective-C|No known class method for selector|error|类上没有这个类方法（+ 方法）。检查方法声明是否是实例方法（-），或拼写。
+Objective-C|not found (return type defaults|error|实例方法找不到，编译器默认按 id 返回。检查方法声明和对象类型。
+Objective-C|NSRangeException|fatal|越界访问的运行时异常。看 reason 里的索引和长度。
+Objective-C|Invalid update.*invalid number|fatal|UITableView 增删行前后数量对不上。保持数据源和 numberOfRowsInSection 一致，增删要配套 begin/endUpdates。
+Objective-C|NSURLErrorDomain Code=-1009|error|设备无网络连接（-1009）。检查网络状态并给出离线提示。
+Objective-C|pointer being freed was not allocated|fatal|释放了没分配或已释放的内存。检查 malloc/free 配对和重复释放。
+Objective-C|with no pool in place|warning|没有 autorelease pool 却有自动释放对象。在子线程入口包 @autoreleasepool。
+Objective-C|failed to import bridging header|fatal|桥接头文件导入失败。检查路径设置和头文件里的编译错误。
+Objective-C|first deprecated in iOS|warning|这个 API 从某版本起已弃用。按提示换用新接口。
+Objective-C|must be of object type|error|strong/retain 属性只能是对象类型。改用 assign 或换类型。
+Objective-C|Incompatible block pointer types|error|block 的签名和声明不匹配。检查参数和返回类型。
+Objective-C|duplicate symbol _OBJC_CLASS|fatal|同一个类被编译进了两个目标文件。检查同名 .m 文件是否重复加入 target。
+Objective-C|building for iOS Simulator, but linking in object file built for|fatal|库不支持模拟器架构。用支持 arm64/x86_64 模拟器的库版本，或用真机构建。
+Objective-C|Framework not found|fatal|找不到链接的框架。重新 pod install，检查 Frameworks 和 Search Paths。
+Objective-C|Assertion failure in|fatal|UIKit 内部断言失败。看括号里的方法名，常见于在非主线程更新 UI 或 cell 复用错误。
+Objective-C|expected to have a root view controller|fatal|启动后 UIWindow 没有设置 rootViewController。在 AppDelegate/SceneDelegate 里赋值。
+Objective-C|The operation couldn't be completed|error|Cocoa 操作失败。看 Error Domain 和 Code 定位具体原因。
+Julia|UndefVarError|error|这个变量/函数没定义。检查拼写和作用域，确认所在模块已 using/import。
+Julia|no method matching|error|没有匹配参数类型的方法。Julia 按类型分派，报错里列了实际参数类型，对照修正。
+Julia|are not callable|error|这个类型的对象不能当函数调用。检查是不是把值当函数用了。
+Julia|ArgumentError|error|参数不合法。看具体消息里的值和约束。
+Julia|errors were found at the given arguments|error|参数校验失败，报错列出了每个不符的参数。对照修正类型或取值。
+Julia|BoundsError||attempt to access|error|数组越界。Julia 索引从 1 开始，报错里有索引和数组大小。
+Julia|InexactError|error|无法精确转换，比如把 1.5 转成 Int。先 round/floor 或确认数据是整数。
+Julia|DomainError|error|参数超出函数定义域，比如对负数开方。检查输入范围。
+Julia|DivideError|error|整数除以零。除法前检查除数。
+Julia|DimensionMismatch|error|维度对不上。检查 size，必要时 reshape。
+Julia|used in boolean context|error|条件里出现了非布尔值（比如 missing）。先处理缺失值或用 coalesce。
+Julia|unsupported keyword argument|error|函数没有这个关键字参数。检查参数名拼写和版本。
+Julia|UndefKeywordError|error|必填的关键字参数没传。补上这个 kwarg。
+Julia|KeyError: key|error|字典里没有这个键。用 get(dict, key, 默认值) 或先 haskey 判断。
+Julia|immutable struct of type|error|不可变结构体的字段不能修改。声明成 mutable struct 或重建对象。
+Julia|has no field|error|这个类型没有该字段。检查字段名和类型定义。
+Julia|redefinition of constant|error|const 常量不能重新定义。重启会话或换变量名。
+Julia|invalid assignment location|error|赋值左边不是合法的变量位置。检查表达式结构。
+Julia|ParseError|fatal|解析失败。看报错的行列号，检查括号配对和关键字。
+Julia|syntax: |fatal|语法错误。报错直接说明了问题，比如 unexpected = 或缺少 end。
+Julia|incomplete: premature end of input|fatal|代码到结尾还没闭合，缺 end 或右括号。配对检查。
+Julia|StringIndexError|error|下标落在多字节 UTF-8 字符中间。用 firstindex/lastindex 或 prevind 调整。
+Julia|not found in current path||not found in registry|error|找不到这个包。用 Pkg.add 加包名 安装，或检查激活的环境是否正确。
+Julia|Error during precompilation|error|包预编译失败。看 caused by 里的具体错误，多数是依赖或 Julia 版本问题。
+Julia|Unsatisfiable requirements|error|依赖版本无法同时满足。Pkg.resolve 或放宽版本约束。
+Julia|was not instantiated|error|当前环境还没安装依赖。在项目目录运行 julia --project=. 后 Pkg.instantiate()。
+Julia|running in world age|error|在编译之后才定义的方法不可见。重启会话，或避免在运行中修改已调用的函数。
+Julia|could not load library|error|动态库加载失败。检查库是否安装、路径是否在 ENV 里。
+Julia|SystemError: opening|error|系统调用失败，多为文件打不开。检查路径和权限。
+Julia|failed process|error|外部命令执行失败。看 exit code 和命令输出定位。
+Julia|reducing over an empty collection|error|对空集合做 reduce。用 fold 提供初始值或先判断 isempty。
+Julia|InterruptException|warning|你按 Ctrl+C 中断了执行，不是代码错误。
+Julia|Erlang error:|error|底层 C/Erlang 库抛出的错误。看消息定位到具体库调用。
+Julia|Test Failed|error|单元测试断言失败。看表达式两侧的期望值和实际值。
+Julia|cannot serialize|error|对象无法序列化传输（多为分布式/worker 场景）。检查类型定义是否对 worker 可见。
+Julia|UnicodeError|error|Unicode 处理出错。检查字符编码和索引。
+Julia|MethodError: write|error|写入类型不支持。检查流的类型和内容。
+Julia|LoadError:|error|脚本在加载阶段就抛了异常。看 caused by 定位第一处错误。
+Julia|in expression starting at|error|异常从这个文件行开始。往 caused by 链上找根本原因。
+Julia|to a common size|error|数组广播尺寸对不上。检查各数组的 size，必要时 reshape。
+Julia|no method matching convert|error|没定义这个转换。自己写 Base.convert(::Type{T}, x) 方法或改用解析函数。
+Julia|no method matching getindex|error|这个类型不支持该下标访问。检查索引类型和维度。
+Julia|no method matching setindex!|error|这个类型不支持赋值下标操作。检查是否为不可变类型。
+Julia|tried to get element|error|迭代器在 collect 时提前结束或越界。检查迭代器实现。
+Groovy|No signature of method||MissingMethodException|fatal|找不到参数匹配的方法。报错列出了候选签名，检查方法名拼写和参数类型个数。
+Groovy|No such property||No such field||MissingPropertyException|fatal|类上没有这个属性。检查属性名拼写，Groovy 属性访问等价于 getter。
+Groovy|read-only property||ReadOnlyPropertyException|fatal|该属性只读。补 setter 或改用可写属性。
+Groovy|GroovyCastException|fatal|对象无法 as 成目标类型。检查两边的类型兼容性。
+Groovy|matching constructor|fatal|找不到匹配的构造函数。检查参数个数和类型。
+Groovy|unable to resolve class|fatal|找不到这个类。检查 import、依赖 jar 和类名拼写。
+Groovy|expecting '}'||expecting EOF|fatal|语法错误，缺少提示的符号。检查花括号配对和字符串闭合。
+Groovy|unexpected token||unexpected char|fatal|出现了不该出现的符号。常见于中文标点、缺逗号或关键字误用。
+Groovy|MultipleCompilationErrorsException||during semantic analysis||during conversion|fatal|编译发现多处错误。看日志逐条修复，通常第一条会引发后面的错误。
+Groovy|illegal string body character after dollar sign|fatal|GString 里的 $ 后面要跟表达式或 { }。想输出字面 $ 用 \\ 转义。
+Groovy|A problem occurred|error|构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。
+Groovy|BUILD FAILED|error|构建失败。往上看 * What went wrong 部分定位任务和原因。
+Groovy|not found in root project|error|这个 task 不存在。gradlew tasks 查看可用任务列表。
+Groovy|Timeout waiting to lock|error|Gradle 锁被占用。结束其他 gradle 进程或删除锁文件。
+Groovy|daemon disappeared unexpectedly|error|Gradle 守护进程被杀，常见为内存不足。调大 org.gradle.jvmargs。
+Groovy|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查内存参数和 JAVA_HOME。
+Groovy|Could not reserve enough space for object heap|fatal|堆内存超过系统可用上限，调小 -Xmx。
+Groovy|NotSerializableException||Task not serializable|fatal|对象不可序列化。实现 Serializable，或把不可序列化依赖移出闭包。
+Groovy|Cannot run program|error|启动外部进程失败。检查命令是否在 PATH 里。
+Groovy|AnalysisException|error|Spark SQL 分析失败。看具体列/表名，检查 schema。
+Groovy|Broker may not be available|error|Kafka 连不上 broker。检查 bootstrap.servers 和网络。
+Groovy|No configuration setting found for key|error|Typesafe Config 缺少配置项。检查 application.conf 路径和键名。
+Groovy|was not equal to|error|Spock/断言失败，期望值与实际值不符。对照输出排查。
+Groovy|Cannot invoke method|fatal|对 null 对象调方法。上游返回了 null，先判空再用。
+Groovy|Cannot get property||Cannot set property|fatal|在 null 上取/设属性。检查对象为什么是 null。
+Groovy|Ambiguous method overloading|fatal|重载调用有歧义。显式转换参数类型帮助选择。
+Groovy|BUG! exception in phase|fatal|Groovy 编译器内部错误。简化触发代码，或升级 Groovy/Gradle 版本。
+Groovy|grabbing Grapes|fatal|@Grab 下载依赖失败。检查仓库地址、网络和依赖坐标。
+Groovy|Could not determine java version|error|Gradle 识别不了 Java 版本。检查 JAVA_HOME 和 gradle wrapper 版本。
+Groovy|Minimum supported Gradle version|error|当前 Gradle 版本太旧。升级 gradle wrapper 版本。
+Groovy|Could not GET||Could not HEAD|error|Gradle 下载依赖/插件失败。检查网络、代理和仓库地址。
+Groovy|as a task with that name already exists|error|重名 task。换个名字，或先检查已有 task。
+Groovy|Could not create service of type|error|Gradle 内部服务创建失败。清理 .gradle 缓存重试。
+Groovy|generic class cache|error|Gradle 的类缓存损坏。删除 .gradle/caches 后重试。
+Groovy|malformed \uxxxx encoding|error|gradle.properties 里的 unicode 转义写错了。检查编码属性值。
+Groovy|Could not install Gradle distribution||Could not download Gradle distribution|error|Gradle 发行版下载失败。检查网络和 distributionUrl，可配置镜像。
+Groovy|Expected a step|fatal|Jenkinsfile 语法错误，这一行应该是 pipeline step。检查缩进和指令位置。
+Elixir|no match of right hand side value|fatal|模式匹配失败：= 右边的值和左边的模式对不上。检查数据结构是否和预期一致。
+Elixir|no function clause matching||no case clause matching||CaseClauseError||FunctionClauseError|fatal|没有函数/case 子句能匹配这些参数。检查子句的模式和守卫是否覆盖了这个输入。
+Elixir|UndefinedFunctionError||is undefined or private||function .* is undefined|fatal|函数没定义或是私有的。检查模块名、函数名和参数个数（如 x/2），确认模块已编译。
+Elixir|key :.* not found||KeyError||(KeyError) key|fatal|Map/Keyword 里没有这个键。用 Map.get/  Access.get 提供默认值，或先 has_key? 判断。
+Elixir|errors were found at the given arguments||ArgumentError|fatal|参数不合法。报错列出了每个参数的期望类型和实际值，对照修正。
+Elixir|protocol.*not implemented|fatal|协议没有为这个类型实现。写 defimpl，或检查数据是不是预期的类型。
+Elixir|syntax error before||TokenMissingError||SyntaxError|fatal|语法错误。常见为缺 end、缺逗号、缺括号，看 before/after 指出的 token。
+Elixir|variable ".*" is unused|warning|变量绑定了但没用。重命名为 _x 表示有意忽略，或补上使用。
+Elixir|alias is unused|warning|alias 没有被使用。删除这条 alias。
+Elixir|immutable struct||cannot be modified after creation|fatal|Elixir 的结构体不可变。用 %{struct / field: 新值} 的更新语法创建新结构体。
+Elixir|is not available (module||module .* is not available|fatal|模块不存在或没编译。确认文件在正确的目录、模块名与路径一致，重新 mix compile。
+Elixir|could not compile dependency|fatal|依赖编译失败。往上看依赖内部的具体报错。
+Elixir|dependency is not available|fatal|依赖没拉取。运行 mix deps.get。
+Elixir|Dependencies have diverged|error|依赖版本冲突。按 mix 提示用 override 或统一版本约束。
+Elixir|lock file is out of sync||the lock file is outdated|error|mix.lock 和 mix.exs 不同步。运行 mix deps.get 更新锁文件。
+Elixir|No package with name|error|Hex 上没有这个包。检查包名拼写和是否已发布。
+Elixir|GenServer.*terminating|fatal|GenServer 异常终止。看最后的 call/backtrace 和 caused by 定位回调里的错误。
+Elixir|the process is not alive||noproc|fatal|目标进程已经不存在。检查进程的生命周期和注册名。
+Elixir|exited in: GenServer.call|fatal|GenServer.call 超时。服务端阻塞或没回复，检查 handle_call 是否返回，或调大超时。
+Elixir|DBConnection.ConnectionError|error|数据库连接异常。常见为连接池耗尽或超时，检查连接数和查询耗时。
+Elixir|has no primary key|fatal|schema 没有主键。Ecto 增删改需要主键，在 schema 里声明。
+Elixir|constraint error when attempting|fatal|数据库约束冲突（唯一键/外键）。用 changeset 的 unique_constraint 声明并处理。
+Elixir|Jason.DecodeError|fatal|JSON 解析失败。响应可能不是合法 JSON，打印原始内容检查。
+Elixir|Erlang error:|error|底层 Erlang/OTP 抛出的错误。看具体消息定位到调用。
+Elixir|File.Error|error|文件操作失败。检查路径、权限和文件是否存在。
+Elixir|bad argument in arithmetic|fatal|对非数字做了算术运算。检查变量类型，必要时转换。
+Elixir|bad boolean expression|fatal|守卫表达式不合法。守卫只能用受限的函数集合。
+Elixir|undefined variable|fatal|变量未定义。注意 Elixir 里未绑定变量会被当成零参函数调用。
+Elixir|is not a function|fatal|把非函数的值当函数调用了。检查变量绑定和捕获语法 &。
+Elixir|expected a map, got|fatal|更新语法 %{} 要求操作数是 map。检查变量实际类型。
+Elixir|is not a struct|fatal|更新结构体语法要求左边是 struct。检查变量和 defstruct。
+Elixir|wrong number of arguments.*expected|fatal|函数参数个数不对。对照定义检查（注意 Elixir 函数名带元数，如 x/2）。
+Elixir|guard test|fatal|守卫条件在运行时抛错。检查守卫里的函数和参数类型。
+Elixir|connection not available and request was queued|error|连接池耗尽。检查 DBConnection 池大小和慢查询。
+Elixir|view module.*not implemented||could not render|fatal|视图函数没实现或渲染失败。检查 view 模块名和模板文件是否对应。
+Elixir|expected at least one result but got none|fatal|Repo.get!/one! 没查到记录。改用 get/one 的安全版本或先判断空。
+Elixir|failures, |error|有测试用例失败。看 ExUnit 输出里每个失败的断言和期望值。
+Elixir|no function clause returning|fatal|函数子句遍历完没命中。补充兜底子句或修正参数。
+Elixir|Plug.Conn.WrapperError|fatal|Plug 处理过程中抛出的异常。看 caused by 的根因。
+Elixir|this clause cannot match|warning|编译器警告：这个子句永远匹配不上。检查子句顺序和模式。
+Elixir|is deprecated. Use|warning|用了废弃的 API。按提示迁移到新函数。
+Git|fatal: not a git repository||not a git repository|fatal|当前目录不是 git 仓库。cd 到项目根目录，或先 git init。
+Git|! [rejected]||fetch first|error|远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。
+Git|non-fast-forward|error|推送会覆盖远端历史被拒绝。先合并远端改动，确认无误再推。
+Git|Your local changes to the following files would be overwritten|error|本地有未提交修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。
+Git|You are not currently on a branch|error|处于 detached HEAD 状态。git switch -c 新分支 保存改动，或 checkout 回分支。
+Git|not fully merged|error|分支还有未合并的提交，删除被拒。确认后加 -D 强删，或先合并。
+Git|does not appear to be a git repository||Could not read from remote repository||Please make sure you have the correct access rights|fatal|连不上远端仓库。检查 remote 地址、SSH key 权限和仓库是否存在。
+Git|Authentication failed for|fatal|HTTPS 认证失败。检查账号密码/令牌，GitHub 已不支持密码，要用 Personal Access Token。
+Git|unable to access||server certificate verification failed|fatal|访问远端失败。看后面的原因：代理、证书、DNS 或权限问题。
+Git|file size limit|error|单个文件超过托管平台的大小上限。大文件用 Git LFS，或从历史中移除。
+Git|Repository not found|fatal|远端仓库不存在或无权访问。检查地址拼写和账号权限。
+Git|returned error: 403|fatal|推送权限被拒。检查令牌权限是否包含 repo 写入。
+Git|bad object||pack has bad object||loose object.*corrupt||bad revision|fatal|引用的对象不存在或已损坏。检查提交/分支名，必要时 git fsck 检查仓库。
+Git|index.lock|fatal|有 git 进程崩溃留下了锁文件。确认没有 git 在运行后，删除 .git/index.lock。
+Git|cannot lock ref|error|引用被其他进程占用或大小写冲突。结束其他 git 进程，检查分支名大小写。
+Git|You have not concluded your merge||You have not concluded your cherry-pick|error|上一次合并没完成。解决冲突并 commit，或 git merge --abort 放弃。
+Git|rebase-merge directory|error|上一次 rebase 还在进行。git rebase --continue / --abort 处理后再操作。
+Git|failed to sign|fatal|GPG 签名失败。检查 gpg 配置和密钥，必要时 git config 重设 signingkey。
+Git|tell me who you are||auto-detect email address|fatal|没配置提交身份。git config --global user.name/user.email 设置后重试。
+Git|nothing to commit||no changes added|warning|没有可提交的改动。git status 检查，新文件要 git add 先跟踪。
+Git|divergent branches|error|本地和远端各有新提交。按提示 git config pull.rebase true/false 指定策略后重拉。
+Git|no tracking information||has no upstream branch|error|分支没有跟踪远端。git push -u origin 分支名 建立关联。
+Git|hook declined|error|服务端钩子拒绝了推送。看钩子输出（分支保护/提交规范）按要求修改。
+Git|remote rejected|error|远端拒绝了这次推送。看服务端的具体原因输出。
+Git|cannot rebase|error|有未提交改动不能 rebase。先 stash 或 commit。
+Git|cherry-pick is now empty|error|这个提交的内容已经在当前分支了。git cherry-pick --skip 跳过或 --abort。
+Git|'lfs' is not a git command|fatal|Git LFS 没安装。安装后 git lfs install 初始化。
+Git|unmerged files|error|还有冲突文件没解决。编辑冲突标记后 git add，再继续操作。
+Git|could not read Username|fatal|无法交互输入凭据。配置 credential helper 或把令牌放进 remote URL。
+Git|src refspec|error|要推送的分支不存在，常见于空仓库还没提交。先 commit 再 push。
+Git|unknown revision|fatal|引用的提交/分支不存在。检查名字拼写，git log 确认存在。
+Git|could not apply|error|rebase/cherry-pick 时该提交冲突了。解决冲突后 git add 并 --continue。
+Git|dubious ownership|fatal|仓库所有者和当前用户不同，git 拒绝操作。git config --global --add safe.directory 路径。
+Git|RPC failed|fatal|推送/拉取传输中断，常见于大仓库。加大 http.postBuffer 或改用 SSH。
+Git|the remote end hung up||Early EOF|fatal|连接被远端中断。多为推送过大或网络问题，加大 postBuffer 重试。
+Git|insufficient permission for adding an object|fatal|.git/objects 目录权限不对。用 sudo chown 修复仓库目录归属。
+Git|CONFLICT (|error|合并冲突。编辑带 <<<<<<< 标记的文件，git add 后继续。
+Git|submodule|error|子模块相关错误。git submodule update --init --recursive 初始化。
+Git|a branch named||tag .* already exists|error|同名分支已存在。换个名字，或先删除旧分支。
+Git|would be replaced by|warning|换行符转换提示（CRLF/LF）。确认 autocrlf 配置与团队规范一致。
+Git|No local changes to save|warning|没有可暂存的改动，stash 是空的。git status 检查。
+Git|could not restore untracked files|error|恢复 stash 时与现有文件冲突。先处理冲突文件，或删除后重试。
+Git|has local modifications|error|文件有未提交修改，删除被拒。先 commit/stash，或加 -f 强制。
+Git|destination path .* already exists|fatal|目标目录已存在。换目录名或删掉旧目录。
+Git|terminal prompts disabled|fatal|非交互环境无法输入凭据。配置 credential.helper 或环境变量令牌。
+Git|are too open|fatal|SSH 私钥权限太宽松被拒。chmod 600 私钥文件。
+Git|Host key verification failed|fatal|主机指纹校验失败。确认服务器指纹后更新 known_hosts。
+Git|bad config line|fatal|git 配置文件语法错误。检查 .gitconfig 对应行的格式。
+Git|already checked out at|error|该分支已被另一个 worktree 检出。换个分支或先移除那个 worktree。
+Git|Filename too long|fatal|Windows 路径超长。git config --global core.longpaths true。
+Git|untracked working tree files would be overwritten|error|本地未跟踪文件会合并失败。先备份删除或 git clean。
+Git|must be run in a work tree|fatal|当前是裸仓库（bare），没有工作区。cd 到普通工作仓库再操作。
+Git|cannot do a partial commit during a merge|fatal|合并期间不能只提交部分文件。git add -u 全部提交后再拆分。
+Git|couldn't find remote ref|fatal|远端没有这个分支/tag。git ls-remote 查看远端实际引用。
+Git|could not create work tree dir|fatal|无法创建目标目录。检查路径权限和磁盘空间。
+Git|GH006|fatal|GitHub 分支保护规则拒绝了推送。检查保护规则或走 PR 流程。
+Git|refusing to merge unrelated histories|error|两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。
+Git|remote origin already exists|error|origin 已配置。git remote set-url 修改地址。
+Git|did not match any file(s) known to git|error|git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。
+Docker|Cannot connect to the Docker daemon||error during connect|fatal|连不上 Docker 守护进程。先启动 docker 服务（systemctl start docker 或打开 Docker Desktop）。
+Docker|Got permission denied while trying to connect|fatal|当前用户无权访问 docker。把用户加入 docker 组重新登录，或用 sudo。
+Docker|port is already allocated|fatal|容器要映射的宿主机端口已被占用。停掉占用方或换端口映射。
+Docker|already in use by container|fatal|容器名被别的容器用了。docker rm 旧容器，或换名字。
+Docker|pull access denied|fatal|镜像拉取被拒：镜像不存在或私有。检查镜像名拼写，私有镜像先 docker login。
+Docker|manifest for.*not found||No such image||manifest unknown|fatal|镜像或 tag 不存在。docker images 查看本地，检查 registry 里的实际 tag。
+Docker|No such container|fatal|容器不存在或已删除。docker ps -a 查看容器列表。
+Docker|network .* not found|fatal|网络不存在。docker network ls 查看，或先创建。
+Docker|failed to read dockerfile|fatal|找不到 Dockerfile。检查 -f 路径和构建上下文。
+Docker|dockerfile parse error|fatal|Dockerfile 语法错误。看报错的行号，检查指令拼写和参数。
+Docker|unable to prepare context|fatal|构建上下文不可用。检查 build 命令最后的路径参数是否存在。
+Docker|exec format error|fatal|镜像架构和主机不匹配（arm/amd64）。拉取对应平台的镜像或用 --platform。
+Docker|exec user process caused|fatal|容器入口脚本无法执行，常见是 Windows 换行符（CRLF）。用 dos2unix 转换脚本。
+Docker|exited with code|error|容器以非零码退出。docker logs 看容器内的输出定位原因。
+Docker|OOMKilled|fatal|容器内存超限被杀。调大 --memory 限制，或优化应用内存占用。
+Docker|no space left on device|fatal|磁盘满了。docker system prune 清理镜像/容器/卷，或扩容磁盘。
+Docker|driver failed programming external connectivity|fatal|端口绑定失败。宿主机端口被占用或没有权限绑定。
+Docker|network with name|fatal|同名网络已存在。docker network rm 删除旧的，或复用现有网络。
+Docker|Pool overlaps||predefined address pools have been fully subnetted|fatal|网络的地址段和现有网络重叠。更换子网或删除冲突网络。
+Docker|volume is in use|fatal|卷还被容器引用。先删除相关容器，或 -f 强制。
+Docker|cannot remove a running container|fatal|运行中的容器不能直接删。先 docker stop 再 rm，或用 rm -f。
+Docker|unauthorized: authentication required||incorrect username or password|fatal|registry 认证失败。docker login 重新登录，检查凭据和 registry 地址。
+Docker|requested access to the resource is denied||not authorized to perform this operation|fatal|没有这个仓库的操作权限。检查账号授权和 token scope。
+Docker|toomanyrequests|fatal|Docker Hub 拉取频率超限。等待重置、登录账号提高配额，或换镜像源。
+Docker|no configuration file provided|fatal|没找到 compose 文件。cd 到有 docker-compose.yml 的目录，或用 -f 指定。
+Docker|has neither an image nor a build|fatal|服务既没写 image 也没写 build。在 compose 文件里补上其一。
+Docker|dependency failed to start|fatal|依赖的服务启动失败了。docker logs 看依赖服务（如数据库）的日志。
+Docker|is unhealthy|fatal|健康检查失败。看 healthcheck 配置和容器日志，确认服务真的就绪。
+Docker|`version` is obsolete|warning|新版 compose 不再需要顶层 version 字段。删除它即可。
+Docker|returned a non-zero code|fatal|Dockerfile 某条命令执行失败。看失败的 RUN 步骤输出定位。
+Docker|COPY failed|fatal|COPY 找不到源文件。检查路径是否在构建上下文内、.dockerignore 是否排除。
+Docker|does not match the specified platform|fatal|镜像平台与目标不符。用 --platform 指定，或换多架构镜像。
+Docker|is already started|error|容器已在运行，无需再次 start。
+Docker|invalid reference format|fatal|镜像名/tag 格式不合法。检查是否有多余空格或非法字符。
+Docker|must be lowercase|fatal|镜像名必须全小写。把大写字母改成小写。
+Docker|invalid mount config|fatal|挂载配置不合法。检查 -v/--mount 的语法和路径。
+Docker|bind source path does not exist|fatal|挂载的宿主机路径不存在。先创建目录，或修正路径。
+Docker|Ports are not available|fatal|Windows 上端口被 HyperV 保留或占用。netsh 排除端口或换端口。
+Docker|WSL 2|fatal|Docker Desktop 的 WSL2 后端异常。wsl --update 更新，或按提示修复内核。
+Docker|Hardware assisted virtualization|fatal|BIOS 没开虚拟化。进 BIOS 启用 VT-x/AMD-V。
+Docker|maximum supported API version||is too new|fatal|Docker CLI 和守护进程版本差异过大。统一升级 client/daemon。
+Docker|OCI runtime create failed||container init caused|fatal|容器启动失败。看 caused by：常见为命令不存在、权限或 cgroup 限制。
+Docker|no matching entries in passwd file|fatal|--user 指定的用户在镜像里不存在。用镜像内存在的 UID/用户名。
+Docker|unknown flag|fatal|docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。
+Docker|is not a docker command|fatal|没有这个子命令。docker --help 查看可用命令。
+Docker|container .* is not running|fatal|容器已停止，无法 exec。先 docker start，或看它为什么退出。
+Docker|failed to register layer||Error processing tar file||applyLayer|fatal|镜像层导入失败。tar 内容可能损坏，重新构建/下载镜像。
+Docker|failed to compute cache key||lstat|fatal|构建缓存计算失败，通常是 COPY 的源文件不存在。检查构建上下文和 .dockerignore。
+Docker|failed to create shim task|fatal|容器运行时启动失败。看 caused by：常为入口命令或 cgroup 问题。
+Docker|cannot join network of a non running container|fatal|要共享网络的目标容器没在运行。先启动它。
+Docker|iptables failed|fatal|配置端口转发时 iptables 出错。检查宿主机 iptables/nftables 和权限。
+Docker|No such service|fatal|compose 文件里没有这个服务名。检查 services 定义和拼写。
+Docker|depends on undefined service|fatal|depends_on 引用了不存在的服务。补定义或改名字。
+Docker|The Compose file is invalid|fatal|compose 文件结构不合法。看具体字段报错修正。
+Docker|yaml: line|fatal|compose 的 YAML 语法错误。检查缩进（不能用 Tab）和冒号后空格。
+Docker|declared as external, but could not be found|fatal|声明为 external 的网络/卷不存在。先创建它，或去掉 external 改由 compose 管理。
+Docker|unable to configure the Docker daemon with file|fatal|daemon.json 解析失败。检查 JSON 语法和字段名。
+Docker|Cannot perform an interactive login|fatal|非交互终端无法登录。改用 docker login -u -p 或配置凭据存储。
+Docker|logging driver does not support reading|error|当前日志驱动不支持 docker logs。查看对应的外部日志存储。
+Docker|is not recognized|fatal|系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。
+Docker|Encountered errors while bringing up the project|fatal|compose 启动时有服务失败。往上看每个服务的具体报错。

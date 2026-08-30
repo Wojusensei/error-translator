@@ -2,7 +2,7 @@
 
 一款玩具式多语言程序报错翻译工具，可以**粘贴报错信息，返回解释和修复建议**
 
-目前支持 16 种编程语言，每种语言收录 80 条报错类型（共 1280 条），加上多个匹配别名能识别 1600+ 种真实报错变体，当然过于复杂的没做匹配
+目前支持 24 种编程语言，共收录 1434 条报错类型，加上多个匹配别名能识别 1784+ 种真实报错变体，当然过于复杂的没做匹配
 
 这是个很烂的模版化小项目，甚至只支持了 Windows ，后端代码都是写着玩的，做复习用，有大部分报错并未收录，请谅解
 
@@ -28,22 +28,32 @@
 
 | 语言 | 收录报错数 | 常见可识别报错举例 |
 |-------------|----|--------------------------------------------------------------------------------|
-| Python      | 80 | `NameError`、`IndexError`、`JSONDecodeError`、`pip` 安装报错                    |
-| JavaScript  | 80 | `ReferenceError`、`CORS` 跨域、`Unhandled promise rejection`、`npm ERESOLVE`    |
-| Java        | 80 | `NullPointerException`、`cannot find symbol`、`OutOfMemoryError`、Maven/Gradle  |
-| C++         | 80 | `undefined reference`、`Segmentation fault`、`C2065`、`heap-use-after-free`     |
+| Python      | 100 | `NameError`、`IndexError`、`JSONDecodeError`、`pip` 安装报错                    |
+| JavaScript  | 98 | `ReferenceError`、`CORS` 跨域、`Unhandled promise rejection`、`npm ERESOLVE`    |
+| Java        | 93 | `NullPointerException`、`cannot find symbol`、`OutOfMemoryError`、Maven/Gradle  |
+| C++         | 99 | `undefined reference`、`Segmentation fault`、`C2065`、`heap-use-after-free`     |
 | C           | 80 | `implicit declaration`、`incompatible pointer types`、`double free`             |
-| Go          | 80 | `undefined:`、`declared and not used`、`nil pointer dereference`、`panic`       |
-| C#          | 80 | `NullReferenceException`、`CS1061`、`KeyNotFoundException`、`SqlException`      |
-| Ruby        | 80 | `NoMethodError`、`uninitialized constant`、`FrozenError`、`PG::ConnectionBad`   |
-| PHP         | 80 | `Parse error`、`Undefined variable`、`Allowed memory size`、`PDOException`      |
-| Rust        | 80 | `mismatched types`、`borrow of moved value`、`unwrap` on `Err`、Cargo 报错      |
-| TypeScript  | 80 | `TS2304`、`TS2339`、`TS2322`、`@types` 缺失                                     |
-| Kotlin      | 80 | `Unresolved reference`、`val cannot be reassigned`、`lateinit` 未初始化         |
-| Swift       | 80 | `No such module`、`Unexpectedly found nil`、`cannot convert value of type`      |
-| Dart/Flutter| 80 | `Null check operator`、`setState()` 时机、`RenderFlex overflowed`               |
+| Go          | 93 | `undefined:`、`declared and not used`、`nil pointer dereference`、`panic`       |
+| C#          | 91 | `NullReferenceException`、`CS1061`、`KeyNotFoundException`、`SqlException`      |
+| Ruby        | 87 | `NoMethodError`、`uninitialized constant`、`FrozenError`、`PG::ConnectionBad`   |
+| PHP         | 91 | `Parse error`、`Undefined variable`、`Allowed memory size`、`PDOException`      |
+| Rust        | 93 | `mismatched types`、`borrow of moved value`、`unwrap` on `Err`、Cargo 报错      |
+| TypeScript  | 89 | `TS2304`、`TS2339`、`TS2322`、`@types` 缺失                                     |
+| Kotlin      | 91 | `Unresolved reference`、`val cannot be reassigned`、`lateinit` 未初始化         |
+| Swift       | 86 | `No such module`、`Unexpectedly found nil`、`cannot convert value of type`      |
+| Dart/Flutter| 85 | `Null check operator`、`setState()` 时机、`RenderFlex overflowed`               |
 | SQL         | 80 | `ERROR 1064`、唯一键/外键冲突、`relation does not exist`（MySQL/PG/SQLite/MSSQL）|
-| Shell       | 80 | `syntax error near unexpected token`、`command not found`、`curl` 网络报错      |
+| Shell       | 68 | `syntax error near unexpected token`、`command not found`、`curl` 网络报错      |
+| R           | 80 | `object not found`、`there is no package called`、ggplot2/dplyr 系列报错        |
+| Scala       | 74 | `type mismatch`、`not found: value`、`Task not serializable`、sbt/Spark 报错    |
+| Lua         | 49 | `attempt to index a nil value`、`attempt to call a nil value`、模块加载失败     |
+| Perl        | 72 | `Can't call method on an undefined value`、`requires explicit package name`     |
+| Objective-C | 49 | `unrecognized selector`、`key value coding-compliant`、AutoLayout 约束冲突       |
+| Julia       | 44 | `MethodError`、`UndefVarError`、`BoundsError`、`InexactError`、Pkg 报错         |
+| Groovy      | 37 | `No signature of method`、`No such property`、Gradle/Jenkins 管线报错           |
+| Elixir      | 41 | `no match of right hand side`、`KeyError`、协议未实现、GenServer/mix 报错       |
+| Git         | 59 | `not a git repository`、推送被拒、冲突/合并中断、index.lock、身份未配置          |
+| Docker      | 61 | `Cannot connect to the Docker daemon`、端口占用、构建失败、compose/WSL2 报错     |
 
 ---
 
