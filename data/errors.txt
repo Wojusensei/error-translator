@@ -1402,18 +1402,6 @@ Shell|Connection timed out|error|连接超时。目标不可达或被防火墙�
 Shell|unable to resolve host address|error|域名解析失败（wget）。检查 DNS 和网址拼写。
 Shell|connect to host|error|SSH 连不上目标主机。检查 IP、端口、sshd 是否运行和防火墙规则。
 Shell|ssh_exchange_identification|error|SSH 握手被对端拒绝。可能被 hosts.allow/deny 或 fail2ban 拦截了。
-Shell|not a git repository|error|当前目录不是 git 仓库。cd 到项目根目录，或先 git init。
-Shell|failed to push some refs||fetch first|error|推送被拒绝，远端有你没有的提交。先 git pull --rebase 再推送。
-Shell|would be overwritten by|error|本地有未提交的修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。
-Shell|refusing to merge unrelated histories|error|两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。
-Shell|remote origin already exists|error|origin 已经配置过了。用 git remote set-url 修改地址。
-Shell|did not match any file(s) known to git|error|git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。
-Shell|CONFLICT (|error|合并冲突。编辑冲突文件解决 <<<<<<< 标记的内容，git add 后继续。
-Shell|Cannot connect to the Docker daemon|fatal|Docker 守护进程没在运行。启动 docker 服务（systemctl start docker）再试。
-Shell|port is already allocated|error|端口已被别的容器/进程占用。停掉占用方或换个端口映射。
-Shell|Got permission denied while trying to connect|error|当前用户无权访问 docker。把用户加进 docker 组，或用 sudo。
-Shell|container name|error|容器名已被使用。先 docker rm 旧容器，或换名字。
-Shell|pull access denied|error|镜像拉取被拒。镜像可能不存在或需要 docker login，检查镜像名。
 Shell|Not found in archive|error|要提取的文件不在压缩包里。tar -t 列出包内文件确认路径。
 Shell|does not look like a tar archive|error|文件不是 tar 包。可能下载错了或是 gzip 包，加 -z 或用对应的解压命令。
 Shell|Unexpected EOF in archive|error|压缩包不完整或损坏了。重新下载/传输。
@@ -1880,3 +1868,123 @@ Elixir|no function clause returning|fatal|函数子句遍历完没命中。补�
 Elixir|Plug.Conn.WrapperError|fatal|Plug 处理过程中抛出的异常。看 caused by 的根因。
 Elixir|this clause cannot match|warning|编译器警告：这个子句永远匹配不上。检查子句顺序和模式。
 Elixir|is deprecated. Use|warning|用了废弃的 API。按提示迁移到新函数。
+Git|fatal: not a git repository||not a git repository|fatal|当前目录不是 git 仓库。cd 到项目根目录，或先 git init。
+Git|! [rejected]||fetch first|error|远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。
+Git|non-fast-forward|error|推送会覆盖远端历史被拒绝。先合并远端改动，确认无误再推。
+Git|Your local changes to the following files would be overwritten|error|本地有未提交修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。
+Git|You are not currently on a branch|error|处于 detached HEAD 状态。git switch -c 新分支 保存改动，或 checkout 回分支。
+Git|not fully merged|error|分支还有未合并的提交，删除被拒。确认后加 -D 强删，或先合并。
+Git|does not appear to be a git repository||Could not read from remote repository||Please make sure you have the correct access rights|fatal|连不上远端仓库。检查 remote 地址、SSH key 权限和仓库是否存在。
+Git|Authentication failed for|fatal|HTTPS 认证失败。检查账号密码/令牌，GitHub 已不支持密码，要用 Personal Access Token。
+Git|unable to access||server certificate verification failed|fatal|访问远端失败。看后面的原因：代理、证书、DNS 或权限问题。
+Git|file size limit|error|单个文件超过托管平台的大小上限。大文件用 Git LFS，或从历史中移除。
+Git|Repository not found|fatal|远端仓库不存在或无权访问。检查地址拼写和账号权限。
+Git|returned error: 403|fatal|推送权限被拒。检查令牌权限是否包含 repo 写入。
+Git|bad object||pack has bad object||loose object.*corrupt||bad revision|fatal|引用的对象不存在或已损坏。检查提交/分支名，必要时 git fsck 检查仓库。
+Git|index.lock|fatal|有 git 进程崩溃留下了锁文件。确认没有 git 在运行后，删除 .git/index.lock。
+Git|cannot lock ref|error|引用被其他进程占用或大小写冲突。结束其他 git 进程，检查分支名大小写。
+Git|You have not concluded your merge||You have not concluded your cherry-pick|error|上一次合并没完成。解决冲突并 commit，或 git merge --abort 放弃。
+Git|rebase-merge directory|error|上一次 rebase 还在进行。git rebase --continue / --abort 处理后再操作。
+Git|failed to sign|fatal|GPG 签名失败。检查 gpg 配置和密钥，必要时 git config 重设 signingkey。
+Git|tell me who you are||auto-detect email address|fatal|没配置提交身份。git config --global user.name/user.email 设置后重试。
+Git|nothing to commit||no changes added|warning|没有可提交的改动。git status 检查，新文件要 git add 先跟踪。
+Git|divergent branches|error|本地和远端各有新提交。按提示 git config pull.rebase true/false 指定策略后重拉。
+Git|no tracking information||has no upstream branch|error|分支没有跟踪远端。git push -u origin 分支名 建立关联。
+Git|hook declined|error|服务端钩子拒绝了推送。看钩子输出（分支保护/提交规范）按要求修改。
+Git|remote rejected|error|远端拒绝了这次推送。看服务端的具体原因输出。
+Git|cannot rebase|error|有未提交改动不能 rebase。先 stash 或 commit。
+Git|cherry-pick is now empty|error|这个提交的内容已经在当前分支了。git cherry-pick --skip 跳过或 --abort。
+Git|'lfs' is not a git command|fatal|Git LFS 没安装。安装后 git lfs install 初始化。
+Git|unmerged files|error|还有冲突文件没解决。编辑冲突标记后 git add，再继续操作。
+Git|could not read Username|fatal|无法交互输入凭据。配置 credential helper 或把令牌放进 remote URL。
+Git|src refspec|error|要推送的分支不存在，常见于空仓库还没提交。先 commit 再 push。
+Git|unknown revision|fatal|引用的提交/分支不存在。检查名字拼写，git log 确认存在。
+Git|could not apply|error|rebase/cherry-pick 时该提交冲突了。解决冲突后 git add 并 --continue。
+Git|dubious ownership|fatal|仓库所有者和当前用户不同，git 拒绝操作。git config --global --add safe.directory 路径。
+Git|RPC failed|fatal|推送/拉取传输中断，常见于大仓库。加大 http.postBuffer 或改用 SSH。
+Git|the remote end hung up||Early EOF|fatal|连接被远端中断。多为推送过大或网络问题，加大 postBuffer 重试。
+Git|insufficient permission for adding an object|fatal|.git/objects 目录权限不对。用 sudo chown 修复仓库目录归属。
+Git|CONFLICT (|error|合并冲突。编辑带 <<<<<<< 标记的文件，git add 后继续。
+Git|submodule|error|子模块相关错误。git submodule update --init --recursive 初始化。
+Git|a branch named||tag .* already exists|error|同名分支已存在。换个名字，或先删除旧分支。
+Git|would be replaced by|warning|换行符转换提示（CRLF/LF）。确认 autocrlf 配置与团队规范一致。
+Git|No local changes to save|warning|没有可暂存的改动，stash 是空的。git status 检查。
+Git|could not restore untracked files|error|恢复 stash 时与现有文件冲突。先处理冲突文件，或删除后重试。
+Git|has local modifications|error|文件有未提交修改，删除被拒。先 commit/stash，或加 -f 强制。
+Git|destination path .* already exists|fatal|目标目录已存在。换目录名或删掉旧目录。
+Git|terminal prompts disabled|fatal|非交互环境无法输入凭据。配置 credential.helper 或环境变量令牌。
+Git|are too open|fatal|SSH 私钥权限太宽松被拒。chmod 600 私钥文件。
+Git|Host key verification failed|fatal|主机指纹校验失败。确认服务器指纹后更新 known_hosts。
+Git|bad config line|fatal|git 配置文件语法错误。检查 .gitconfig 对应行的格式。
+Git|already checked out at|error|该分支已被另一个 worktree 检出。换个分支或先移除那个 worktree。
+Git|Filename too long|fatal|Windows 路径超长。git config --global core.longpaths true。
+Git|untracked working tree files would be overwritten|error|本地未跟踪文件会合并失败。先备份删除或 git clean。
+Git|must be run in a work tree|fatal|当前是裸仓库（bare），没有工作区。cd 到普通工作仓库再操作。
+Git|cannot do a partial commit during a merge|fatal|合并期间不能只提交部分文件。git add -u 全部提交后再拆分。
+Git|couldn't find remote ref|fatal|远端没有这个分支/tag。git ls-remote 查看远端实际引用。
+Git|could not create work tree dir|fatal|无法创建目标目录。检查路径权限和磁盘空间。
+Git|GH006|fatal|GitHub 分支保护规则拒绝了推送。检查保护规则或走 PR 流程。
+Git|refusing to merge unrelated histories|error|两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。
+Git|remote origin already exists|error|origin 已配置。git remote set-url 修改地址。
+Git|did not match any file(s) known to git|error|git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。
+Docker|Cannot connect to the Docker daemon||error during connect|fatal|连不上 Docker 守护进程。先启动 docker 服务（systemctl start docker 或打开 Docker Desktop）。
+Docker|Got permission denied while trying to connect|fatal|当前用户无权访问 docker。把用户加入 docker 组重新登录，或用 sudo。
+Docker|port is already allocated|fatal|容器要映射的宿主机端口已被占用。停掉占用方或换端口映射。
+Docker|already in use by container|fatal|容器名被别的容器用了。docker rm 旧容器，或换名字。
+Docker|pull access denied|fatal|镜像拉取被拒：镜像不存在或私有。检查镜像名拼写，私有镜像先 docker login。
+Docker|manifest for.*not found||No such image||manifest unknown|fatal|镜像或 tag 不存在。docker images 查看本地，检查 registry 里的实际 tag。
+Docker|No such container|fatal|容器不存在或已删除。docker ps -a 查看容器列表。
+Docker|network .* not found|fatal|网络不存在。docker network ls 查看，或先创建。
+Docker|failed to read dockerfile|fatal|找不到 Dockerfile。检查 -f 路径和构建上下文。
+Docker|dockerfile parse error|fatal|Dockerfile 语法错误。看报错的行号，检查指令拼写和参数。
+Docker|unable to prepare context|fatal|构建上下文不可用。检查 build 命令最后的路径参数是否存在。
+Docker|exec format error|fatal|镜像架构和主机不匹配（arm/amd64）。拉取对应平台的镜像或用 --platform。
+Docker|exec user process caused|fatal|容器入口脚本无法执行，常见是 Windows 换行符（CRLF）。用 dos2unix 转换脚本。
+Docker|exited with code|error|容器以非零码退出。docker logs 看容器内的输出定位原因。
+Docker|OOMKilled|fatal|容器内存超限被杀。调大 --memory 限制，或优化应用内存占用。
+Docker|no space left on device|fatal|磁盘满了。docker system prune 清理镜像/容器/卷，或扩容磁盘。
+Docker|driver failed programming external connectivity|fatal|端口绑定失败。宿主机端口被占用或没有权限绑定。
+Docker|network with name|fatal|同名网络已存在。docker network rm 删除旧的，或复用现有网络。
+Docker|Pool overlaps||predefined address pools have been fully subnetted|fatal|网络的地址段和现有网络重叠。更换子网或删除冲突网络。
+Docker|volume is in use|fatal|卷还被容器引用。先删除相关容器，或 -f 强制。
+Docker|cannot remove a running container|fatal|运行中的容器不能直接删。先 docker stop 再 rm，或用 rm -f。
+Docker|unauthorized: authentication required||incorrect username or password|fatal|registry 认证失败。docker login 重新登录，检查凭据和 registry 地址。
+Docker|requested access to the resource is denied||not authorized to perform this operation|fatal|没有这个仓库的操作权限。检查账号授权和 token scope。
+Docker|toomanyrequests|fatal|Docker Hub 拉取频率超限。等待重置、登录账号提高配额，或换镜像源。
+Docker|no configuration file provided|fatal|没找到 compose 文件。cd 到有 docker-compose.yml 的目录，或用 -f 指定。
+Docker|has neither an image nor a build|fatal|服务既没写 image 也没写 build。在 compose 文件里补上其一。
+Docker|dependency failed to start|fatal|依赖的服务启动失败了。docker logs 看依赖服务（如数据库）的日志。
+Docker|is unhealthy|fatal|健康检查失败。看 healthcheck 配置和容器日志，确认服务真的就绪。
+Docker|`version` is obsolete|warning|新版 compose 不再需要顶层 version 字段。删除它即可。
+Docker|returned a non-zero code|fatal|Dockerfile 某条命令执行失败。看失败的 RUN 步骤输出定位。
+Docker|COPY failed|fatal|COPY 找不到源文件。检查路径是否在构建上下文内、.dockerignore 是否排除。
+Docker|does not match the specified platform|fatal|镜像平台与目标不符。用 --platform 指定，或换多架构镜像。
+Docker|is already started|error|容器已在运行，无需再次 start。
+Docker|invalid reference format|fatal|镜像名/tag 格式不合法。检查是否有多余空格或非法字符。
+Docker|must be lowercase|fatal|镜像名必须全小写。把大写字母改成小写。
+Docker|invalid mount config|fatal|挂载配置不合法。检查 -v/--mount 的语法和路径。
+Docker|bind source path does not exist|fatal|挂载的宿主机路径不存在。先创建目录，或修正路径。
+Docker|Ports are not available|fatal|Windows 上端口被 HyperV 保留或占用。netsh 排除端口或换端口。
+Docker|WSL 2|fatal|Docker Desktop 的 WSL2 后端异常。wsl --update 更新，或按提示修复内核。
+Docker|Hardware assisted virtualization|fatal|BIOS 没开虚拟化。进 BIOS 启用 VT-x/AMD-V。
+Docker|maximum supported API version||is too new|fatal|Docker CLI 和守护进程版本差异过大。统一升级 client/daemon。
+Docker|OCI runtime create failed||container init caused|fatal|容器启动失败。看 caused by：常见为命令不存在、权限或 cgroup 限制。
+Docker|no matching entries in passwd file|fatal|--user 指定的用户在镜像里不存在。用镜像内存在的 UID/用户名。
+Docker|unknown flag|fatal|docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。
+Docker|is not a docker command|fatal|没有这个子命令。docker --help 查看可用命令。
+Docker|container .* is not running|fatal|容器已停止，无法 exec。先 docker start，或看它为什么退出。
+Docker|failed to register layer||Error processing tar file||applyLayer|fatal|镜像层导入失败。tar 内容可能损坏，重新构建/下载镜像。
+Docker|failed to compute cache key||lstat|fatal|构建缓存计算失败，通常是 COPY 的源文件不存在。检查构建上下文和 .dockerignore。
+Docker|failed to create shim task|fatal|容器运行时启动失败。看 caused by：常为入口命令或 cgroup 问题。
+Docker|cannot join network of a non running container|fatal|要共享网络的目标容器没在运行。先启动它。
+Docker|iptables failed|fatal|配置端口转发时 iptables 出错。检查宿主机 iptables/nftables 和权限。
+Docker|No such service|fatal|compose 文件里没有这个服务名。检查 services 定义和拼写。
+Docker|depends on undefined service|fatal|depends_on 引用了不存在的服务。补定义或改名字。
+Docker|The Compose file is invalid|fatal|compose 文件结构不合法。看具体字段报错修正。
+Docker|yaml: line|fatal|compose 的 YAML 语法错误。检查缩进（不能用 Tab）和冒号后空格。
+Docker|declared as external, but could not be found|fatal|声明为 external 的网络/卷不存在。先创建它，或去掉 external 改由 compose 管理。
+Docker|unable to configure the Docker daemon with file|fatal|daemon.json 解析失败。检查 JSON 语法和字段名。
+Docker|Cannot perform an interactive login|fatal|非交互终端无法登录。改用 docker login -u -p 或配置凭据存储。
+Docker|logging driver does not support reading|error|当前日志驱动不支持 docker logs。查看对应的外部日志存储。
+Docker|is not recognized|fatal|系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。
+Docker|Encountered errors while bringing up the project|fatal|compose 启动时有服务失败。往上看每个服务的具体报错。

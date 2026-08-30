@@ -7099,66 +7099,6 @@
           "level": "error",
           "explain": "SSH 握手被对端拒绝。可能被 hosts.allow/deny 或 fail2ban 拦截了。"
         },
-        "git_not_repo": {
-          "match": "not a git repository",
-          "level": "error",
-          "explain": "当前目录不是 git 仓库。cd 到项目根目录，或先 git init。"
-        },
-        "git_push_rejected": {
-          "match": "failed to push some refs||fetch first",
-          "level": "error",
-          "explain": "推送被拒绝，远端有你没有的提交。先 git pull --rebase 再推送。"
-        },
-        "git_local_changes": {
-          "match": "would be overwritten by",
-          "level": "error",
-          "explain": "本地有未提交的修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。"
-        },
-        "git_unrelated": {
-          "match": "refusing to merge unrelated histories",
-          "level": "error",
-          "explain": "两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。"
-        },
-        "git_origin_exists": {
-          "match": "remote origin already exists",
-          "level": "error",
-          "explain": "origin 已经配置过了。用 git remote set-url 修改地址。"
-        },
-        "git_pathspec": {
-          "match": "did not match any file(s) known to git",
-          "level": "error",
-          "explain": "git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。"
-        },
-        "git_conflict": {
-          "match": "CONFLICT (",
-          "level": "error",
-          "explain": "合并冲突。编辑冲突文件解决 <<<<<<< 标记的内容，git add 后继续。"
-        },
-        "docker_daemon": {
-          "match": "Cannot connect to the Docker daemon",
-          "level": "fatal",
-          "explain": "Docker 守护进程没在运行。启动 docker 服务（systemctl start docker）再试。"
-        },
-        "docker_port": {
-          "match": "port is already allocated",
-          "level": "error",
-          "explain": "端口已被别的容器/进程占用。停掉占用方或换个端口映射。"
-        },
-        "docker_permission": {
-          "match": "Got permission denied while trying to connect",
-          "level": "error",
-          "explain": "当前用户无权访问 docker。把用户加进 docker 组，或用 sudo。"
-        },
-        "docker_name_in_use": {
-          "match": "container name",
-          "level": "error",
-          "explain": "容器名已被使用。先 docker rm 旧容器，或换名字。"
-        },
-        "docker_pull": {
-          "match": "pull access denied",
-          "level": "error",
-          "explain": "镜像拉取被拒。镜像可能不存在或需要 docker login，检查镜像名。"
-        },
         "tar_not_found_in": {
           "match": "Not found in archive",
           "level": "error",
@@ -9528,6 +9468,616 @@
           "match": "is deprecated. Use",
           "level": "warning",
           "explain": "用了废弃的 API。按提示迁移到新函数。"
+        }
+      }
+    },
+    "git": {
+      "name": "Git",
+      "patterns": {
+        "fatal_not_a_repo": {
+          "match": "fatal: not a git repository||not a git repository",
+          "level": "fatal",
+          "explain": "当前目录不是 git 仓库。cd 到项目根目录，或先 git init。"
+        },
+        "push_rejected_fetch_first": {
+          "match": "! [rejected]||fetch first",
+          "level": "error",
+          "explain": "远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。"
+        },
+        "non_fast_forward": {
+          "match": "non-fast-forward",
+          "level": "error",
+          "explain": "推送会覆盖远端历史被拒绝。先合并远端改动，确认无误再推。"
+        },
+        "local_changes_overwritten": {
+          "match": "Your local changes to the following files would be overwritten",
+          "level": "error",
+          "explain": "本地有未提交修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。"
+        },
+        "not_currently_on_branch": {
+          "match": "You are not currently on a branch",
+          "level": "error",
+          "explain": "处于 detached HEAD 状态。git switch -c 新分支 保存改动，或 checkout 回分支。"
+        },
+        "branch_not_fully_merged": {
+          "match": "not fully merged",
+          "level": "error",
+          "explain": "分支还有未合并的提交，删除被拒。确认后加 -D 强删，或先合并。"
+        },
+        "remote_not_a_repo": {
+          "match": "does not appear to be a git repository||Could not read from remote repository||Please make sure you have the correct access rights",
+          "level": "fatal",
+          "explain": "连不上远端仓库。检查 remote 地址、SSH key 权限和仓库是否存在。"
+        },
+        "https_auth_failed": {
+          "match": "Authentication failed for",
+          "level": "fatal",
+          "explain": "HTTPS 认证失败。检查账号密码/令牌，GitHub 已不支持密码，要用 Personal Access Token。"
+        },
+        "unable_to_access": {
+          "match": "unable to access||server certificate verification failed",
+          "level": "fatal",
+          "explain": "访问远端失败。看后面的原因：代理、证书、DNS 或权限问题。"
+        },
+        "file_size_limit": {
+          "match": "file size limit",
+          "level": "error",
+          "explain": "单个文件超过托管平台的大小上限。大文件用 Git LFS，或从历史中移除。"
+        },
+        "repository_not_found": {
+          "match": "Repository not found",
+          "level": "fatal",
+          "explain": "远端仓库不存在或无权访问。检查地址拼写和账号权限。"
+        },
+        "push_403": {
+          "match": "returned error: 403",
+          "level": "fatal",
+          "explain": "推送权限被拒。检查令牌权限是否包含 repo 写入。"
+        },
+        "bad_object_git": {
+          "match": "bad object||pack has bad object||loose object.*corrupt||bad revision",
+          "level": "fatal",
+          "explain": "引用的对象不存在或已损坏。检查提交/分支名，必要时 git fsck 检查仓库。"
+        },
+        "index_lock": {
+          "match": "index.lock",
+          "level": "fatal",
+          "explain": "有 git 进程崩溃留下了锁文件。确认没有 git 在运行后，删除 .git/index.lock。"
+        },
+        "cannot_lock_ref": {
+          "match": "cannot lock ref",
+          "level": "error",
+          "explain": "引用被其他进程占用或大小写冲突。结束其他 git 进程，检查分支名大小写。"
+        },
+        "merge_not_concluded": {
+          "match": "You have not concluded your merge||You have not concluded your cherry-pick",
+          "level": "error",
+          "explain": "上一次合并没完成。解决冲突并 commit，或 git merge --abort 放弃。"
+        },
+        "rebase_in_progress": {
+          "match": "rebase-merge directory",
+          "level": "error",
+          "explain": "上一次 rebase 还在进行。git rebase --continue / --abort 处理后再操作。"
+        },
+        "gpg_sign_failed": {
+          "match": "failed to sign",
+          "level": "fatal",
+          "explain": "GPG 签名失败。检查 gpg 配置和密钥，必要时 git config 重设 signingkey。"
+        },
+        "tell_me_who_you_are": {
+          "match": "tell me who you are||auto-detect email address",
+          "level": "fatal",
+          "explain": "没配置提交身份。git config --global user.name/user.email 设置后重试。"
+        },
+        "nothing_to_commit": {
+          "match": "nothing to commit||no changes added",
+          "level": "warning",
+          "explain": "没有可提交的改动。git status 检查，新文件要 git add 先跟踪。"
+        },
+        "divergent_branches": {
+          "match": "divergent branches",
+          "level": "error",
+          "explain": "本地和远端各有新提交。按提示 git config pull.rebase true/false 指定策略后重拉。"
+        },
+        "no_tracking_info": {
+          "match": "no tracking information||has no upstream branch",
+          "level": "error",
+          "explain": "分支没有跟踪远端。git push -u origin 分支名 建立关联。"
+        },
+        "hook_declined": {
+          "match": "hook declined",
+          "level": "error",
+          "explain": "服务端钩子拒绝了推送。看钩子输出（分支保护/提交规范）按要求修改。"
+        },
+        "remote_rejected": {
+          "match": "remote rejected",
+          "level": "error",
+          "explain": "远端拒绝了这次推送。看服务端的具体原因输出。"
+        },
+        "cannot_rebase_unstaged": {
+          "match": "cannot rebase",
+          "level": "error",
+          "explain": "有未提交改动不能 rebase。先 stash 或 commit。"
+        },
+        "cherry_pick_empty": {
+          "match": "cherry-pick is now empty",
+          "level": "error",
+          "explain": "这个提交的内容已经在当前分支了。git cherry-pick --skip 跳过或 --abort。"
+        },
+        "lfs_not_installed": {
+          "match": "'lfs' is not a git command",
+          "level": "fatal",
+          "explain": "Git LFS 没安装。安装后 git lfs install 初始化。"
+        },
+        "unmerged_files": {
+          "match": "unmerged files",
+          "level": "error",
+          "explain": "还有冲突文件没解决。编辑冲突标记后 git add，再继续操作。"
+        },
+        "could_not_read_username": {
+          "match": "could not read Username",
+          "level": "fatal",
+          "explain": "无法交互输入凭据。配置 credential helper 或把令牌放进 remote URL。"
+        },
+        "src_refspec": {
+          "match": "src refspec",
+          "level": "error",
+          "explain": "要推送的分支不存在，常见于空仓库还没提交。先 commit 再 push。"
+        },
+        "unknown_revision": {
+          "match": "unknown revision",
+          "level": "fatal",
+          "explain": "引用的提交/分支不存在。检查名字拼写，git log 确认存在。"
+        },
+        "could_not_apply": {
+          "match": "could not apply",
+          "level": "error",
+          "explain": "rebase/cherry-pick 时该提交冲突了。解决冲突后 git add 并 --continue。"
+        },
+        "dubious_ownership": {
+          "match": "dubious ownership",
+          "level": "fatal",
+          "explain": "仓库所有者和当前用户不同，git 拒绝操作。git config --global --add safe.directory 路径。"
+        },
+        "rpc_failed": {
+          "match": "RPC failed",
+          "level": "fatal",
+          "explain": "推送/拉取传输中断，常见于大仓库。加大 http.postBuffer 或改用 SSH。"
+        },
+        "remote_end_hung_up": {
+          "match": "the remote end hung up||Early EOF",
+          "level": "fatal",
+          "explain": "连接被远端中断。多为推送过大或网络问题，加大 postBuffer 重试。"
+        },
+        "insufficient_permission_object": {
+          "match": "insufficient permission for adding an object",
+          "level": "fatal",
+          "explain": ".git/objects 目录权限不对。用 sudo chown 修复仓库目录归属。"
+        },
+        "merge_conflict": {
+          "match": "CONFLICT (",
+          "level": "error",
+          "explain": "合并冲突。编辑带 <<<<<<< 标记的文件，git add 后继续。"
+        },
+        "submodule_not_init": {
+          "match": "submodule",
+          "level": "error",
+          "explain": "子模块相关错误。git submodule update --init --recursive 初始化。"
+        },
+        "tag_branch_exists": {
+          "match": "a branch named||tag .* already exists",
+          "level": "error",
+          "explain": "同名分支已存在。换个名字，或先删除旧分支。"
+        },
+        "lf_crlf_warning": {
+          "match": "would be replaced by",
+          "level": "warning",
+          "explain": "换行符转换提示（CRLF/LF）。确认 autocrlf 配置与团队规范一致。"
+        },
+        "stash_no_local_changes": {
+          "match": "No local changes to save",
+          "level": "warning",
+          "explain": "没有可暂存的改动，stash 是空的。git status 检查。"
+        },
+        "stash_pop_conflict": {
+          "match": "could not restore untracked files",
+          "level": "error",
+          "explain": "恢复 stash 时与现有文件冲突。先处理冲突文件，或删除后重试。"
+        },
+        "rm_local_modifications": {
+          "match": "has local modifications",
+          "level": "error",
+          "explain": "文件有未提交修改，删除被拒。先 commit/stash，或加 -f 强制。"
+        },
+        "clone_destination_exists": {
+          "match": "destination path .* already exists",
+          "level": "fatal",
+          "explain": "目标目录已存在。换目录名或删掉旧目录。"
+        },
+        "credential_disabled": {
+          "match": "terminal prompts disabled",
+          "level": "fatal",
+          "explain": "非交互环境无法输入凭据。配置 credential.helper 或环境变量令牌。"
+        },
+        "ssh_key_too_open": {
+          "match": "are too open",
+          "level": "fatal",
+          "explain": "SSH 私钥权限太宽松被拒。chmod 600 私钥文件。"
+        },
+        "known_hosts_fail": {
+          "match": "Host key verification failed",
+          "level": "fatal",
+          "explain": "主机指纹校验失败。确认服务器指纹后更新 known_hosts。"
+        },
+        "config_bad_section": {
+          "match": "bad config line",
+          "level": "fatal",
+          "explain": "git 配置文件语法错误。检查 .gitconfig 对应行的格式。"
+        },
+        "branch_checked_out": {
+          "match": "already checked out at",
+          "level": "error",
+          "explain": "该分支已被另一个 worktree 检出。换个分支或先移除那个 worktree。"
+        },
+        "filename_too_long": {
+          "match": "Filename too long",
+          "level": "fatal",
+          "explain": "Windows 路径超长。git config --global core.longpaths true。"
+        },
+        "untracked_overwritten": {
+          "match": "untracked working tree files would be overwritten",
+          "level": "error",
+          "explain": "本地未跟踪文件会合并失败。先备份删除或 git clean。"
+        },
+        "bare_repo_operation": {
+          "match": "must be run in a work tree",
+          "level": "fatal",
+          "explain": "当前是裸仓库（bare），没有工作区。cd 到普通工作仓库再操作。"
+        },
+        "partial_commit_during_merge": {
+          "match": "cannot do a partial commit during a merge",
+          "level": "fatal",
+          "explain": "合并期间不能只提交部分文件。git add -u 全部提交后再拆分。"
+        },
+        "remote_ref_not_found": {
+          "match": "couldn't find remote ref",
+          "level": "fatal",
+          "explain": "远端没有这个分支/tag。git ls-remote 查看远端实际引用。"
+        },
+        "worktree_dir_fail": {
+          "match": "could not create work tree dir",
+          "level": "fatal",
+          "explain": "无法创建目标目录。检查路径权限和磁盘空间。"
+        },
+        "protected_branch_gh": {
+          "match": "GH006",
+          "level": "fatal",
+          "explain": "GitHub 分支保护规则拒绝了推送。检查保护规则或走 PR 流程。"
+        },
+        "refusing_unrelated": {
+          "match": "refusing to merge unrelated histories",
+          "level": "error",
+          "explain": "两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。"
+        },
+        "remote_origin_exists": {
+          "match": "remote origin already exists",
+          "level": "error",
+          "explain": "origin 已配置。git remote set-url 修改地址。"
+        },
+        "pathspec_no_match": {
+          "match": "did not match any file(s) known to git",
+          "level": "error",
+          "explain": "git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。"
+        }
+      }
+    },
+    "docker": {
+      "name": "Docker",
+      "patterns": {
+        "daemon_not_running": {
+          "match": "Cannot connect to the Docker daemon||error during connect",
+          "level": "fatal",
+          "explain": "连不上 Docker 守护进程。先启动 docker 服务（systemctl start docker 或打开 Docker Desktop）。"
+        },
+        "daemon_permission": {
+          "match": "Got permission denied while trying to connect",
+          "level": "fatal",
+          "explain": "当前用户无权访问 docker。把用户加入 docker 组重新登录，或用 sudo。"
+        },
+        "port_already_allocated": {
+          "match": "port is already allocated",
+          "level": "fatal",
+          "explain": "容器要映射的宿主机端口已被占用。停掉占用方或换端口映射。"
+        },
+        "name_in_use": {
+          "match": "already in use by container",
+          "level": "fatal",
+          "explain": "容器名被别的容器用了。docker rm 旧容器，或换名字。"
+        },
+        "pull_access_denied": {
+          "match": "pull access denied",
+          "level": "fatal",
+          "explain": "镜像拉取被拒：镜像不存在或私有。检查镜像名拼写，私有镜像先 docker login。"
+        },
+        "image_not_found": {
+          "match": "manifest for.*not found||No such image||manifest unknown",
+          "level": "fatal",
+          "explain": "镜像或 tag 不存在。docker images 查看本地，检查 registry 里的实际 tag。"
+        },
+        "container_not_found": {
+          "match": "No such container",
+          "level": "fatal",
+          "explain": "容器不存在或已删除。docker ps -a 查看容器列表。"
+        },
+        "network_not_found": {
+          "match": "network .* not found",
+          "level": "fatal",
+          "explain": "网络不存在。docker network ls 查看，或先创建。"
+        },
+        "dockerfile_not_found": {
+          "match": "failed to read dockerfile",
+          "level": "fatal",
+          "explain": "找不到 Dockerfile。检查 -f 路径和构建上下文。"
+        },
+        "dockerfile_parse_error": {
+          "match": "dockerfile parse error",
+          "level": "fatal",
+          "explain": "Dockerfile 语法错误。看报错的行号，检查指令拼写和参数。"
+        },
+        "unable_prepare_context": {
+          "match": "unable to prepare context",
+          "level": "fatal",
+          "explain": "构建上下文不可用。检查 build 命令最后的路径参数是否存在。"
+        },
+        "exec_format_error": {
+          "match": "exec format error",
+          "level": "fatal",
+          "explain": "镜像架构和主机不匹配（arm/amd64）。拉取对应平台的镜像或用 --platform。"
+        },
+        "exec_user_process": {
+          "match": "exec user process caused",
+          "level": "fatal",
+          "explain": "容器入口脚本无法执行，常见是 Windows 换行符（CRLF）。用 dos2unix 转换脚本。"
+        },
+        "container_exited": {
+          "match": "exited with code",
+          "level": "error",
+          "explain": "容器以非零码退出。docker logs 看容器内的输出定位原因。"
+        },
+        "oom_killed": {
+          "match": "OOMKilled",
+          "level": "fatal",
+          "explain": "容器内存超限被杀。调大 --memory 限制，或优化应用内存占用。"
+        },
+        "no_space_left_docker": {
+          "match": "no space left on device",
+          "level": "fatal",
+          "explain": "磁盘满了。docker system prune 清理镜像/容器/卷，或扩容磁盘。"
+        },
+        "driver_failed_connectivity": {
+          "match": "driver failed programming external connectivity",
+          "level": "fatal",
+          "explain": "端口绑定失败。宿主机端口被占用或没有权限绑定。"
+        },
+        "network_exists": {
+          "match": "network with name",
+          "level": "fatal",
+          "explain": "同名网络已存在。docker network rm 删除旧的，或复用现有网络。"
+        },
+        "pool_overlaps": {
+          "match": "Pool overlaps||predefined address pools have been fully subnetted",
+          "level": "fatal",
+          "explain": "网络的地址段和现有网络重叠。更换子网或删除冲突网络。"
+        },
+        "volume_in_use": {
+          "match": "volume is in use",
+          "level": "fatal",
+          "explain": "卷还被容器引用。先删除相关容器，或 -f 强制。"
+        },
+        "cannot_remove_running": {
+          "match": "cannot remove a running container",
+          "level": "fatal",
+          "explain": "运行中的容器不能直接删。先 docker stop 再 rm，或用 rm -f。"
+        },
+        "docker_login_failed": {
+          "match": "unauthorized: authentication required||incorrect username or password",
+          "level": "fatal",
+          "explain": "registry 认证失败。docker login 重新登录，检查凭据和 registry 地址。"
+        },
+        "access_denied_resource": {
+          "match": "requested access to the resource is denied||not authorized to perform this operation",
+          "level": "fatal",
+          "explain": "没有这个仓库的操作权限。检查账号授权和 token scope。"
+        },
+        "pull_rate_limit": {
+          "match": "toomanyrequests",
+          "level": "fatal",
+          "explain": "Docker Hub 拉取频率超限。等待重置、登录账号提高配额，或换镜像源。"
+        },
+        "compose_no_config": {
+          "match": "no configuration file provided",
+          "level": "fatal",
+          "explain": "没找到 compose 文件。cd 到有 docker-compose.yml 的目录，或用 -f 指定。"
+        },
+        "compose_neither_image_nor_build": {
+          "match": "has neither an image nor a build",
+          "level": "fatal",
+          "explain": "服务既没写 image 也没写 build。在 compose 文件里补上其一。"
+        },
+        "compose_dependency_failed": {
+          "match": "dependency failed to start",
+          "level": "fatal",
+          "explain": "依赖的服务启动失败了。docker logs 看依赖服务（如数据库）的日志。"
+        },
+        "container_unhealthy": {
+          "match": "is unhealthy",
+          "level": "fatal",
+          "explain": "健康检查失败。看 healthcheck 配置和容器日志，确认服务真的就绪。"
+        },
+        "compose_version_obsolete": {
+          "match": "`version` is obsolete",
+          "level": "warning",
+          "explain": "新版 compose 不再需要顶层 version 字段。删除它即可。"
+        },
+        "nonzero_code_build": {
+          "match": "returned a non-zero code",
+          "level": "fatal",
+          "explain": "Dockerfile 某条命令执行失败。看失败的 RUN 步骤输出定位。"
+        },
+        "copy_failed": {
+          "match": "COPY failed",
+          "level": "fatal",
+          "explain": "COPY 找不到源文件。检查路径是否在构建上下文内、.dockerignore 是否排除。"
+        },
+        "platform_mismatch_image": {
+          "match": "does not match the specified platform",
+          "level": "fatal",
+          "explain": "镜像平台与目标不符。用 --platform 指定，或换多架构镜像。"
+        },
+        "already_started": {
+          "match": "is already started",
+          "level": "error",
+          "explain": "容器已在运行，无需再次 start。"
+        },
+        "invalid_reference_format": {
+          "match": "invalid reference format",
+          "level": "fatal",
+          "explain": "镜像名/tag 格式不合法。检查是否有多余空格或非法字符。"
+        },
+        "repo_lowercase": {
+          "match": "must be lowercase",
+          "level": "fatal",
+          "explain": "镜像名必须全小写。把大写字母改成小写。"
+        },
+        "invalid_mount_config": {
+          "match": "invalid mount config",
+          "level": "fatal",
+          "explain": "挂载配置不合法。检查 -v/--mount 的语法和路径。"
+        },
+        "bind_source_missing": {
+          "match": "bind source path does not exist",
+          "level": "fatal",
+          "explain": "挂载的宿主机路径不存在。先创建目录，或修正路径。"
+        },
+        "ports_not_available_win": {
+          "match": "Ports are not available",
+          "level": "fatal",
+          "explain": "Windows 上端口被 HyperV 保留或占用。netsh 排除端口或换端口。"
+        },
+        "wsl2_incomplete": {
+          "match": "WSL 2",
+          "level": "fatal",
+          "explain": "Docker Desktop 的 WSL2 后端异常。wsl --update 更新，或按提示修复内核。"
+        },
+        "hardware_virtualization": {
+          "match": "Hardware assisted virtualization",
+          "level": "fatal",
+          "explain": "BIOS 没开虚拟化。进 BIOS 启用 VT-x/AMD-V。"
+        },
+        "api_version_mismatch": {
+          "match": "maximum supported API version||is too new",
+          "level": "fatal",
+          "explain": "Docker CLI 和守护进程版本差异过大。统一升级 client/daemon。"
+        },
+        "oci_runtime_create": {
+          "match": "OCI runtime create failed||container init caused",
+          "level": "fatal",
+          "explain": "容器启动失败。看 caused by：常见为命令不存在、权限或 cgroup 限制。"
+        },
+        "passwd_no_user": {
+          "match": "no matching entries in passwd file",
+          "level": "fatal",
+          "explain": "--user 指定的用户在镜像里不存在。用镜像内存在的 UID/用户名。"
+        },
+        "unknown_flag": {
+          "match": "unknown flag",
+          "level": "fatal",
+          "explain": "docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。"
+        },
+        "not_a_docker_command": {
+          "match": "is not a docker command",
+          "level": "fatal",
+          "explain": "没有这个子命令。docker --help 查看可用命令。"
+        },
+        "container_not_running": {
+          "match": "container .* is not running",
+          "level": "fatal",
+          "explain": "容器已停止，无法 exec。先 docker start，或看它为什么退出。"
+        },
+        "register_layer": {
+          "match": "failed to register layer||Error processing tar file||applyLayer",
+          "level": "fatal",
+          "explain": "镜像层导入失败。tar 内容可能损坏，重新构建/下载镜像。"
+        },
+        "cache_key_failed": {
+          "match": "failed to compute cache key||lstat",
+          "level": "fatal",
+          "explain": "构建缓存计算失败，通常是 COPY 的源文件不存在。检查构建上下文和 .dockerignore。"
+        },
+        "shim_task_failed": {
+          "match": "failed to create shim task",
+          "level": "fatal",
+          "explain": "容器运行时启动失败。看 caused by：常为入口命令或 cgroup 问题。"
+        },
+        "cannot_join_network": {
+          "match": "cannot join network of a non running container",
+          "level": "fatal",
+          "explain": "要共享网络的目标容器没在运行。先启动它。"
+        },
+        "iptables_failed": {
+          "match": "iptables failed",
+          "level": "fatal",
+          "explain": "配置端口转发时 iptables 出错。检查宿主机 iptables/nftables 和权限。"
+        },
+        "compose_service_missing": {
+          "match": "No such service",
+          "level": "fatal",
+          "explain": "compose 文件里没有这个服务名。检查 services 定义和拼写。"
+        },
+        "undefined_dependency": {
+          "match": "depends on undefined service",
+          "level": "fatal",
+          "explain": "depends_on 引用了不存在的服务。补定义或改名字。"
+        },
+        "compose_file_invalid": {
+          "match": "The Compose file is invalid",
+          "level": "fatal",
+          "explain": "compose 文件结构不合法。看具体字段报错修正。"
+        },
+        "compose_yaml_error": {
+          "match": "yaml: line",
+          "level": "fatal",
+          "explain": "compose 的 YAML 语法错误。检查缩进（不能用 Tab）和冒号后空格。"
+        },
+        "external_resource_missing": {
+          "match": "declared as external, but could not be found",
+          "level": "fatal",
+          "explain": "声明为 external 的网络/卷不存在。先创建它，或去掉 external 改由 compose 管理。"
+        },
+        "daemon_json_invalid": {
+          "match": "unable to configure the Docker daemon with file",
+          "level": "fatal",
+          "explain": "daemon.json 解析失败。检查 JSON 语法和字段名。"
+        },
+        "non_interactive_login": {
+          "match": "Cannot perform an interactive login",
+          "level": "fatal",
+          "explain": "非交互终端无法登录。改用 docker login -u -p 或配置凭据存储。"
+        },
+        "logging_driver_unreadable": {
+          "match": "logging driver does not support reading",
+          "level": "error",
+          "explain": "当前日志驱动不支持 docker logs。查看对应的外部日志存储。"
+        },
+        "docker_not_in_path": {
+          "match": "is not recognized",
+          "level": "fatal",
+          "explain": "系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。"
+        },
+        "compose_up_errors": {
+          "match": "Encountered errors while bringing up the project",
+          "level": "fatal",
+          "explain": "compose 启动时有服务失败。往上看每个服务的具体报错。"
         }
       }
     }

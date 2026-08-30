@@ -104,6 +104,11 @@ int main(int argc, char** argv) {
         {"A RenderFlex overflowed by 42 pixels on the bottom.", "Dart/Flutter"},
         {"error[E0308]: mismatched types\n --> src/main.rs:11:5", "Rust"},
         {"warning: implicit declaration of function 'malloc'", "C"},
+        {"fatal: not a git repository (or any of the parent directories): .git", "Git"},
+        {"To https://github.com/user/repo.git\n ! [rejected]        main -> main (fetch first)", "Git"},
+        {"fatal: Please tell me who you are", "Git"},
+        {"Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?", "Docker"},
+        {"docker: Error response from daemon: driver failed programming external connectivity on endpoint web: Bind for 0.0.0.0:8080 failed", "Docker"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
