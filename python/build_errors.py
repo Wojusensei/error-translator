@@ -29,6 +29,8 @@ SAMPLES = {
     "SQL": "ERROR 1064 (42000): You have an error in your SQL syntax",
     "Shell": "syntax error near unexpected token `fi'",
     "R": "Error: object 'df' not found",
+    "Lua": "attempt to index a nil value (global 'config')",
+    "Perl": "Can't call method \"get\" on an undefined value at script.pl line 12.",
     "Scala": "type mismatch;\n found   : String\n required: Int"
 }
 
@@ -69,15 +71,16 @@ def inject_html(data):
     with open(html_path, "r", encoding="utf-8") as f:
         html = f.read()
 
-    # 标记包裹整个字面量（包括方括号/花括号），避免注入后出现双层括号
+    # 标记包裹整个字面量（包括方括号/花括号），避免注入后出现双层括号。
+    # 用 lambda 做替换，防止 re.subn 把 JSON 里的 \n 等转义解释成真实换行。
     html, n1 = re.subn(
         r"/\*RULES_DATA_START\*/.*?/\*RULES_DATA_END\*/",
-        "/*RULES_DATA_START*/" + rules_js + "/*RULES_DATA_END*/",
+        lambda m: "/*RULES_DATA_START*/" + rules_js + "/*RULES_DATA_END*/",
         html, flags=re.S)
     samples_js = json.dumps(SAMPLES, ensure_ascii=False)
     html, n2 = re.subn(
         r"/\*SAMPLES_START\*/.*?/\*SAMPLES_END\*/",
-        "/*SAMPLES_START*/" + samples_js + "/*SAMPLES_END*/",
+        lambda m: "/*SAMPLES_START*/" + samples_js + "/*SAMPLES_END*/",
         html, flags=re.S)
 
     with open(html_path, "w", encoding="utf-8") as f:

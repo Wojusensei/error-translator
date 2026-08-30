@@ -1432,3 +1432,124 @@ Scala|Cannot run program|error|启动外部进程失败。检查命令是否在 
 Scala|NotSerializableException|fatal|对象没有实现 Serializable 却被发送/序列化了。实现接口，或把不可序列化的依赖移出闭包。
 Scala|KryoException|fatal|Kryo 序列化失败。注册对应的类，或检查字段是否可序列化。
 Scala|empty.reduceLeft|fatal|对空集合调用了 reduce。用 fold 提供初始值，或先判断非空。
+Lua|attempt to index|fatal|对 nil 做了下标访问。变量没初始化、函数没返回值，或字段名写错了，往上游找它为什么是 nil。
+Lua|attempt to concatenate|fatal|字符串拼接的操作数是 nil 或表。先 tostring() 转换，或检查变量为什么没值。
+Lua|attempt to call|fatal|把 nil 当函数调用了。函数名拼错、没 require 对应模块，或变量被覆盖成了 nil。
+Lua|attempt to perform arithmetic on|fatal|对不能做运算的值（nil、字符串、表）做了算术运算。先 tonumber() 转换或检查数据。
+Lua|attempt to compare|fatal|比较的两个值类型不匹配，比如 number 和 string。统一类型再比较，注意 Lua 不自动转换。
+Lua|bad argument #|fatal|调用内置函数时参数不对，报错里写了期望的类型和实际收到的。检查参数个数和类型。
+Lua|wrong number of arguments|fatal|标准库函数的参数个数不对，比如 table.insert。对照文档检查参数。
+Lua|table index is nil|fatal|用 nil 当表的键。Lua 不允许，键必须是 number/string/table 等。
+Lua|table index is NaN|fatal|用 NaN 当表的键。NaN 是无效键，检查数值计算哪里产生了 NaN。
+Lua|invalid order function for sorting|fatal|table.sort 的比较函数不满足严格弱序，比如对相等元素返回 true。改比较逻辑或加并列判断。
+Lua|in table for 'concat'|fatal|table.concat 的表里有 number/string 以外的元素。过滤或先转换类型。
+Lua|too many results to unpack|fatal|unpack 的结果超出了能处理的范围。限制表大小或手动取需要的值。
+Lua|unexpected symbol near||unexpected number near|fatal|语法错误，这个位置不该有这个符号。检查缺逗号、缺括号或关键字拼写。
+Lua|expected near||<eof>||expected (to close|fatal|这里缺少提示的符号，或代码到结尾还没写完。检查括号、end 是否配对。
+Lua|unfinished string|fatal|字符串引号没闭合。检查字符串结尾，或字符串里有未转义的引号。
+Lua|malformed number|fatal|数字字面量写错了。检查小数点、指数格式或混入了非法字符。
+Lua|invalid escape sequence||decimal escape too large|fatal|字符串转义序列不对。检查反斜杠后面的字符是否是合法转义。
+Lua|ambiguous syntax|fatal|这行代码既像函数调用又像新语句，Lua 分不清。给函数调用加括号或分号。
+Lua|too many local variables||too many registers||too many syntax levels||too many upvalues|fatal|函数里的局部变量/嵌套层级超过 Lua 上限。拆分函数或用表存变量。
+Lua|module '.*' not found||error loading module|fatal|require 找不到这个模块。检查模块名拼写和 package.path/cpath 配置，文件是否真的存在。
+Lua|loop or previous error loading module|fatal|模块互相 require 形成循环，或上次加载出错了。把公共逻辑抽到独立模块。
+Lua|not enough memory|fatal|Lua 内存耗尽。检查是否有大表没有释放、死循环累积数据。
+Lua|C stack overflow|fatal|C 栈溢出，通常是元方法递归触发（比如 __index 指向自己）。检查元方法逻辑。
+Lua|stack overflow|fatal|Lua 栈溢出。递归没有终止条件，检查递归出口。
+Lua|dead coroutine|fatal|协程已经运行结束，不能再 resume。检查协程的生命周期管理。
+Lua|non-suspended coroutine|fatal|协程正在运行或已挂起别的状态，不能 resume。检查协程调度逻辑。
+Lua|attempt to yield across a C-call boundary|fatal|在 C 函数调用的栈帧里 yield 不行。把 yield 挪到纯 Lua 栈层，或用协程包装。
+Lua|assign to const variable|fatal|给 <const> 常量赋值了。去掉 const 或去掉赋值。
+Lua|attempt to perform 'n%0'||attempt to perform 'n//0'|fatal|对 0 取模。检查除数是不是变量计算成了 0。
+Lua|number has no integer representation|fatal|这个数字不是整数却被要求整数，比如 math.floor 之外的位置。先取整再传入。
+Lua|error in error handling|fatal|错误处理流程里又抛了错。检查 error/pcall 的嵌套逻辑。
+Lua|jumps into the scope|fatal|goto 跳进了局部变量的作用域里，不允许。调整标签位置。
+Lua|no visible label|fatal|goto 的标签不存在或不在可见范围内。检查标签拼写和作用域。
+Lua|break outside a loop|fatal|break 必须在循环里使用。检查代码块结构。
+Lua|to 'format'|fatal|string.format 的格式符不对。检查 %d/%s 等占位符和参数是否对应。
+Lua|malformed pattern|fatal|Lua 模式匹配串写错了。检查括号、% 转义是否配对完整。
+Lua|invalid capture index||unfinished capture|fatal|模式里的捕获组下标越界或没写完。检查 %1 引用和捕获括号。
+Lua|invalid key to 'next'|fatal|遍历时修改了表的键结构。先收集要删的键，遍历完再处理。
+Lua|'for' step is zero|fatal|数字 for 的步长是 0，会死循环。检查步长计算。
+Lua|'for' initial value must be a number||'for' limit must be a number|fatal|for 的起点/终点必须是数字。检查变量是不是 nil 或字符串。
+Lua|attempt to use a closed file||file is already closed|fatal|文件已 close 还在读写。检查文件句柄的生命周期。
+Lua|attempt to modify a readonly table|fatal|环境表/元表被设为只读，不能修改。检查 setfenv/_ENV 的保护逻辑。
+Lua|cannot change a protected metatable|fatal|这个表的元表被 __metatable 保护了，不能 setmetatable。
+Lua|function arguments expected|fatal|函数调用语法不完整。检查是否漏了括号和参数。
+Lua|attempt to get length of|fatal|对 nil/布尔等取长度。先确认变量是字符串或表。
+Lua|attempt to perform bitwise|fatal|对非整数做了位运算。先用 math.type 确认是整数，必要时取整。
+Lua|no literal representation|fatal|这个值没有字面量表示，不能按 %s 输出。用 tostring 转换或改用合适的格式符。
+Lua|No results matching query|error|luarocks 上找不到这个包。检查包名拼写，或搜索确认包是否存在。
+Lua|Error executing lua|fatal|Neovim 执行 Lua 脚本出错。往上看具体的 lua 错误行定位。
+Perl|Bareword|fatal|裸词不被允许，通常是字符串忘了加引号，或开启了 strict 后引用未声明的词。
+Perl|requires explicit package name|fatal|use strict 下变量必须先用 my/our 声明。给变量加 my，或检查是不是漏了 $ @ % 符号。
+Perl|Can't locate object method|fatal|调用对象上不存在的方法。检查方法名拼写，类是否已 use，或版本里有没有这个方法。
+Perl|in @INC|fatal|在 @INC 里找不到模块。检查模块名大小写（文件名必须一致）、包是否安装、lib 路径。
+Perl|Undefined subroutine|fatal|调用了不存在的函数。检查函数名拼写，或模块有没有导出这个函数。
+Perl|on an undefined value|fatal|对 undef 调用方法。上游返回了 undef（比如查询没结果），先 defined 判断再调用。
+Perl|on unblessed reference|fatal|对普通引用调方法，它不是对象。检查是不是忘了 bless，或对象构造出错。
+Perl|Not a CODE reference|fatal|把非代码引用当函数调用。检查 & 引用或回调变量。
+Perl|Not a.*reference||use an undefined value as an|fatal|解引用类型不对：把标量/未定义值当数组或哈希解引用了。检查变量类型和引用层级。
+Perl|Illegal division by zero|fatal|除以零。做除法前检查除数。
+Perl|Illegal modulus zero|fatal|对 0 取模。检查除数。
+Perl|Modification of a read-only value|fatal|试图修改只读值，常见于想改字面量或只读参数。先复制到变量再改。
+Perl|syntax error at|fatal|语法错误。看指向的行号，常见为漏分号、括号引号不配对。
+Perl|Missing right curly or square bracket|fatal|花括号/方括号没有闭合。配对检查整个文件。
+Perl|runaway multi-line|fatal|多行字符串没有结尾，可能是引号没闭合或忘了结束分隔符。
+Perl|found where operator expected|fatal|字符串或数字出现在需要运算符的位置。常见为字符串没加引号，或漏了运算符。
+Perl|pattern not terminated||Substitution replacement not terminated|fatal|正则/替换表达式的定界符没闭合。检查 / / 或 s/// 的完整配对。
+Perl|Can't find string terminator|fatal|heredoc 的结束标记没找到。检查 <<EOF 的结束行是否顶格写且拼写一致。
+Perl|Possible attempt to separate words with commas|warning|qw() 里不该有逗号。qw 按空白分词，去掉逗号。
+Perl|used only once: possible typo|warning|变量只出现一次，多半是拼写错误。检查 $ 符号和名字是否一致。
+Perl|Use of uninitialized value|warning|用了未初始化的变量。上游可能返回了 undef，用 // '' 或 defined 判断兜底。
+Perl|substr outside of string|warning|substr 的偏移超出字符串范围。检查长度计算。
+Perl|Deep recursion on subroutine|warning|递归深度超过 100 层。可能是数据太大或缺少终止条件，检查递归逻辑。
+Perl|Odd number of elements|warning|哈希赋值的键值个数是奇数。检查数组里是不是有 undef 或漏了元素。
+Perl|Useless use of|warning|表达式的结果没有被使用，比如单独一行 $a + $b。删除或赋值。
+Perl|isn't numeric|warning|字符串当数字用了，内容不是数字。检查数据来源，必要时校验格式。
+Perl|Invalid conversion in|warning|printf/sprintf 的格式符不对。检查 %d/%s 与参数类型。
+Perl|No such file or directory.* at |fatal|文件或目录不存在。open 失败时 $! 里就是它，检查路径拼写。
+Perl|Base class package .* is empty||Base class package|fatal|use base/parent 指定的父类没加载成功。检查父类模块是否安装。
+Perl|is experimental|warning|用到了实验性特性，未来可能变化。生产代码避免使用，或显式 no warnings。
+Perl|Prototype mismatch|warning|函数原型和之前的定义不一致。统一原型声明。
+Perl|Not enough arguments for||Too many arguments for|fatal|函数原型要求的参数个数和调用不符。检查调用处参数个数。
+Perl|length() used on|warning|对数组用 length()，应该用 scalar(@array)。检查函数选择。
+Perl|Maybe you should just omit the defined|fatal|defined(@array) 是旧写法已移除。判断空数组直接用 @array 或 scalar(@array)。
+Perl|Can't modify constant item|fatal|给常量赋值。检查是不是漏了 my 声明，或变量名写成了字面量。
+Perl|Can't return outside a subroutine|fatal|return 只能在函数内使用。检查代码块结构。
+Perl|with n > m in regex|fatal|正则的量词 {n,m} 里 n 比 m 大。交换或修正量词。
+Perl|Unmatched ( in regex||Unmatched [ in regex|fatal|正则的括号没闭合。检查 ( 和 [ 的配对，需要字面括号时转义。
+Perl|didn't return a numeric value|warning|sort 的比较函数没返回 -1/0/1。检查 <=> 写法，别用 cmp 比数字。
+Perl|Attempt to reload|fatal|模块被重复加载且两次内容不同。检查是否同名模块出现在多个路径。
+Perl|Compilation failed in require||compilation aborted|fatal|被 require 的模块自己编译失败了。往上找模块内部的具体语法/运行错误。
+Perl|Subroutine .* redefined|warning|函数被重复定义，后者覆盖前者。检查是否重复 use 或 require 了同文件。
+Perl|Wide character in|warning|输出含宽字符但输出流不是 UTF-8。加 binmode(STDOUT, ':utf8') 或统一编码层。
+Perl|Malformed UTF-8|warning|字节序列不是合法 UTF-8。检查文件编码，输入时用 Encode 解码。
+Perl|DBI connect|fatal|数据库连接失败。看具体 driver 的错误：账号密码、主机端口或网络问题。
+Perl|execute failed|fatal|SQL 执行失败。检查 SQL 语法、参数绑定和数据内容。
+Perl|install_driver|fatal|找不到 DBD 驱动模块。安装对应的 DBD::xxx 包。
+Perl|closed filehandle|warning|文件句柄已关闭还在读写。检查 close 的时机和句柄作用域。
+Perl|malformed JSON string|fatal|JSON 解析失败。内容可能不是合法 JSON，打印原文检查。
+Perl|Died at|fatal|脚本调用了 die 但没给消息。检查调用栈上哪个环节抛出了异常。
+Perl|glob failed|warning|外部 glob 命令执行失败。检查 shell 环境和通配符。
+Perl|Insecure dependency|fatal|Taint 模式下使用了未清洗的外部输入。对数据做正则提取后再使用。
+Perl|A thread exited while|warning|有线程还在运行主线程就结束了。join 所有线程再退出。
+Perl|panic:|fatal|Perl 内部错误。通常是 XS 模块或核心 bug，尝试复现最小用例并上报。
+Perl|Illegal seek|warning|对流式句柄做 seek，比如管道。管道只能顺序读。
+Perl|The experimental postfix dereference|warning|后置解引用还是实验特性。避免使用或接受警告。
+Perl|Smartmatch is experimental|warning|智能匹配行为不稳定。改用显式比较。
+Perl|Can't take log of|fatal|对负数或 0 取对数。检查输入值范围。
+Perl|Range iterator outside integer range|fatal|范围超出整数上限。数据太大，换算法或分批。
+Perl|Can't modify non-lvalue subroutine call|fatal|函数调用结果不能作为左值。先取出到变量再修改。
+Perl|Out of memory!|fatal|Perl 内存耗尽。检查是否有超大结构或死循环累积数据。
+Perl|exited with status|warning|外部命令以非 0 状态退出。检查子进程自己的输出和返回码。
+Perl|Broken pipe|warning|下游已经关闭还在往管道写。检查接收方的生命周期。
+Perl|Alarm clock|warning|alarm 定时器到点触发了 SIGALRM。检查超时逻辑，必要时重新设置。
+Perl|chdir: |warning|切换目录失败。检查路径是否存在。
+Perl|did not return a true value|fatal|模块最后一行没返回真值。确认文件末尾有 1;
+Perl|Character in 'C' column wrapped|warning|字节操作遇上了宽字符，可能截断 UTF-8。先解码再处理字符。
+Perl|does not map to Unicode|warning|字节序列映射不到 Unicode 字符。检查编码是否声明正确。
+Perl|Character in 'C' column|warning|对 UTF-8 字符串按字节操作会出错。先 decode 成字符再 substr。
+Perl|Can't modify glob|fatal|给文件句柄类型团赋值的方式不对。用 open 或词法句柄。
+Perl|Unmatched ( in regex; marked|fatal|正则里的左括号没有对应的右括号。检查分组配对。
+Perl|is a directory|warning|把目录当文件打开了。检查路径最后是不是文件。

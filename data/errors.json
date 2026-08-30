@@ -7260,6 +7260,621 @@
           "explain": "对空集合调用了 reduce。用 fold 提供初始值，或先判断非空。"
         }
       }
+    },
+    "lua": {
+      "name": "Lua",
+      "patterns": {
+        "nil_index": {
+          "match": "attempt to index",
+          "level": "fatal",
+          "explain": "对 nil 做了下标访问。变量没初始化、函数没返回值，或字段名写错了，往上游找它为什么是 nil。"
+        },
+        "nil_concat": {
+          "match": "attempt to concatenate",
+          "level": "fatal",
+          "explain": "字符串拼接的操作数是 nil 或表。先 tostring() 转换，或检查变量为什么没值。"
+        },
+        "nil_call": {
+          "match": "attempt to call",
+          "level": "fatal",
+          "explain": "把 nil 当函数调用了。函数名拼错、没 require 对应模块，或变量被覆盖成了 nil。"
+        },
+        "arithmetic_on": {
+          "match": "attempt to perform arithmetic on",
+          "level": "fatal",
+          "explain": "对不能做运算的值（nil、字符串、表）做了算术运算。先 tonumber() 转换或检查数据。"
+        },
+        "attempt_compare": {
+          "match": "attempt to compare",
+          "level": "fatal",
+          "explain": "比较的两个值类型不匹配，比如 number 和 string。统一类型再比较，注意 Lua 不自动转换。"
+        },
+        "bad_argument": {
+          "match": "bad argument #",
+          "level": "fatal",
+          "explain": "调用内置函数时参数不对，报错里写了期望的类型和实际收到的。检查参数个数和类型。"
+        },
+        "wrong_args_lua": {
+          "match": "wrong number of arguments",
+          "level": "fatal",
+          "explain": "标准库函数的参数个数不对，比如 table.insert。对照文档检查参数。"
+        },
+        "table_index_nil": {
+          "match": "table index is nil",
+          "level": "fatal",
+          "explain": "用 nil 当表的键。Lua 不允许，键必须是 number/string/table 等。"
+        },
+        "table_index_nan": {
+          "match": "table index is NaN",
+          "level": "fatal",
+          "explain": "用 NaN 当表的键。NaN 是无效键，检查数值计算哪里产生了 NaN。"
+        },
+        "invalid_order_function": {
+          "match": "invalid order function for sorting",
+          "level": "fatal",
+          "explain": "table.sort 的比较函数不满足严格弱序，比如对相等元素返回 true。改比较逻辑或加并列判断。"
+        },
+        "concat_invalid": {
+          "match": "in table for 'concat'",
+          "level": "fatal",
+          "explain": "table.concat 的表里有 number/string 以外的元素。过滤或先转换类型。"
+        },
+        "unpack_error": {
+          "match": "too many results to unpack",
+          "level": "fatal",
+          "explain": "unpack 的结果超出了能处理的范围。限制表大小或手动取需要的值。"
+        },
+        "unexpected_symbol_lua": {
+          "match": "unexpected symbol near||unexpected number near",
+          "level": "fatal",
+          "explain": "语法错误，这个位置不该有这个符号。检查缺逗号、缺括号或关键字拼写。"
+        },
+        "expected_near": {
+          "match": "expected near||<eof>||expected (to close",
+          "level": "fatal",
+          "explain": "这里缺少提示的符号，或代码到结尾还没写完。检查括号、end 是否配对。"
+        },
+        "unfinished_string": {
+          "match": "unfinished string",
+          "level": "fatal",
+          "explain": "字符串引号没闭合。检查字符串结尾，或字符串里有未转义的引号。"
+        },
+        "malformed_number": {
+          "match": "malformed number",
+          "level": "fatal",
+          "explain": "数字字面量写错了。检查小数点、指数格式或混入了非法字符。"
+        },
+        "invalid_escape_lua": {
+          "match": "invalid escape sequence||decimal escape too large",
+          "level": "fatal",
+          "explain": "字符串转义序列不对。检查反斜杠后面的字符是否是合法转义。"
+        },
+        "ambiguous_syntax": {
+          "match": "ambiguous syntax",
+          "level": "fatal",
+          "explain": "这行代码既像函数调用又像新语句，Lua 分不清。给函数调用加括号或分号。"
+        },
+        "too_many_locals": {
+          "match": "too many local variables||too many registers||too many syntax levels||too many upvalues",
+          "level": "fatal",
+          "explain": "函数里的局部变量/嵌套层级超过 Lua 上限。拆分函数或用表存变量。"
+        },
+        "module_not_found_lua": {
+          "match": "module '.*' not found||error loading module",
+          "level": "fatal",
+          "explain": "require 找不到这个模块。检查模块名拼写和 package.path/cpath 配置，文件是否真的存在。"
+        },
+        "loop_in_require": {
+          "match": "loop or previous error loading module",
+          "level": "fatal",
+          "explain": "模块互相 require 形成循环，或上次加载出错了。把公共逻辑抽到独立模块。"
+        },
+        "lua_oom": {
+          "match": "not enough memory",
+          "level": "fatal",
+          "explain": "Lua 内存耗尽。检查是否有大表没有释放、死循环累积数据。"
+        },
+        "c_stack_overflow_lua": {
+          "match": "C stack overflow",
+          "level": "fatal",
+          "explain": "C 栈溢出，通常是元方法递归触发（比如 __index 指向自己）。检查元方法逻辑。"
+        },
+        "stack_overflow_lua": {
+          "match": "stack overflow",
+          "level": "fatal",
+          "explain": "Lua 栈溢出。递归没有终止条件，检查递归出口。"
+        },
+        "coroutine_dead": {
+          "match": "dead coroutine",
+          "level": "fatal",
+          "explain": "协程已经运行结束，不能再 resume。检查协程的生命周期管理。"
+        },
+        "non_suspended_coroutine": {
+          "match": "non-suspended coroutine",
+          "level": "fatal",
+          "explain": "协程正在运行或已挂起别的状态，不能 resume。检查协程调度逻辑。"
+        },
+        "yield_boundary": {
+          "match": "attempt to yield across a C-call boundary",
+          "level": "fatal",
+          "explain": "在 C 函数调用的栈帧里 yield 不行。把 yield 挪到纯 Lua 栈层，或用协程包装。"
+        },
+        "const_assign_lua": {
+          "match": "assign to const variable",
+          "level": "fatal",
+          "explain": "给 <const> 常量赋值了。去掉 const 或去掉赋值。"
+        },
+        "div_zero_lua": {
+          "match": "attempt to perform 'n%0'||attempt to perform 'n//0'",
+          "level": "fatal",
+          "explain": "对 0 取模。检查除数是不是变量计算成了 0。"
+        },
+        "number_no_integer": {
+          "match": "number has no integer representation",
+          "level": "fatal",
+          "explain": "这个数字不是整数却被要求整数，比如 math.floor 之外的位置。先取整再传入。"
+        },
+        "error_in_error": {
+          "match": "error in error handling",
+          "level": "fatal",
+          "explain": "错误处理流程里又抛了错。检查 error/pcall 的嵌套逻辑。"
+        },
+        "goto_scope": {
+          "match": "jumps into the scope",
+          "level": "fatal",
+          "explain": "goto 跳进了局部变量的作用域里，不允许。调整标签位置。"
+        },
+        "label_undefined": {
+          "match": "no visible label",
+          "level": "fatal",
+          "explain": "goto 的标签不存在或不在可见范围内。检查标签拼写和作用域。"
+        },
+        "break_position": {
+          "match": "break outside a loop",
+          "level": "fatal",
+          "explain": "break 必须在循环里使用。检查代码块结构。"
+        },
+        "invalid_format": {
+          "match": "to 'format'",
+          "level": "fatal",
+          "explain": "string.format 的格式符不对。检查 %d/%s 等占位符和参数是否对应。"
+        },
+        "malformed_pattern": {
+          "match": "malformed pattern",
+          "level": "fatal",
+          "explain": "Lua 模式匹配串写错了。检查括号、% 转义是否配对完整。"
+        },
+        "invalid_capture": {
+          "match": "invalid capture index||unfinished capture",
+          "level": "fatal",
+          "explain": "模式里的捕获组下标越界或没写完。检查 %1 引用和捕获括号。"
+        },
+        "invalid_key_next": {
+          "match": "invalid key to 'next'",
+          "level": "fatal",
+          "explain": "遍历时修改了表的键结构。先收集要删的键，遍历完再处理。"
+        },
+        "for_step_zero": {
+          "match": "'for' step is zero",
+          "level": "fatal",
+          "explain": "数字 for 的步长是 0，会死循环。检查步长计算。"
+        },
+        "for_number_bounds": {
+          "match": "'for' initial value must be a number||'for' limit must be a number",
+          "level": "fatal",
+          "explain": "for 的起点/终点必须是数字。检查变量是不是 nil 或字符串。"
+        },
+        "closed_file": {
+          "match": "attempt to use a closed file||file is already closed",
+          "level": "fatal",
+          "explain": "文件已 close 还在读写。检查文件句柄的生命周期。"
+        },
+        "readonly_table_lua": {
+          "match": "attempt to modify a readonly table",
+          "level": "fatal",
+          "explain": "环境表/元表被设为只读，不能修改。检查 setfenv/_ENV 的保护逻辑。"
+        },
+        "protected_metatable": {
+          "match": "cannot change a protected metatable",
+          "level": "fatal",
+          "explain": "这个表的元表被 __metatable 保护了，不能 setmetatable。"
+        },
+        "function_args_expected": {
+          "match": "function arguments expected",
+          "level": "fatal",
+          "explain": "函数调用语法不完整。检查是否漏了括号和参数。"
+        },
+        "get_length": {
+          "match": "attempt to get length of",
+          "level": "fatal",
+          "explain": "对 nil/布尔等取长度。先确认变量是字符串或表。"
+        },
+        "bitwise_on": {
+          "match": "attempt to perform bitwise",
+          "level": "fatal",
+          "explain": "对非整数做了位运算。先用 math.type 确认是整数，必要时取整。"
+        },
+        "no_literal": {
+          "match": "no literal representation",
+          "level": "fatal",
+          "explain": "这个值没有字面量表示，不能按 %s 输出。用 tostring 转换或改用合适的格式符。"
+        },
+        "luarocks_no_results": {
+          "match": "No results matching query",
+          "level": "error",
+          "explain": "luarocks 上找不到这个包。检查包名拼写，或搜索确认包是否存在。"
+        },
+        "nvim_lua_error": {
+          "match": "Error executing lua",
+          "level": "fatal",
+          "explain": "Neovim 执行 Lua 脚本出错。往上看具体的 lua 错误行定位。"
+        }
+      }
+    },
+    "perl": {
+      "name": "Perl",
+      "patterns": {
+        "bareword": {
+          "match": "Bareword",
+          "level": "fatal",
+          "explain": "裸词不被允许，通常是字符串忘了加引号，或开启了 strict 后引用未声明的词。"
+        },
+        "requires_explicit_package": {
+          "match": "requires explicit package name",
+          "level": "fatal",
+          "explain": "use strict 下变量必须先用 my/our 声明。给变量加 my，或检查是不是漏了 $ @ % 符号。"
+        },
+        "cant_call_method": {
+          "match": "Can't locate object method",
+          "level": "fatal",
+          "explain": "调用对象上不存在的方法。检查方法名拼写，类是否已 use，或版本里有没有这个方法。"
+        },
+        "cant_locate_module": {
+          "match": "in @INC",
+          "level": "fatal",
+          "explain": "在 @INC 里找不到模块。检查模块名大小写（文件名必须一致）、包是否安装、lib 路径。"
+        },
+        "undefined_subroutine": {
+          "match": "Undefined subroutine",
+          "level": "fatal",
+          "explain": "调用了不存在的函数。检查函数名拼写，或模块有没有导出这个函数。"
+        },
+        "on_undefined_value": {
+          "match": "on an undefined value",
+          "level": "fatal",
+          "explain": "对 undef 调用方法。上游返回了 undef（比如查询没结果），先 defined 判断再调用。"
+        },
+        "on_unblessed": {
+          "match": "on unblessed reference",
+          "level": "fatal",
+          "explain": "对普通引用调方法，它不是对象。检查是不是忘了 bless，或对象构造出错。"
+        },
+        "not_a_code_ref": {
+          "match": "Not a CODE reference",
+          "level": "fatal",
+          "explain": "把非代码引用当函数调用。检查 & 引用或回调变量。"
+        },
+        "not_x_ref": {
+          "match": "Not a.*reference||use an undefined value as an",
+          "level": "fatal",
+          "explain": "解引用类型不对：把标量/未定义值当数组或哈希解引用了。检查变量类型和引用层级。"
+        },
+        "division_by_zero_perl": {
+          "match": "Illegal division by zero",
+          "level": "fatal",
+          "explain": "除以零。做除法前检查除数。"
+        },
+        "modulus_zero": {
+          "match": "Illegal modulus zero",
+          "level": "fatal",
+          "explain": "对 0 取模。检查除数。"
+        },
+        "read_only_value": {
+          "match": "Modification of a read-only value",
+          "level": "fatal",
+          "explain": "试图修改只读值，常见于想改字面量或只读参数。先复制到变量再改。"
+        },
+        "syntax_error_perl": {
+          "match": "syntax error at",
+          "level": "fatal",
+          "explain": "语法错误。看指向的行号，常见为漏分号、括号引号不配对。"
+        },
+        "missing_right_brace": {
+          "match": "Missing right curly or square bracket",
+          "level": "fatal",
+          "explain": "花括号/方括号没有闭合。配对检查整个文件。"
+        },
+        "runaway_multiline": {
+          "match": "runaway multi-line",
+          "level": "fatal",
+          "explain": "多行字符串没有结尾，可能是引号没闭合或忘了结束分隔符。"
+        },
+        "operator_expected": {
+          "match": "found where operator expected",
+          "level": "fatal",
+          "explain": "字符串或数字出现在需要运算符的位置。常见为字符串没加引号，或漏了运算符。"
+        },
+        "pattern_not_terminated": {
+          "match": "pattern not terminated||Substitution replacement not terminated",
+          "level": "fatal",
+          "explain": "正则/替换表达式的定界符没闭合。检查 / / 或 s/// 的完整配对。"
+        },
+        "string_terminator": {
+          "match": "Can't find string terminator",
+          "level": "fatal",
+          "explain": "heredoc 的结束标记没找到。检查 <<EOF 的结束行是否顶格写且拼写一致。"
+        },
+        "separate_words_commas": {
+          "match": "Possible attempt to separate words with commas",
+          "level": "warning",
+          "explain": "qw() 里不该有逗号。qw 按空白分词，去掉逗号。"
+        },
+        "used_only_once": {
+          "match": "used only once: possible typo",
+          "level": "warning",
+          "explain": "变量只出现一次，多半是拼写错误。检查 $ 符号和名字是否一致。"
+        },
+        "uninitialized_value": {
+          "match": "Use of uninitialized value",
+          "level": "warning",
+          "explain": "用了未初始化的变量。上游可能返回了 undef，用 // '' 或 defined 判断兜底。"
+        },
+        "substr_outside_string": {
+          "match": "substr outside of string",
+          "level": "warning",
+          "explain": "substr 的偏移超出字符串范围。检查长度计算。"
+        },
+        "deep_recursion": {
+          "match": "Deep recursion on subroutine",
+          "level": "warning",
+          "explain": "递归深度超过 100 层。可能是数据太大或缺少终止条件，检查递归逻辑。"
+        },
+        "odd_hash_elements": {
+          "match": "Odd number of elements",
+          "level": "warning",
+          "explain": "哈希赋值的键值个数是奇数。检查数组里是不是有 undef 或漏了元素。"
+        },
+        "useless_use_of": {
+          "match": "Useless use of",
+          "level": "warning",
+          "explain": "表达式的结果没有被使用，比如单独一行 $a + $b。删除或赋值。"
+        },
+        "not_numeric": {
+          "match": "isn't numeric",
+          "level": "warning",
+          "explain": "字符串当数字用了，内容不是数字。检查数据来源，必要时校验格式。"
+        },
+        "invalid_conversion_sprintf": {
+          "match": "Invalid conversion in",
+          "level": "warning",
+          "explain": "printf/sprintf 的格式符不对。检查 %d/%s 与参数类型。"
+        },
+        "perl_no_such": {
+          "match": "No such file or directory.* at ",
+          "level": "fatal",
+          "explain": "文件或目录不存在。open 失败时 $! 里就是它，检查路径拼写。"
+        },
+        "base_class_empty": {
+          "match": "Base class package .* is empty||Base class package",
+          "level": "fatal",
+          "explain": "use base/parent 指定的父类没加载成功。检查父类模块是否安装。"
+        },
+        "experimental_feature": {
+          "match": "is experimental",
+          "level": "warning",
+          "explain": "用到了实验性特性，未来可能变化。生产代码避免使用，或显式 no warnings。"
+        },
+        "prototype_mismatch": {
+          "match": "Prototype mismatch",
+          "level": "warning",
+          "explain": "函数原型和之前的定义不一致。统一原型声明。"
+        },
+        "args_for_sub": {
+          "match": "Not enough arguments for||Too many arguments for",
+          "level": "fatal",
+          "explain": "函数原型要求的参数个数和调用不符。检查调用处参数个数。"
+        },
+        "length_used_on": {
+          "match": "length() used on",
+          "level": "warning",
+          "explain": "对数组用 length()，应该用 scalar(@array)。检查函数选择。"
+        },
+        "defined_array": {
+          "match": "Maybe you should just omit the defined",
+          "level": "fatal",
+          "explain": "defined(@array) 是旧写法已移除。判断空数组直接用 @array 或 scalar(@array)。"
+        },
+        "modify_constant": {
+          "match": "Can't modify constant item",
+          "level": "fatal",
+          "explain": "给常量赋值。检查是不是漏了 my 声明，或变量名写成了字面量。"
+        },
+        "return_outside_sub": {
+          "match": "Can't return outside a subroutine",
+          "level": "fatal",
+          "explain": "return 只能在函数内使用。检查代码块结构。"
+        },
+        "regex_n_m": {
+          "match": "with n > m in regex",
+          "level": "fatal",
+          "explain": "正则的量词 {n,m} 里 n 比 m 大。交换或修正量词。"
+        },
+        "unmatched_bracket": {
+          "match": "Unmatched ( in regex||Unmatched [ in regex",
+          "level": "fatal",
+          "explain": "正则的括号没闭合。检查 ( 和 [ 的配对，需要字面括号时转义。"
+        },
+        "sort_numeric": {
+          "match": "didn't return a numeric value",
+          "level": "warning",
+          "explain": "sort 的比较函数没返回 -1/0/1。检查 <=> 写法，别用 cmp 比数字。"
+        },
+        "reload_aborted": {
+          "match": "Attempt to reload",
+          "level": "fatal",
+          "explain": "模块被重复加载且两次内容不同。检查是否同名模块出现在多个路径。"
+        },
+        "compilation_aborted": {
+          "match": "Compilation failed in require||compilation aborted",
+          "level": "fatal",
+          "explain": "被 require 的模块自己编译失败了。往上找模块内部的具体语法/运行错误。"
+        },
+        "sub_redefined": {
+          "match": "Subroutine .* redefined",
+          "level": "warning",
+          "explain": "函数被重复定义，后者覆盖前者。检查是否重复 use 或 require 了同文件。"
+        },
+        "wide_character": {
+          "match": "Wide character in",
+          "level": "warning",
+          "explain": "输出含宽字符但输出流不是 UTF-8。加 binmode(STDOUT, ':utf8') 或统一编码层。"
+        },
+        "malformed_utf8": {
+          "match": "Malformed UTF-8",
+          "level": "warning",
+          "explain": "字节序列不是合法 UTF-8。检查文件编码，输入时用 Encode 解码。"
+        },
+        "dbi_connect_failed": {
+          "match": "DBI connect",
+          "level": "fatal",
+          "explain": "数据库连接失败。看具体 driver 的错误：账号密码、主机端口或网络问题。"
+        },
+        "dbi_execute_failed": {
+          "match": "execute failed",
+          "level": "fatal",
+          "explain": "SQL 执行失败。检查 SQL 语法、参数绑定和数据内容。"
+        },
+        "install_driver_failed": {
+          "match": "install_driver",
+          "level": "fatal",
+          "explain": "找不到 DBD 驱动模块。安装对应的 DBD::xxx 包。"
+        },
+        "closed_filehandle": {
+          "match": "closed filehandle",
+          "level": "warning",
+          "explain": "文件句柄已关闭还在读写。检查 close 的时机和句柄作用域。"
+        },
+        "malformed_json_perl": {
+          "match": "malformed JSON string",
+          "level": "fatal",
+          "explain": "JSON 解析失败。内容可能不是合法 JSON，打印原文检查。"
+        },
+        "died_at": {
+          "match": "Died at",
+          "level": "fatal",
+          "explain": "脚本调用了 die 但没给消息。检查调用栈上哪个环节抛出了异常。"
+        },
+        "glob_failed": {
+          "match": "glob failed",
+          "level": "warning",
+          "explain": "外部 glob 命令执行失败。检查 shell 环境和通配符。"
+        },
+        "insecure_dependency": {
+          "match": "Insecure dependency",
+          "level": "fatal",
+          "explain": "Taint 模式下使用了未清洗的外部输入。对数据做正则提取后再使用。"
+        },
+        "thread_exited": {
+          "match": "A thread exited while",
+          "level": "warning",
+          "explain": "有线程还在运行主线程就结束了。join 所有线程再退出。"
+        },
+        "panic_sv": {
+          "match": "panic:",
+          "level": "fatal",
+          "explain": "Perl 内部错误。通常是 XS 模块或核心 bug，尝试复现最小用例并上报。"
+        },
+        "illegal_seek": {
+          "match": "Illegal seek",
+          "level": "warning",
+          "explain": "对流式句柄做 seek，比如管道。管道只能顺序读。"
+        },
+        "postfix_deref_old": {
+          "match": "The experimental postfix dereference",
+          "level": "warning",
+          "explain": "后置解引用还是实验特性。避免使用或接受警告。"
+        },
+        "smartmatch_experimental": {
+          "match": "Smartmatch is experimental",
+          "level": "warning",
+          "explain": "智能匹配行为不稳定。改用显式比较。"
+        },
+        "can_t_take_log": {
+          "match": "Can't take log of",
+          "level": "fatal",
+          "explain": "对负数或 0 取对数。检查输入值范围。"
+        },
+        "range_iterator": {
+          "match": "Range iterator outside integer range",
+          "level": "fatal",
+          "explain": "范围超出整数上限。数据太大，换算法或分批。"
+        },
+        "cannot_modify_non_lvalue": {
+          "match": "Can't modify non-lvalue subroutine call",
+          "level": "fatal",
+          "explain": "函数调用结果不能作为左值。先取出到变量再修改。"
+        },
+        "perl_oom": {
+          "match": "Out of memory!",
+          "level": "fatal",
+          "explain": "Perl 内存耗尽。检查是否有超大结构或死循环累积数据。"
+        },
+        "exit_val_warning": {
+          "match": "exited with status",
+          "level": "warning",
+          "explain": "外部命令以非 0 状态退出。检查子进程自己的输出和返回码。"
+        },
+        "broken_pipe_perl": {
+          "match": "Broken pipe",
+          "level": "warning",
+          "explain": "下游已经关闭还在往管道写。检查接收方的生命周期。"
+        },
+        "alarm_timeout": {
+          "match": "Alarm clock",
+          "level": "warning",
+          "explain": "alarm 定时器到点触发了 SIGALRM。检查超时逻辑，必要时重新设置。"
+        },
+        "chdir_fail": {
+          "match": "chdir: ",
+          "level": "warning",
+          "explain": "切换目录失败。检查路径是否存在。"
+        },
+        "require_hook": {
+          "match": "did not return a true value",
+          "level": "fatal",
+          "explain": "模块最后一行没返回真值。确认文件末尾有 1;"
+        },
+        "utf8_wrapped": {
+          "match": "Character in 'C' column wrapped",
+          "level": "warning",
+          "explain": "字节操作遇上了宽字符，可能截断 UTF-8。先解码再处理字符。"
+        },
+        "utf8_does_not_map": {
+          "match": "does not map to Unicode",
+          "level": "warning",
+          "explain": "字节序列映射不到 Unicode 字符。检查编码是否声明正确。"
+        },
+        "substr_utf8": {
+          "match": "Character in 'C' column",
+          "level": "warning",
+          "explain": "对 UTF-8 字符串按字节操作会出错。先 decode 成字符再 substr。"
+        },
+        "assign_to_glob": {
+          "match": "Can't modify glob",
+          "level": "fatal",
+          "explain": "给文件句柄类型团赋值的方式不对。用 open 或词法句柄。"
+        },
+        "unmatched_paren_subst": {
+          "match": "Unmatched ( in regex; marked",
+          "level": "fatal",
+          "explain": "正则里的左括号没有对应的右括号。检查分组配对。"
+        },
+        "open_read_only_dir": {
+          "match": "is a directory",
+          "level": "warning",
+          "explain": "把目录当文件打开了。检查路径最后是不是文件。"
+        }
+      }
     }
   }
 }

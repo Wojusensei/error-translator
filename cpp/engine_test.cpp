@@ -81,6 +81,11 @@ int main(int argc, char** argv) {
         {"error: not found: value sqlContext", "Scala"},
         {"scala.MatchError: List() (of class scala.collection.immutable.Nil$)", "Scala"},
         {"org.apache.spark.SparkException: Task not serializable", "Scala"},
+        {"lua: a.lua:12: attempt to index a nil value (global 'config')", "Lua"},
+        {"lua: a.lua:15: attempt to call a nil value (field 'save')", "Lua"},
+        {"Can't call method \"get\" on an undefined value at script.pl line 12.", "Perl"},
+        {"Can't locate DBI.pm in @INC (you may need to install the DBI module)", "Perl"},
+        {"Global symbol \"$coutn\" requires explicit package name at a.pl line 5.", "Perl"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
