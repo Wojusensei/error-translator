@@ -1735,7 +1735,7 @@
           "explain": "这里需要一个表达式。常见于模板依赖名没写 typename、把类型名当成了变量。"
         },
         "used_as_a_function": {
-          "match": "cannot be used as a function",
+          "match": "cannot be used as a function||called object type",
           "level": "error",
           "explain": "你把不是函数的东西当函数调用，或对象与函数同名冲突。检查名字冲突和括号位置。"
         },
@@ -1873,6 +1873,101 @@
           "match": "stack memory associated with local variable||address of local variable",
           "level": "error",
           "explain": "返回了局部变量的引用或地址，函数返回后它就失效了。返回值、智能指针或由调用方提供的对象。"
+        },
+        "type_redefinition": {
+          "match": "type redefinition",
+          "level": "error",
+          "explain": "类型被重复定义。检查头文件保护宏和重复包含。"
+        },
+        "c2061": {
+          "match": "C2061",
+          "level": "error",
+          "explain": "MSVC：标识符前有语法错误，通常是类型没声明。检查头文件包含顺序。"
+        },
+        "c2039": {
+          "match": "C2039",
+          "level": "error",
+          "explain": "MSVC：该类型不是这个类/名字空间的成员。检查拼写和包含的头文件版本。"
+        },
+        "lnk2001": {
+          "match": "LNK2001",
+          "level": "fatal",
+          "explain": "MSVC：无法解析的外部符号。函数声明了没实现，或库没链接。"
+        },
+        "lnk2005": {
+          "match": "LNK2005",
+          "level": "fatal",
+          "explain": "MSVC：符号重复定义。检查重复包含的实现文件和全局变量。"
+        },
+        "lnk2019": {
+          "match": "LNK2019",
+          "level": "fatal",
+          "explain": "MSVC：无法解析的外部符号。检查函数签名、调用约定和链接库。"
+        },
+        "prototype_mismatch_cpp": {
+          "match": "does not match any in class",
+          "level": "error",
+          "explain": "函数定义与类内声明不匹配。对照声明检查参数和 const。"
+        },
+        "out_of_line_mismatch": {
+          "match": "out-of-line definition does not match",
+          "level": "error",
+          "explain": "类外定义与声明不一致。检查签名、模板参数和 const。"
+        },
+        "ctor_not_viable": {
+          "match": "candidate constructor not viable||candidate function not viable",
+          "level": "error",
+          "explain": "候选构造/重载函数不可行。看每个候选被拒的原因（参数个数/类型）。"
+        },
+        "no_viable_conversion": {
+          "match": "no viable conversion",
+          "level": "error",
+          "explain": "没有可行的类型转换。检查构造函数是否 explicit、类型是否兼容。"
+        },
+        "indirection_requires_pointer": {
+          "match": "indirection requires pointer operand",
+          "level": "error",
+          "explain": "对非指针用 *。检查变量是不是忘了取地址或声明类型。"
+        },
+        "unterminated_ifdef": {
+          "match": "unterminated conditional directive",
+          "level": "fatal",
+          "explain": "#if/#ifdef 没有对应的 #endif。检查预处理指令配对。"
+        },
+        "void_expression": {
+          "match": "invalid use of void expression",
+          "level": "error",
+          "explain": "void 函数的返回值被使用了。void 调用不能作为值参与运算。"
+        },
+        "void_value_not_ignored": {
+          "match": "void value not ignored as it ought to be",
+          "level": "error",
+          "explain": "void 返回值被赋值/使用。检查函数返回类型与调用处的期望。"
+        },
+        "nonvirtual_dtor_delete": {
+          "match": "deleting object of polymorphic class type",
+          "level": "error",
+          "explain": "通过基类指针 delete 多态对象但析构不是虚函数。给基类加 virtual 析构。"
+        },
+        "specialization_order": {
+          "match": "specialization after instantiation",
+          "level": "error",
+          "explain": "模板特化必须在首次实例化之前声明。调整代码顺序。"
+        },
+        "c2259": {
+          "match": "C2259",
+          "level": "error",
+          "explain": "MSVC：不能实例化抽象类。实现全部纯虚函数或用具体子类。"
+        },
+        "c2660": {
+          "match": "C2660",
+          "level": "error",
+          "explain": "MSVC：函数不接受这个个数的参数。对照签名检查。"
+        },
+        "c2079": {
+          "match": "C2079",
+          "level": "error",
+          "explain": "MSVC：使用了只有前向声明的类型。包含完整定义。"
         }
       }
     },
@@ -2683,6 +2778,71 @@
           "match": "defined and not used",
           "level": "error",
           "explain": "定义了 label 却没使用。删掉，或补上 goto/continue 用法。"
+        },
+        "go_infer_type_args": {
+          "match": "cannot infer type arguments",
+          "level": "error",
+          "explain": "泛型参数推不出来。显式写出类型参数，如 f[int](x)。"
+        },
+        "go_copy_locks": {
+          "match": "assignment copies lock value",
+          "level": "warning",
+          "explain": "赋值复制了含锁的结构体。改用指针传递，避免锁被复制失效。"
+        },
+        "go_negative_waitgroup": {
+          "match": "negative WaitGroup counter",
+          "level": "fatal",
+          "explain": "WaitGroup 的 Add/Done 不配对。检查 Done 是否重复调用。"
+        },
+        "go_unlock_unlocked": {
+          "match": "unlock of unlocked mutex",
+          "level": "fatal",
+          "explain": "解锁了没有加锁的 mutex。检查锁的配对逻辑。"
+        },
+        "go_close_nil_channel": {
+          "match": "close of nil channel",
+          "level": "fatal",
+          "explain": "对 nil channel 调 close。channel 要先 make 初始化。"
+        },
+        "go_io_timeout": {
+          "match": "i/o timeout",
+          "level": "error",
+          "explain": "网络读写超时。检查下游响应速度，调大 timeout。"
+        },
+        "go_bad_connection": {
+          "match": "driver: bad connection",
+          "level": "error",
+          "explain": "数据库连接已失效。开启连接池健康检查或重试。"
+        },
+        "go_constraint_not_satisfied": {
+          "match": "does not satisfy",
+          "level": "error",
+          "explain": "类型不满足泛型约束。检查类型是否实现了约束要求的接口。"
+        },
+        "go_package_mismatch": {
+          "match": "found packages",
+          "level": "error",
+          "explain": "同一目录里有不同 package 名的文件。统一目录下所有文件的 package 声明。"
+        },
+        "go_ambiguous_import": {
+          "match": "ambiguous import",
+          "level": "error",
+          "explain": "这个包能从多个模块解析，歧义了。统一依赖版本或显式指定。"
+        },
+        "go_tls_verify": {
+          "match": "tls: failed to verify certificate",
+          "level": "error",
+          "explain": "TLS 证书校验失败。更新系统证书，内网自签证书加入信任池。"
+        },
+        "go_sum_mismatch": {
+          "match": "SECURITY ERROR",
+          "level": "error",
+          "explain": "依赖校验和与 go.sum 不符。确认来源可信后执行 go mod tidy 更新。"
+        },
+        "go_test_timeout": {
+          "match": "panic: test timed out",
+          "level": "fatal",
+          "explain": "测试超时被杀。看 panic 栈里卡住的 goroutine，检查死锁或过慢的用例。"
         }
       }
     },
@@ -2865,7 +3025,7 @@
           "explain": "方法收到了不合理的参数值。看报错里的参数名和消息定位。"
         },
         "invalid_operation": {
-          "match": "InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element",
+          "match": "InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element||There is already an open DataReader||Operation is not valid due to the current state",
           "level": "error",
           "explain": "对象当前状态下不允许这个操作。常见于：遍历时修改集合、LINQ 取不到元素、连接未打开。"
         },
@@ -2925,7 +3085,7 @@
           "explain": "并行任务里抛出了多个异常的聚合。看 InnerExceptions 找到每个真实错误。"
         },
         "object_disposed": {
-          "match": "ObjectDisposedException||Cannot access a disposed object",
+          "match": "ObjectDisposedException||Cannot access a disposed object||Cannot access a closed",
           "level": "error",
           "explain": "对象已被 Dispose 还在使用。检查 using 块的范围，不要在释放后继续访问。"
         },
@@ -2985,7 +3145,7 @@
           "explain": "没有访问权限。检查文件是否只读、是否需要管理员权限运行。"
         },
         "file_not_found_cs": {
-          "match": "FileNotFoundException||Could not load file or assembly||Could not find file",
+          "match": "FileNotFoundException||Could not load file or assembly||Could not find file||Could not load type",
           "level": "error",
           "explain": "文件或程序集找不到。检查 DLL 是否在输出目录、NuGet 包是否还原成功。"
         },
@@ -3010,7 +3170,7 @@
           "explain": "JSON 序列化/反序列化失败。字段类型不匹配或循环引用，检查数据结构。"
         },
         "cs4033": {
-          "match": "CS4033",
+          "match": "CS4033||CS4032",
           "level": "error",
           "explain": "await 只能用在 async 方法里。给方法加上 async 修饰符。"
         },
@@ -3088,6 +3248,61 @@
           "match": "CS0162",
           "level": "warning",
           "explain": "检测到无法执行的代码。前面可能已经 return 或 throw，检查控制流。"
+        },
+        "ef_cannot_create_model": {
+          "match": "Unable to create an object of type",
+          "level": "error",
+          "explain": "EF Core 无法构造 DbContext。检查构造函数参数和 DI 注册。"
+        },
+        "fixed_size_collection": {
+          "match": "Collection was of a fixed size",
+          "level": "error",
+          "explain": "对固定大小集合做增删。换用 List 等可变集合。"
+        },
+        "nullable_object_value": {
+          "match": "Nullable object must have a value",
+          "level": "error",
+          "explain": "对 null 的可空类型取 .Value。先 HasValue 判断或用 GetValueOrDefault。"
+        },
+        "sequence_multiple": {
+          "match": "Sequence contains more than one element",
+          "level": "error",
+          "explain": "Single() 查到了多条记录。改用 First/FirstOrDefault，或加过滤条件。"
+        },
+        "arithmetic_overflow_cs": {
+          "match": "Arithmetic operation resulted in an overflow",
+          "level": "error",
+          "explain": "算术运算溢出。检查数值范围，必要时换更大的类型或 checked 控制。"
+        },
+        "ssl_connection_cs": {
+          "match": "The SSL connection could not be established||Could not create SSL/TLS secure channel",
+          "level": "error",
+          "explain": "TLS 建立失败。更新证书链和 TLS 版本配置，检查系统时间。"
+        },
+        "msb3073": {
+          "match": "MSB3073",
+          "level": "error",
+          "explain": "MSBuild 调用的命令以非零退出。看上方命令的实际输出定位。"
+        },
+        "assets_file_missing": {
+          "match": "Assets file ... not found||NU1004||Assets file",
+          "level": "error",
+          "explain": "project.assets.json 不存在。先 dotnet restore 还原依赖。"
+        },
+        "cs1520": {
+          "match": "CS1520",
+          "level": "fatal",
+          "explain": "方法必须声明返回类型。检查函数签名是否漏了 void 或类型。"
+        },
+        "cs0501": {
+          "match": "CS0501",
+          "level": "error",
+          "explain": "非抽象/extern 方法必须有方法体。补上大括号体或声明为 abstract。"
+        },
+        "cs0123": {
+          "match": "CS0123",
+          "level": "error",
+          "explain": "没有重载与委托签名匹配。对照委托定义检查方法签名。"
         }
       }
     },
@@ -3493,6 +3708,41 @@
           "match": "ambiguous first argument",
           "level": "warning",
           "explain": "第一个参数的写法有歧义，解释器可能理解成别的含义。给参数加括号明确。"
+        },
+        "rails_secret_missing": {
+          "match": "Missing `secret_key_base`",
+          "level": "fatal",
+          "explain": "生产环境缺少 secret_key_base。配置 credentials 或环境变量。"
+        },
+        "rails_deprecation": {
+          "match": "DEPRECATION WARNING",
+          "level": "warning",
+          "explain": "Rails 提示用了将废弃的 API。按提示迁移，未来版本会报错。"
+        },
+        "rails_translation_missing": {
+          "match": "translation missing",
+          "level": "warning",
+          "explain": "I18n 缺少对应翻译。在 locale 文件里补上这个键。"
+        },
+        "association_not_found": {
+          "match": "Association named",
+          "level": "error",
+          "explain": "模型上没有这个关联。检查 has_many/belongs_to 声明和关联名拼写。"
+        },
+        "connection_timeout_rails": {
+          "match": "ConnectionTimeoutError",
+          "level": "error",
+          "explain": "连接池耗尽。调大 pool 配置，或检查是否有连接泄漏。"
+        },
+        "rails_deadlock": {
+          "match": "ActiveRecord::Deadlocked",
+          "level": "error",
+          "explain": "数据库死锁，事务被回滚。统一加锁顺序并加重试。"
+        },
+        "gem_native_extension": {
+          "match": "Failed to build gem native extension",
+          "level": "fatal",
+          "explain": "gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。"
         }
       }
     },
@@ -3898,6 +4148,61 @@
           "match": "could not find driver",
           "level": "fatal",
           "explain": "PHP 没有加载对应的数据库驱动扩展。安装并启用 pdo_mysql / pdo_pgsql 等扩展。"
+        },
+        "laravel_validation": {
+          "match": "The given data was invalid",
+          "level": "error",
+          "explain": "Laravel 表单验证失败。看 errors 里的字段提示修正输入。"
+        },
+        "laravel_token_mismatch": {
+          "match": "TokenMismatchException",
+          "level": "error",
+          "explain": "CSRF token 不匹配或过期。检查表单 @csrf 和 session 配置。"
+        },
+        "laravel_unresolvable": {
+          "match": "Unresolvable dependency",
+          "level": "fatal",
+          "explain": "容器解析不了构造参数。检查类型提示和接口绑定。"
+        },
+        "wp_db_connection": {
+          "match": "Error establishing a database connection",
+          "level": "fatal",
+          "explain": "WordPress 连不上数据库。检查 wp-config.php 的账号密码主机和 MySQL 状态。"
+        },
+        "symfony_service_missing": {
+          "match": "non-existent service",
+          "level": "fatal",
+          "explain": "容器里没有这个服务。检查 services.yaml 配置和自动装配。"
+        },
+        "twig_variable": {
+          "match": "Variable \".*\" does not exist",
+          "level": "fatal",
+          "explain": "模板里用了没传入的变量。控制器补传，或用 default 过滤器。"
+        },
+        "phpunit_no_tests": {
+          "match": "No tests executed",
+          "level": "warning",
+          "explain": "没有匹配到任何测试。检查 --filter 参数和测试文件命名。"
+        },
+        "pdo_class_missing": {
+          "match": "Class 'PDO' not found",
+          "level": "fatal",
+          "explain": "PHP 没启用 PDO 扩展。安装 php-pdo 并启用对应驱动。"
+        },
+        "upload_exceeds": {
+          "match": "The uploaded file exceeds",
+          "level": "error",
+          "explain": "上传文件超过限制。调大 upload_max_filesize 和 post_max_size。"
+        },
+        "post_content_length": {
+          "match": "POST Content-Length of",
+          "level": "error",
+          "explain": "POST 数据超过 post_max_size。调大该配置并重启服务。"
+        },
+        "json_malformed_utf8": {
+          "match": "Malformed UTF-8 characters",
+          "level": "warning",
+          "explain": "json_encode 的内容含非法 UTF-8。检查数据来源编码，必要时转码。"
         }
       }
     },
@@ -4303,6 +4608,71 @@
           "match": "cannot add||cannot multiply",
           "level": "error",
           "explain": "这两个类型之间不支持该运算。检查操作数类型，或为自定义类型实现对应的运算 trait。"
+        },
+        "tokio_context": {
+          "match": "Tokio runtime",
+          "level": "fatal",
+          "explain": "在 Tokio 运行时之外调用了异步 API。用 #[tokio::main] 或 block_on 包裹。"
+        },
+        "future_not_send": {
+          "match": "cannot be sent between threads safely",
+          "level": "error",
+          "explain": "future 跨线程传递但内部持有非 Send 的引用。检查跨 await 持有的变量，必要时用 Arc/Mutex 或重排作用域。"
+        },
+        "serde_missing_field": {
+          "match": "missing field `.*` at line||missing field",
+          "level": "error",
+          "explain": "反序列化的数据缺少必填字段。补全数据，或给字段标 #[serde(default)]。"
+        },
+        "serde_invalid_type": {
+          "match": "invalid type: ",
+          "level": "error",
+          "explain": "JSON 字段类型和结构体定义不符。看实际类型和期望类型的差异。"
+        },
+        "serde_unknown_field": {
+          "match": "unknown field `",
+          "level": "error",
+          "explain": "数据里有结构体没定义的字段。补字段，或加 #[serde(deny_unknown_fields)] 的反面：ignore。"
+        },
+        "closure_outlive": {
+          "match": "closure may outlive the current function",
+          "level": "error",
+          "explain": "闭包可能活得比捕获的引用久。加 move 关键字转移所有权。"
+        },
+        "dyn_sized": {
+          "match": "size known at compile-time",
+          "level": "error",
+          "explain": "编译期大小未知。用 Box<dyn Trait>/&dyn Trait 或 Arc 包装。"
+        },
+        "recursive_infinite_size": {
+          "match": "recursive type has infinite size",
+          "level": "error",
+          "explain": "类型递归包含自己。用 Box/Rc 间接持有打断无限大小。"
+        },
+        "not_object_safe": {
+          "match": "cannot be made into an object",
+          "level": "error",
+          "explain": "trait 有泛型方法/静态方法，不能做 dyn 对象。重构方法签名或用泛型。"
+        },
+        "cannot_indexed": {
+          "match": "cannot be indexed",
+          "level": "error",
+          "explain": "这个类型没有实现 Index。检查类型，或改用对应方法取值。"
+        },
+        "rustup_no_toolchain": {
+          "match": "no default toolchain configured",
+          "level": "fatal",
+          "explain": "rustup 没有默认工具链。运行 rustup default stable。"
+        },
+        "link_exe_not_found": {
+          "match": "link.exe not found",
+          "level": "fatal",
+          "explain": "Windows 缺 MSVC 链接工具。安装 Visual Studio Build Tools 或改用 GNU 工具链。"
+        },
+        "macro_recursion_limit": {
+          "match": "recursion limit reached",
+          "level": "error",
+          "explain": "宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = \"256\"]。"
         }
       }
     },
@@ -5158,6 +5528,61 @@
           "match": "Cannot find a parameter with this name",
           "level": "error",
           "explain": "函数没有这个命名参数。检查参数名拼写，或调用处是否传多了参数。"
+        },
+        "type_inference_failed_kt": {
+          "match": "Type inference failed",
+          "level": "error",
+          "explain": "推不出表达式类型。显式标注类型或拆分链式调用。"
+        },
+        "room_save_field": {
+          "match": "Cannot figure out how to save this field",
+          "level": "error",
+          "explain": "Room 不知道怎么存这个字段。加 TypeConverter，或改成 Room 支持的类型。"
+        },
+        "retrofit_converter": {
+          "match": "Unable to create converter for class",
+          "level": "error",
+          "explain": "Retrofit 缺少转换器。添加 Gson/Moshi converter factory。"
+        },
+        "gson_begin_object": {
+          "match": "Expected BEGIN_OBJECT but was STRING",
+          "level": "error",
+          "explain": "JSON 结构和实体类对不上：期望对象却拿到了字符串。检查数据格式。"
+        },
+        "leaked_window": {
+          "match": "Activity has leaked window",
+          "level": "error",
+          "explain": "Activity 退出时 Dialog 还在显示。在 onDestroy 前关闭 Dialog。"
+        },
+        "too_much_main_thread": {
+          "match": "too much work on its main thread",
+          "level": "warning",
+          "explain": "主线程负担过重导致掉帧/ANR。把耗时逻辑移到子线程或协程。"
+        },
+        "network_main_thread": {
+          "match": "NetworkOnMainThreadException",
+          "level": "fatal",
+          "explain": "Android 禁止主线程发网络请求。用协程/Retrofit/WorkManager 异步处理。"
+        },
+        "instantiate_activity": {
+          "match": "Unable to instantiate activity",
+          "level": "fatal",
+          "explain": "Activity 无法创建。检查类名/包名、构造函数和 Application 初始化。"
+        },
+        "child_already_has_parent": {
+          "match": "already has a parent",
+          "level": "fatal",
+          "explain": "同一个 View 同时挂在两个父容器上。先从旧父容器 removeView 再添加。"
+        },
+        "resource_not_found": {
+          "match": "Resources\\$NotFoundException",
+          "level": "fatal",
+          "explain": "资源 ID 不存在。检查 R.xxx 引用和资源文件是否编译进包。"
+        },
+        "bad_token_window": {
+          "match": "Unable to add window",
+          "level": "fatal",
+          "explain": "在 Activity 已销毁或 context 不对时弹窗。确认用 Activity context 且页面还存活。"
         }
       }
     },
@@ -5558,6 +5983,41 @@
           "match": "Extra trailing closure",
           "level": "error",
           "explain": "传了多余的尾随闭包。检查函数签名，或把闭包写进参数列表。"
+        },
+        "key_not_found_swift": {
+          "match": "No value associated with key",
+          "level": "fatal",
+          "explain": "Codable 解码缺少必填字段。数据里补字段，或把属性声明成 Optional。"
+        },
+        "expected_to_decode": {
+          "match": "Expected to decode",
+          "level": "fatal",
+          "explain": "JSON 字段类型和模型声明不符。看 expected/found 的类型差异。"
+        },
+        "modifying_state_during_update": {
+          "match": "Modifying state during view update",
+          "level": "fatal",
+          "explain": "在 body 里直接改 @State 会引发循环。把状态修改移到按钮回调/onAppear。"
+        },
+        "string_index_out_of_bounds": {
+          "match": "String index is out of bounds",
+          "level": "fatal",
+          "explain": "字符串下标越界。注意 Swift 的 String.Index 不是整数，用 index(offsetBy:)。"
+        },
+        "designated_init_required": {
+          "match": "must call a designated initializer of the superclass",
+          "level": "error",
+          "explain": "子类 init 必须调用父类的指定初始化器，而不是 convenience。"
+        },
+        "super_init_not_called": {
+          "match": "super.init isn't called before returning",
+          "level": "error",
+          "explain": "初始化器结束前没调 super.init。补上父类初始化调用。"
+        },
+        "stored_before_super": {
+          "match": "must be initialized before calling super.init",
+          "level": "error",
+          "explain": "先初始化自己的所有存储属性，再调 super.init。"
         }
       }
     },
@@ -5963,6 +6423,31 @@
           "match": "TimeoutException",
           "level": "error",
           "explain": "异步操作超时。检查网络与接口性能，或调大超时时间。"
+        },
+        "missing_plugin_exception": {
+          "match": "MissingPluginException",
+          "level": "error",
+          "explain": "插件的原生实现没注册。热重载无效，重新运行 app（stop 后再 run）。"
+        },
+        "platform_exception": {
+          "match": "PlatformException",
+          "level": "error",
+          "explain": "原生平台代码抛了异常。看 code 和 message，通常是权限或原生层配置问题。"
+        },
+        "stream_already_listened": {
+          "match": "Stream has already been listened to",
+          "level": "error",
+          "explain": "单订阅流被重复监听。改用 asBroadcastStream()，或每次创建新 Stream。"
+        },
+        "route_generator_missing": {
+          "match": "Could not find a generator for route",
+          "level": "fatal",
+          "explain": "命名路由没找到页面生成器。检查 onGenerateRoute/routes 里注册的名字。"
+        },
+        "unimplemented_dart": {
+          "match": "UnimplementedError",
+          "level": "fatal",
+          "explain": "执行到了 throw UnimplementedError() 占位。补上具体实现。"
         }
       }
     },

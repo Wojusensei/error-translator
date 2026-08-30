@@ -341,7 +341,7 @@ C++|lvalue required|error|赋值号的左边必须是可以修改的对象。检
 C++|discards qualifiers|error|把 const 对象传给了会修改它的非 const 方法。把方法声明为 const 或去掉对象的 const。
 C++|expected initializer|fatal|声明处语法不对。检查变量声明格式和类型名拼写。
 C++|expected primary-expression before|fatal|这里需要一个表达式。常见于模板依赖名没写 typename、把类型名当成了变量。
-C++|cannot be used as a function|error|你把不是函数的东西当函数调用，或对象与函数同名冲突。检查名字冲突和括号位置。
+C++|cannot be used as a function||called object type|error|你把不是函数的东西当函数调用，或对象与函数同名冲突。检查名字冲突和括号位置。
 C++|static assertion failed|fatal|编译期断言失败。看提示的消息文本，检查类型大小、模板参数等编译期条件。
 C++|narrowing conversion|error|初始化列表里发生了可能丢数据的窄化转换。改成显式转换，或使用相同宽度的类型。
 C++|may be used uninitialized|warning|变量在某些路径下可能未初始化就被使用。声明时初始化，或补全赋值分支。
@@ -369,6 +369,25 @@ C++|non-const reference|error|不能把临时值/常量绑定到非 const 引用
 C++|C2027|error|MSVC：使用了只有前向声明的类型。包含完整定义的头文件。
 C++|invalid static_cast|error|这两个类型之间不能用 static_cast。检查类型关系，或改用 dynamic_cast/reinterpret_cast。
 C++|stack memory associated with local variable||address of local variable|error|返回了局部变量的引用或地址，函数返回后它就失效了。返回值、智能指针或由调用方提供的对象。
+C++|type redefinition|error|类型被重复定义。检查头文件保护宏和重复包含。
+C++|C2061|error|MSVC：标识符前有语法错误，通常是类型没声明。检查头文件包含顺序。
+C++|C2039|error|MSVC：该类型不是这个类/名字空间的成员。检查拼写和包含的头文件版本。
+C++|LNK2001|fatal|MSVC：无法解析的外部符号。函数声明了没实现，或库没链接。
+C++|LNK2005|fatal|MSVC：符号重复定义。检查重复包含的实现文件和全局变量。
+C++|LNK2019|fatal|MSVC：无法解析的外部符号。检查函数签名、调用约定和链接库。
+C++|does not match any in class|error|函数定义与类内声明不匹配。对照声明检查参数和 const。
+C++|out-of-line definition does not match|error|类外定义与声明不一致。检查签名、模板参数和 const。
+C++|candidate constructor not viable||candidate function not viable|error|候选构造/重载函数不可行。看每个候选被拒的原因（参数个数/类型）。
+C++|no viable conversion|error|没有可行的类型转换。检查构造函数是否 explicit、类型是否兼容。
+C++|indirection requires pointer operand|error|对非指针用 *。检查变量是不是忘了取地址或声明类型。
+C++|unterminated conditional directive|fatal|#if/#ifdef 没有对应的 #endif。检查预处理指令配对。
+C++|invalid use of void expression|error|void 函数的返回值被使用了。void 调用不能作为值参与运算。
+C++|void value not ignored as it ought to be|error|void 返回值被赋值/使用。检查函数返回类型与调用处的期望。
+C++|deleting object of polymorphic class type|error|通过基类指针 delete 多态对象但析构不是虚函数。给基类加 virtual 析构。
+C++|specialization after instantiation|error|模板特化必须在首次实例化之前声明。调整代码顺序。
+C++|C2259|error|MSVC：不能实例化抽象类。实现全部纯虚函数或用具体子类。
+C++|C2660|error|MSVC：函数不接受这个个数的参数。对照签名检查。
+C++|C2079|error|MSVC：使用了只有前向声明的类型。包含完整定义。
 C|implicit declaration of function||implicit declaration of built-in|warning|使用了没有声明的函数。忘记 #include 对应的头文件了，或者函数名拼写错误。
 C|use of undeclared identifier|error|这个变量或函数没声明过。检查拼写，确认头文件已包含、变量在使用前已定义。
 C|unknown type name|error|类型名没被识别。检查头文件是否包含，结构体类型是否漏了 struct 关键字。
@@ -529,6 +548,19 @@ Go|requires Go 1.|error|当前 Go 版本太旧，不满足依赖要求。升级 
 Go|no Go files in|error|目录里没有 .go 文件。检查导入路径是否指向了正确的包目录。
 Go|flag provided but not defined|error|命令行传了程序没定义的 flag。检查 flag 定义和调用参数，子命令要在 flag.Parse 前处理。
 Go|defined and not used|error|定义了 label 却没使用。删掉，或补上 goto/continue 用法。
+Go|cannot infer type arguments|error|泛型参数推不出来。显式写出类型参数，如 f[int](x)。
+Go|assignment copies lock value|warning|赋值复制了含锁的结构体。改用指针传递，避免锁被复制失效。
+Go|negative WaitGroup counter|fatal|WaitGroup 的 Add/Done 不配对。检查 Done 是否重复调用。
+Go|unlock of unlocked mutex|fatal|解锁了没有加锁的 mutex。检查锁的配对逻辑。
+Go|close of nil channel|fatal|对 nil channel 调 close。channel 要先 make 初始化。
+Go|i/o timeout|error|网络读写超时。检查下游响应速度，调大 timeout。
+Go|driver: bad connection|error|数据库连接已失效。开启连接池健康检查或重试。
+Go|does not satisfy|error|类型不满足泛型约束。检查类型是否实现了约束要求的接口。
+Go|found packages|error|同一目录里有不同 package 名的文件。统一目录下所有文件的 package 声明。
+Go|ambiguous import|error|这个包能从多个模块解析，歧义了。统一依赖版本或显式指定。
+Go|tls: failed to verify certificate|error|TLS 证书校验失败。更新系统证书，内网自签证书加入信任池。
+Go|SECURITY ERROR|error|依赖校验和与 go.sum 不符。确认来源可信后执行 go mod tidy 更新。
+Go|panic: test timed out|fatal|测试超时被杀。看 panic 栈里卡住的 goroutine，检查死锁或过慢的用例。
 C#|CS0103|error|这个名字在当前上下文中不存在。检查拼写，确认变量已声明，或缺少 using 导入。
 C#|CS0246||CS0234|error|找不到类型或命名空间。缺少 using 引用或项目引用，也可能没装对应的 NuGet 包。
 C#|CS1061|error|该类型没有这个成员。检查方法/属性名拼写，确认是调用的对象类型正确。
@@ -564,7 +596,7 @@ C#|IndexOutOfRangeException||Index was outside the bounds|error|数组索引越�
 C#|ArgumentOutOfRangeException||Index was out of range. Must be non-negative||Index and length must refer|error|参数超出允许范围。常见于 Substring 的索引超出字符串长度，先检查长度。
 C#|ArgumentNullException||Value cannot be null|error|把 null 传给了不允许为空的方法参数。调用前先判空。
 C#|System.ArgumentException||ArgumentException:|error|方法收到了不合理的参数值。看报错里的参数名和消息定位。
-C#|InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element|error|对象当前状态下不允许这个操作。常见于：遍历时修改集合、LINQ 取不到元素、连接未打开。
+C#|InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element||There is already an open DataReader||Operation is not valid due to the current state|error|对象当前状态下不允许这个操作。常见于：遍历时修改集合、LINQ 取不到元素、连接未打开。
 C#|DivideByZeroException|error|整数除以零。整数除法不做浮点处理，除法前检查除数。
 C#|FormatException||Input string was not in a correct format|error|字符串格式转换失败。int.Parse 收到了不是数字的内容，用 TryParse 更安全。
 C#|InvalidCastException||Unable to cast object of type|error|强制转换失败。对象实际类型和目标类型不兼容，先 as/is 判断再转换。
@@ -576,7 +608,7 @@ C#|KeyNotFoundException||The given key was not present|error|字典里没有这�
 C#|TimeoutException|error|操作超时。检查下游服务是否阻塞，或调大超时时间。
 C#|TaskCanceledException||OperationCanceledException||A task was canceled|error|任务被取消了。可能是超时控制或用户取消，捕获后按业务处理。
 C#|AggregateException||One or more errors occurred|error|并行任务里抛出了多个异常的聚合。看 InnerExceptions 找到每个真实错误。
-C#|ObjectDisposedException||Cannot access a disposed object|error|对象已被 Dispose 还在使用。检查 using 块的范围，不要在释放后继续访问。
+C#|ObjectDisposedException||Cannot access a disposed object||Cannot access a closed|error|对象已被 Dispose 还在使用。检查 using 块的范围，不要在释放后继续访问。
 C#|SocketException||No connection could be made||actively refused it|error|网络连接失败。目标机器拒绝连接，确认服务已启动、IP 端口和防火墙正确。
 C#|SqlException||network-related or instance-specific|error|数据库操作出错。看 Number 和 Message：连接、语法或约束问题各有不同处理。
 C#|Incorrect syntax near|error|SQL 语法错误。检查关键字拼写、逗号括号和 T-SQL 写法。
@@ -588,12 +620,12 @@ C#|Conversion failed when converting|error|SQL 类型转换失败。比如把非
 C#|IOException||used by another process|error|文件 IO 失败。常见于文件被其他进程占用，或目录不存在，确认文件已释放再操作。
 C#|DirectoryNotFoundException|error|目录不存在。检查路径是否正确，必要时先创建目录。
 C#|UnauthorizedAccessException||Access to the path is denied|error|没有访问权限。检查文件是否只读、是否需要管理员权限运行。
-C#|FileNotFoundException||Could not load file or assembly||Could not find file|error|文件或程序集找不到。检查 DLL 是否在输出目录、NuGet 包是否还原成功。
+C#|FileNotFoundException||Could not load file or assembly||Could not find file||Could not load type|error|文件或程序集找不到。检查 DLL 是否在输出目录、NuGet 包是否还原成功。
 C#|BadImageFormatException||incorrect format|error|程序集架构不匹配。x86/x64/AnyCPU 不一致，统一项目的目标平台。
 C#|TypeInitializationException|error|静态构造函数抛了异常。看 InnerException 定位静态初始化代码的问题。
 C#|HttpRequestException||No such host is known||does not indicate success|error|HTTP 请求失败。检查网络、DNS 和接口地址；5xx 看响应内容定位服务端问题。
 C#|JsonException||JsonSerializationException||Self referencing loop|error|JSON 序列化/反序列化失败。字段类型不匹配或循环引用，检查数据结构。
-C#|CS4033|error|await 只能用在 async 方法里。给方法加上 async 修饰符。
+C#|CS4033||CS4032|error|await 只能用在 async 方法里。给方法加上 async 修饰符。
 C#|CS1998|warning|async 方法里没有 await，会同步执行。补上 await 调用，或去掉 async。
 C#|CS4014|warning|异步调用没有被 await，异常会丢失且执行顺序不可控。加上 await 或显式丢弃。
 C#|CS5001|error|找不到程序入口 Main 方法。检查入口类是否正确、签名是否为 static Main。
@@ -609,6 +641,17 @@ C#|not recognized as a valid DateTime|error|日期字符串解析失败。用 Da
 C#|forcibly closed by the remote host|error|连接被服务端强制断开。检查服务端日志，网络是否稳定，加自动重连。
 C#|TargetInvocationException|error|反射调用的方法内部抛了异常。看 InnerException 找到真实原因。
 C#|CS0162|warning|检测到无法执行的代码。前面可能已经 return 或 throw，检查控制流。
+C#|Unable to create an object of type|error|EF Core 无法构造 DbContext。检查构造函数参数和 DI 注册。
+C#|Collection was of a fixed size|error|对固定大小集合做增删。换用 List 等可变集合。
+C#|Nullable object must have a value|error|对 null 的可空类型取 .Value。先 HasValue 判断或用 GetValueOrDefault。
+C#|Sequence contains more than one element|error|Single() 查到了多条记录。改用 First/FirstOrDefault，或加过滤条件。
+C#|Arithmetic operation resulted in an overflow|error|算术运算溢出。检查数值范围，必要时换更大的类型或 checked 控制。
+C#|The SSL connection could not be established||Could not create SSL/TLS secure channel|error|TLS 建立失败。更新证书链和 TLS 版本配置，检查系统时间。
+C#|MSB3073|error|MSBuild 调用的命令以非零退出。看上方命令的实际输出定位。
+C#|Assets file ... not found||NU1004||Assets file|error|project.assets.json 不存在。先 dotnet restore 还原依赖。
+C#|CS1520|fatal|方法必须声明返回类型。检查函数签名是否漏了 void 或类型。
+C#|CS0501|error|非抽象/extern 方法必须有方法体。补上大括号体或声明为 abstract。
+C#|CS0123|error|没有重载与委托签名匹配。对照委托定义检查方法签名。
 Ruby|NoMethodError||undefined method for nil:NilClass||private method called|error|对象没有这个方法。特别注意对 nil 调方法的情况，往上找它为什么是 nil。
 Ruby|NameError||uninitialized constant||undefined local variable or method|error|未定义的变量、方法或常量。检查拼写和作用域，确认已定义或已 require。
 Ruby|syntax error, unexpected|fatal|语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了，看指向的行号。
@@ -689,6 +732,13 @@ Ruby|shadowing outer local variable|warning|内层变量遮蔽了外层同名变
 Ruby|assigned but unused variable|warning|变量赋值了但没使用。删除或用 _ 前缀命名。
 Ruby|possibly useless use of|warning|这个表达式的结果没有被使用，比如单独写 a == b。改成赋值或删除。
 Ruby|ambiguous first argument|warning|第一个参数的写法有歧义，解释器可能理解成别的含义。给参数加括号明确。
+Ruby|Missing `secret_key_base`|fatal|生产环境缺少 secret_key_base。配置 credentials 或环境变量。
+Ruby|DEPRECATION WARNING|warning|Rails 提示用了将废弃的 API。按提示迁移，未来版本会报错。
+Ruby|translation missing|warning|I18n 缺少对应翻译。在 locale 文件里补上这个键。
+Ruby|Association named|error|模型上没有这个关联。检查 has_many/belongs_to 声明和关联名拼写。
+Ruby|ConnectionTimeoutError|error|连接池耗尽。调大 pool 配置，或检查是否有连接泄漏。
+Ruby|ActiveRecord::Deadlocked|error|数据库死锁，事务被回滚。统一加锁顺序并加重试。
+Ruby|Failed to build gem native extension|fatal|gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。
 PHP|Parse error||syntax error, unexpected|fatal|语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合，看指向的行号。
 PHP|unexpected end of file|fatal|文件意外结束。某个花括号或 PHP 标签没闭合，配对检查大括号和 <?php 标签。
 PHP|Fatal error|fatal|致命错误，脚本直接终止。看后面的 Uncaught Error 描述定位问题。
@@ -769,6 +819,17 @@ PHP|Cannot call abstract method|fatal|调用了没有实现的抽象方法。实
 PHP|Parameter must be an array|warning|count() 收到的不是数组。检查数据来源，null 要先给默认空数组。
 PHP|Creating default object from empty value|warning|给空值赋属性隐式创建了对象。先 $obj = new stdClass() 明确创建。
 PHP|could not find driver|fatal|PHP 没有加载对应的数据库驱动扩展。安装并启用 pdo_mysql / pdo_pgsql 等扩展。
+PHP|The given data was invalid|error|Laravel 表单验证失败。看 errors 里的字段提示修正输入。
+PHP|TokenMismatchException|error|CSRF token 不匹配或过期。检查表单 @csrf 和 session 配置。
+PHP|Unresolvable dependency|fatal|容器解析不了构造参数。检查类型提示和接口绑定。
+PHP|Error establishing a database connection|fatal|WordPress 连不上数据库。检查 wp-config.php 的账号密码主机和 MySQL 状态。
+PHP|non-existent service|fatal|容器里没有这个服务。检查 services.yaml 配置和自动装配。
+PHP|Variable ".*" does not exist|fatal|模板里用了没传入的变量。控制器补传，或用 default 过滤器。
+PHP|No tests executed|warning|没有匹配到任何测试。检查 --filter 参数和测试文件命名。
+PHP|Class 'PDO' not found|fatal|PHP 没启用 PDO 扩展。安装 php-pdo 并启用对应驱动。
+PHP|The uploaded file exceeds|error|上传文件超过限制。调大 upload_max_filesize 和 post_max_size。
+PHP|POST Content-Length of|error|POST 数据超过 post_max_size。调大该配置并重启服务。
+PHP|Malformed UTF-8 characters|warning|json_encode 的内容含非法 UTF-8。检查数据来源编码，必要时转码。
 Rust|borrow of moved value||use of moved value|error|使用了已经被移动的值。Rust 所有权规则下，被 move 后的变量不能再使用，改用克隆或借用。
 Rust|cannot move out of|error|不能从这里把值移动走。部分引用类型或非 Copy 类型不能直接解引用取值，用克隆或 .clone()。
 Rust|cannot borrow|error|借用规则冲突。同一时间只能有一个可变借用，或可变与不可变借用不能共存，调整借用范围。
@@ -849,6 +910,19 @@ Rust|call to unsafe function|error|调用 unsafe 函数需要 unsafe 块。确�
 Rust|didn't exit successfully|error|程序非零退出。cargo run/test 时进程崩溃或返回了错误码，看上面的输出定位。
 Rust|borrowed data escapes|error|借用的数据逃逸出了闭包或函数的作用域。检查返回值和生命周期约束。
 Rust|cannot add||cannot multiply|error|这两个类型之间不支持该运算。检查操作数类型，或为自定义类型实现对应的运算 trait。
+Rust|Tokio runtime|fatal|在 Tokio 运行时之外调用了异步 API。用 #[tokio::main] 或 block_on 包裹。
+Rust|cannot be sent between threads safely|error|future 跨线程传递但内部持有非 Send 的引用。检查跨 await 持有的变量，必要时用 Arc/Mutex 或重排作用域。
+Rust|missing field `.*` at line||missing field|error|反序列化的数据缺少必填字段。补全数据，或给字段标 #[serde(default)]。
+Rust|invalid type: |error|JSON 字段类型和结构体定义不符。看实际类型和期望类型的差异。
+Rust|unknown field `|error|数据里有结构体没定义的字段。补字段，或加 #[serde(deny_unknown_fields)] 的反面：ignore。
+Rust|closure may outlive the current function|error|闭包可能活得比捕获的引用久。加 move 关键字转移所有权。
+Rust|size known at compile-time|error|编译期大小未知。用 Box<dyn Trait>/&dyn Trait 或 Arc 包装。
+Rust|recursive type has infinite size|error|类型递归包含自己。用 Box/Rc 间接持有打断无限大小。
+Rust|cannot be made into an object|error|trait 有泛型方法/静态方法，不能做 dyn 对象。重构方法签名或用泛型。
+Rust|cannot be indexed|error|这个类型没有实现 Index。检查类型，或改用对应方法取值。
+Rust|no default toolchain configured|fatal|rustup 没有默认工具链。运行 rustup default stable。
+Rust|link.exe not found|fatal|Windows 缺 MSVC 链接工具。安装 Visual Studio Build Tools 或改用 GNU 工具链。
+Rust|recursion limit reached|error|宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = "256"]。
 TypeScript|TS2304|error|找不到这个名字。检查变量/类型是否已声明、import 是否正确，或缺少 @types 声明包。
 TypeScript|TS2307|error|找不到模块或类型声明。检查路径拼写、是否安装了包和对应的 @types，路径别名是否配置。
 TypeScript|TS2339|error|这个类型上没有该属性。检查属性名拼写，或接口定义里漏了这个字段。
@@ -1018,6 +1092,17 @@ Kotlin|Missing class|error|R8 混淆时缺少类引用。补依赖，或在 prog
 Kotlin|Cannot resolve symbol|error|IDE 解析不了这个符号。Sync/Rebuild 项目、清除缓存，或检查依赖是否引入。
 Kotlin|An operation is not implemented|fatal|执行到了 TODO() 占位。补上具体实现。
 Kotlin|Cannot find a parameter with this name|error|函数没有这个命名参数。检查参数名拼写，或调用处是否传多了参数。
+Kotlin|Type inference failed|error|推不出表达式类型。显式标注类型或拆分链式调用。
+Kotlin|Cannot figure out how to save this field|error|Room 不知道怎么存这个字段。加 TypeConverter，或改成 Room 支持的类型。
+Kotlin|Unable to create converter for class|error|Retrofit 缺少转换器。添加 Gson/Moshi converter factory。
+Kotlin|Expected BEGIN_OBJECT but was STRING|error|JSON 结构和实体类对不上：期望对象却拿到了字符串。检查数据格式。
+Kotlin|Activity has leaked window|error|Activity 退出时 Dialog 还在显示。在 onDestroy 前关闭 Dialog。
+Kotlin|too much work on its main thread|warning|主线程负担过重导致掉帧/ANR。把耗时逻辑移到子线程或协程。
+Kotlin|NetworkOnMainThreadException|fatal|Android 禁止主线程发网络请求。用协程/Retrofit/WorkManager 异步处理。
+Kotlin|Unable to instantiate activity|fatal|Activity 无法创建。检查类名/包名、构造函数和 Application 初始化。
+Kotlin|already has a parent|fatal|同一个 View 同时挂在两个父容器上。先从旧父容器 removeView 再添加。
+Kotlin|Resources\$NotFoundException|fatal|资源 ID 不存在。检查 R.xxx 引用和资源文件是否编译进包。
+Kotlin|Unable to add window|fatal|在 Activity 已销毁或 context 不对时弹窗。确认用 Activity context 且页面还存活。
 Swift|in scope||use of unresolved identifier|error|这个名字在当前作用域找不到。检查拼写、导入模块，确认变量/函数已定义。
 Swift|Expected declaration|fatal|这里应该写类型/函数声明，却出现了语句。常见于多写了大括号，把代码挤出了类型体。
 Swift|'{' in body of||Expected '{' in body|fatal|缺少函数体的左花括号。检查 func 声明后面是否漏了 {。
@@ -1097,6 +1182,13 @@ Swift|no accessible initializers|error|类型没有可访问的初始化器。�
 Swift|can only be used as a generic constraint|error|带关联类型的协议（PAT）不能直接当类型用。用 some/any 关键字，或把协议改成泛型约束。
 Swift|was never used|warning|初始化了变量但从未使用。删除或补上使用逻辑。
 Swift|Extra trailing closure|error|传了多余的尾随闭包。检查函数签名，或把闭包写进参数列表。
+Swift|No value associated with key|fatal|Codable 解码缺少必填字段。数据里补字段，或把属性声明成 Optional。
+Swift|Expected to decode|fatal|JSON 字段类型和模型声明不符。看 expected/found 的类型差异。
+Swift|Modifying state during view update|fatal|在 body 里直接改 @State 会引发循环。把状态修改移到按钮回调/onAppear。
+Swift|String index is out of bounds|fatal|字符串下标越界。注意 Swift 的 String.Index 不是整数，用 index(offsetBy:)。
+Swift|must call a designated initializer of the superclass|error|子类 init 必须调用父类的指定初始化器，而不是 convenience。
+Swift|super.init isn't called before returning|error|初始化器结束前没调 super.init。补上父类初始化调用。
+Swift|must be initialized before calling super.init|error|先初始化自己的所有存储属性，再调 super.init。
 Dart/Flutter|Undefined class||Undefined name|error|这个名字没定义。检查类名/变量拼写和 import 是否写了，flutter pub get 后再试。
 Dart/Flutter|isn't defined|error|该类型上没有这个方法或 getter。检查拼写，确认调用的对象类型正确。
 Dart/Flutter|Target of URI doesn't exist|error|导入的文件或包不存在。检查路径拼写，依赖要先在 pubspec.yaml 里声明并 pub get。
@@ -1177,6 +1269,11 @@ Dart/Flutter|type arguments|error|泛型参数个数不对。对照类型定义�
 Dart/Flutter|can't be instantiated|error|抽象类不能直接 new。实例化它的具体实现类。
 Dart/Flutter|SDK location not found|error|找不到 Android SDK。在 local.properties 配置 sdk.dir，或设置 ANDROID_HOME。
 Dart/Flutter|TimeoutException|error|异步操作超时。检查网络与接口性能，或调大超时时间。
+Dart/Flutter|MissingPluginException|error|插件的原生实现没注册。热重载无效，重新运行 app（stop 后再 run）。
+Dart/Flutter|PlatformException|error|原生平台代码抛了异常。看 code 和 message，通常是权限或原生层配置问题。
+Dart/Flutter|Stream has already been listened to|error|单订阅流被重复监听。改用 asBroadcastStream()，或每次创建新 Stream。
+Dart/Flutter|Could not find a generator for route|fatal|命名路由没找到页面生成器。检查 onGenerateRoute/routes 里注册的名字。
+Dart/Flutter|UnimplementedError|fatal|执行到了 throw UnimplementedError() 占位。补上具体实现。
 SQL|ERROR 1064||error in your SQL syntax|error|SQL 语法错误（MySQL）。检查关键字拼写、逗号括号、引号和表名是否用了保留字。
 SQL|ERROR 1054||Unknown column|error|表里没有这个列（MySQL）。检查列名拼写、是否加了表名前缀，或字段还没加进表。
 SQL|Table '.*' doesn't exist||ERROR 1146|error|表不存在（MySQL）。检查库名表名、连接的数据库是否正确，建表脚本是否执行过。

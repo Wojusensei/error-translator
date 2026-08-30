@@ -98,6 +98,12 @@ int main(int argc, char** argv) {
         {"fixture 'client' not found\n> available fixtures: cache", "Python"},
         {"Module not found: Error: Can't resolve './config' in '/app/src'", "JavaScript"},
         {"***************************\nAPPLICATION FAILED TO START\nDescription:\nFailed to configure a DataSource", "Java"},
+        {"fatal error: concurrent map writes", "Go"},
+        {"panic: sync: negative WaitGroup counter", "Go"},
+        {"NetworkOnMainThreadException", "Kotlin"},
+        {"A RenderFlex overflowed by 42 pixels on the bottom.", "Dart/Flutter"},
+        {"error[E0308]: mismatched types\n --> src/main.rs:11:5", "Rust"},
+        {"warning: implicit declaration of function 'malloc'", "C"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
