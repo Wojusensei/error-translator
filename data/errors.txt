@@ -78,6 +78,26 @@ Python|No matching distribution found|error|源里没有这个包。确认包名
 Python|Microsoft Visual C++ 14.0|error|安装源码包需要 C 编译环境。装 Visual Studio Build Tools，或优先选择对应平台的 wheel 包。
 Python|externally-managed-environment|error|系统 Python 受保护不让直接 pip 装。用虚拟环境 venv，或加 pipx 管理命令行工具。
 Python|yaml.scanner.ScannerError||could not find expected ':'||mapping values are not allowed|error|YAML 配置文件格式不对。常见于冒号后缺空格、缩进用 Tab、引号没闭合。
+Python|ImproperlyConfigured|error|Django 配置不完整或有误。看提示里的具体设置项，检查 settings.py。
+Python|DisallowedHost|error|请求的 Host 不在 ALLOWED_HOSTS 里。把域名加进 settings.py 的白名单。
+Python|NoReverseMatch||Reverse for|error|reverse 反查不到这个 URL。检查 name 是否一致、参数是否齐全。
+Python|TemplateDoesNotExist|error|找不到模板文件。检查应用是否注册、DIRS/APP_DIRS 配置和模板路径。
+Python|didn't return an HttpResponse|error|视图没有返回 HttpResponse。确认每个分支都 return 了 render/redirect 等响应。
+Python|unapplied migration|error|有迁移没有执行。运行 python manage.py migrate。
+Python|Matching query does not exist||DoesNotExist|error|查不到这条记录。get() 找不到会抛异常，改用 filter().first() 并判空。
+Python|returned more than 1|error|get() 查到了多条记录。加过滤条件，或改用 filter() 处理列表。
+Python|django.db.utils|error|数据库操作出错。看具体异常类型：OperationalError 多为连接，IntegrityError 多为约束。
+Python|CSRF verification failed|error|CSRF 校验失败。表单要带 csrf_token，API 场景检查 CSRF_TRUSTED_ORIGINS。
+Python|Working outside of application context||Working outside of request context|error|在上下文之外访问了 app/request。用 with app.app_context(): 包裹，或放到请求处理里。
+Python|TemplateNotFound|error|Jinja 找不到模板。检查 templates 目录位置和 render_template 的路径。
+Python|TemplateSyntaxError|error|模板语法错误。检查 {% %} 配对、变量分隔符和 end 标签。
+Python|UndefinedError|error|模板里用了未定义的变量。检查传参，或用 default 过滤器兜底。
+Python|validation error|error|数据校验失败，报错列出了每个不符合的字段和原因。对照修正输入数据。
+Python|fixture '|error|pytest 找不到这个 fixture。检查函数名拼写、是否在 conftest.py，或作用域不对。
+Python|The requested URL was not found on the server|error|路由不存在（404）。检查路由注册和请求路径、方法是否匹配。
+Python|unregistered task|error|worker 里没有注册这个任务。检查任务名和 include 配置，确认 worker 加载了该模块。
+Python|attempted relative import with no known parent package|error|相对导入越出了包边界。以模块方式运行（python -m 包.模块），或改用绝对导入。
+Python|Can't get attribute|error|反序列化时找不到类定义。类被移动或改名了，保持原路径或自定义 unpickler。
 JavaScript|ReferenceError|error|引用了不存在的变量。检查变量名拼写，或者确认变量在使用前已经声明了。
 JavaScript|TypeError|error|数据的类型不对。常见于对 undefined 或 null 做了操作，或者把非函数当成函数调用。
 JavaScript|SyntaxError|fatal|语法错误。可能是少写了逗号、括号不匹配、引号没闭合，看报错里的行列号定位。
@@ -158,6 +178,24 @@ JavaScript|Illegal invocation|error|DOM API 的 this 指向不对。常见于把
 JavaScript|ResizeObserver loop limit exceeded|warning|布局在一帧内被 ResizeObserver 反复触发的良性警告，一般可忽略。若频繁出现，检查是否有布局抖动。
 JavaScript|net::ERR_NAME_NOT_RESOLVED|error|浏览器 DNS 解析失败。检查域名拼写、网络连接和代理设置。
 JavaScript|net::ERR_CONNECTION_REFUSED|error|浏览器连接被拒绝，目标端口没有服务在监听。确认服务已启动且端口正确。
+JavaScript|Can't resolve|fatal|打包器解析不了这个导入。检查路径大小写、别名配置和依赖是否安装。
+JavaScript|Module parse failed|fatal|这个文件不是有效的 JS 模块。检查是否把非 JS 文件导入了，或需要相应 loader。
+JavaScript|Parsing error|fatal|ESLint 解析失败。代码可能有语法错误，或解析器配置（ecmaVersion/parser）不匹配。
+JavaScript|Support for the experimental syntax|fatal|用了实验性语法但没启用插件。按提示在 babel 配置里加对应插件。
+JavaScript|regeneratorRuntime is not defined|fatal|babel 转译 async/generator 后缺少运行时。安装 @babel/plugin-transform-runtime 并配置。
+JavaScript|error during build|fatal|Vite 构建失败。看上面的具体错误：导入解析、语法或插件问题。
+JavaScript|Outdated Optimize Dep|error|依赖预构建缓存过期。重启 dev server，必要时 rm -rf node_modules/.vite。
+JavaScript|Maximum update depth exceeded|fatal|setState 触发了无限循环重渲染。检查 useEffect 的依赖数组和渲染函数里的直接 setState。
+JavaScript|state update on an unmounted component|warning|组件卸载后还在 setState。在清理函数里取消订阅/请求，或用 ref 标记。
+JavaScript|Exceeded timeout of|error|测试超时。异步断言没有 await，或用例真的太慢，设置更长超时。
+JavaScript|trouble with your network connection|error|yarn 下载失败。检查网络和镜像源，重试即可。
+JavaScript|compiled against a different Node.js version|error|原生模块和 Node 版本不匹配。npm rebuild 重编译，或换用匹配的模块版本。
+JavaScript|wrong version number|error|TLS 握手失败，常见于用 https 请求了 http 端口。检查协议和端口。
+JavaScript|write EPIPE|error|输出管道已关闭还在写数据，比如进程输出被截断。检查下游消费者的生命周期。
+JavaScript|Parse Error: Expected HTTP/|error|收到的不是合法 HTTP 响应。检查目标是不是 HTTP 服务、代理配置是否正确。
+JavaScript|PayloadTooLargeError|error|请求体超过大小限制。调整 body-parser 的 limit 配置或压缩上传内容。
+JavaScript|Timeout of|error|测试用例超时。异步操作没完成或超时设置太短，检查 this.timeout()。
+JavaScript|Cannot GET ||Cannot POST |error|Express 没有注册这个路由。检查路由定义的路径和 HTTP 方法。
 Java|NullPointerException||Cannot invoke.*because||Cannot read field.*because|error|空指针错误。你对一个 null 对象做了操作，报错里会指出哪个变量为 null，在调用前先判空。
 Java|ArrayIndexOutOfBoundsException||Index.*out of bounds for length|error|数组下标越界。你访问了一个不存在的数组位置，检查下标范围，注意数组从 0 开始。
 Java|StringIndexOutOfBoundsException||String index out of range|error|字符串下标越界。substring/charAt 的索引超过了字符串长度，先检查 length()。
@@ -238,6 +276,19 @@ Java|SSLHandshakeException||PKIX path building failed|error|SSL 握手失败。�
 Java|BindException||Address already in use|error|端口绑定失败，已被占用。换端口或结束占用端口的旧进程。
 Java|MissingFormatArgumentException|error|String.format 的占位符比参数多。检查格式串里 %s 等占位符和参数是否一一对应。
 Java|Application run failed|fatal|Spring Boot 启动失败。往下看 caused by 的第一个异常，通常是配置或 Bean 的问题。
+Java|Failed to configure a DataSource|fatal|Spring Boot 没配好数据源。检查 application.yml 的 spring.datasource 配置和驱动依赖。
+Java|was already in use|fatal|Web 服务端口被占用。换 server.port 或结束占用端口的进程。
+Java|expected single matching bean but found|error|自动装配时有多个候选 Bean。用 @Primary 或 @Qualifier 指定。
+Java|marked as rollback-only|error|内层事务抛异常把外层事务标记为只读回滚了。检查嵌套事务的异常处理，别在内部吞掉异常。
+Java|No runnable methods|error|测试类里没有可运行的 @Test 方法。检查注解和 JUnit 版本（4/5 注解不通用）。
+Java|initializationError|error|测试类初始化失败。看 caused by：常见为构造函数、静态块或注解使用错误。
+Java|The forked VM terminated|error|surefire 的测试进程崩溃了。多为内存不足或 System.exit，调大 argLine 或排查测试代码。
+Java|invalid target release|fatal|编译目标版本比当前 JDK 新。换 JDK 或降低 maven.compiler.target。
+Java|NoSuchFileException|error|NIO 找不到文件。检查路径拼写和相对路径基准。
+Java|AccessDeniedException|error|没有文件访问权限。检查权限设置和运行身份。
+Java|Found one Java-level deadlock|fatal|JVM 检测到死锁。jstack 输出会指出互相等待的锁，统一加锁顺序。
+Java|sleep interrupted|error|线程在休眠时被中断。处理 InterruptedException 或检查中断逻辑。
+Java|error in opening zip file|error|jar/zip 文件损坏或不完整。重新下载或构建依赖。
 C++|was not declared in this scope||was not declared||use of undeclared identifier|error|这个变量或函数没有声明。检查头文件是否 #include，或者变量是否在作用域内、名字空间是否写对。
 C++|expected ';' before||expected ';'|fatal|缺少分号。C++ 的每条语句结尾必须有分号，检查报错指向的位置和上一行末尾。
 C++|expected '}' at end of input||expected '}'|fatal|缺少花括号。检查花括号是否成对出现，可能某个 { 没有对应的 }。
@@ -878,6 +929,15 @@ TypeScript|TS1208|fatal|isolatedModules 下不允许某些写法（如 const enu
 TypeScript|Failed to resolve import|fatal|构建工具解析不了这个导入路径。检查路径大小写、别名配置和依赖是否安装。
 TypeScript|does not provide an export named|fatal|模块没有提供要导入的成员。检查导出名和导出方式是否匹配。
 TypeScript|TS2722|error|对象可能是 undefined，不能直接调用。先判空或用可选链。
+TypeScript|not under 'rootDir'|fatal|引用了 rootDir 之外的文件。调整 tsconfig 的 rootDir/include，或移动文件。
+TypeScript|Could not resolve the path|fatal|找不到输入文件的路径。检查 tsc 命令参数和文件是否存在。
+TypeScript|would overwrite input file|fatal|编译输出会覆盖源文件。配置 outDir 把产物输出到别的目录。
+TypeScript|react/jsx-runtime|fatal|找不到新的 JSX 运行时。升级 React 到 17+ 并确认 types 和 jsx 配置匹配。
+TypeScript|spread argument|error|展开传参要求元组类型。给数据标注 as const 或元组类型。
+TypeScript|specified more than once|warning|对象展开时后面的属性会覆盖前面显式写的同名属性。调整顺序确认意图。
+TypeScript|Do you need to change your target library|error|缺少对应的类型定义（如 @types/node）。安装或调整 tsconfig 的 lib/types。
+TypeScript|JSDoc types|error|JSDoc 类型标注只能用于注释上下文。检查 .ts 文件里的写法。
+TypeScript|File '.*' not found|fatal|tsc 找不到指定的输入文件。检查路径和 include 配置。
 Kotlin|Unresolved reference|error|找不到这个引用。检查导入、包名和类名拼写，确认依赖已添加到 build.gradle。
 Kotlin|Unresolved reference: R|error|R 类没生成。通常是资源文件有错误导致构建中断，先修复 XML 资源错误再 Rebuild。
 Kotlin|type mismatch: inferred type is|error|类型不匹配。看推断出的类型和期望类型，修改变量类型或转换赋值。

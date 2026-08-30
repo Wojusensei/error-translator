@@ -403,6 +403,106 @@
           "match": "yaml.scanner.ScannerError||could not find expected ':'||mapping values are not allowed",
           "level": "error",
           "explain": "YAML 配置文件格式不对。常见于冒号后缺空格、缩进用 Tab、引号没闭合。"
+        },
+        "django_improperly_configured": {
+          "match": "ImproperlyConfigured",
+          "level": "error",
+          "explain": "Django 配置不完整或有误。看提示里的具体设置项，检查 settings.py。"
+        },
+        "django_disallowed_host": {
+          "match": "DisallowedHost",
+          "level": "error",
+          "explain": "请求的 Host 不在 ALLOWED_HOSTS 里。把域名加进 settings.py 的白名单。"
+        },
+        "django_no_reverse": {
+          "match": "NoReverseMatch||Reverse for",
+          "level": "error",
+          "explain": "reverse 反查不到这个 URL。检查 name 是否一致、参数是否齐全。"
+        },
+        "django_template_dne": {
+          "match": "TemplateDoesNotExist",
+          "level": "error",
+          "explain": "找不到模板文件。检查应用是否注册、DIRS/APP_DIRS 配置和模板路径。"
+        },
+        "django_no_http_response": {
+          "match": "didn't return an HttpResponse",
+          "level": "error",
+          "explain": "视图没有返回 HttpResponse。确认每个分支都 return 了 render/redirect 等响应。"
+        },
+        "django_unapplied_migration": {
+          "match": "unapplied migration",
+          "level": "error",
+          "explain": "有迁移没有执行。运行 python manage.py migrate。"
+        },
+        "django_does_not_exist": {
+          "match": "Matching query does not exist||DoesNotExist",
+          "level": "error",
+          "explain": "查不到这条记录。get() 找不到会抛异常，改用 filter().first() 并判空。"
+        },
+        "django_multiple_returned": {
+          "match": "returned more than 1",
+          "level": "error",
+          "explain": "get() 查到了多条记录。加过滤条件，或改用 filter() 处理列表。"
+        },
+        "django_db_utils": {
+          "match": "django.db.utils",
+          "level": "error",
+          "explain": "数据库操作出错。看具体异常类型：OperationalError 多为连接，IntegrityError 多为约束。"
+        },
+        "django_csrf_failed": {
+          "match": "CSRF verification failed",
+          "level": "error",
+          "explain": "CSRF 校验失败。表单要带 csrf_token，API 场景检查 CSRF_TRUSTED_ORIGINS。"
+        },
+        "flask_app_context": {
+          "match": "Working outside of application context||Working outside of request context",
+          "level": "error",
+          "explain": "在上下文之外访问了 app/request。用 with app.app_context(): 包裹，或放到请求处理里。"
+        },
+        "jinja_template_notfound": {
+          "match": "TemplateNotFound",
+          "level": "error",
+          "explain": "Jinja 找不到模板。检查 templates 目录位置和 render_template 的路径。"
+        },
+        "jinja_syntax_error": {
+          "match": "TemplateSyntaxError",
+          "level": "error",
+          "explain": "模板语法错误。检查 {% %} 配对、变量分隔符和 end 标签。"
+        },
+        "jinja_undefined_error": {
+          "match": "UndefinedError",
+          "level": "error",
+          "explain": "模板里用了未定义的变量。检查传参，或用 default 过滤器兜底。"
+        },
+        "pydantic_validation_error": {
+          "match": "validation error",
+          "level": "error",
+          "explain": "数据校验失败，报错列出了每个不符合的字段和原因。对照修正输入数据。"
+        },
+        "pytest_fixture_not_found": {
+          "match": "fixture '",
+          "level": "error",
+          "explain": "pytest 找不到这个 fixture。检查函数名拼写、是否在 conftest.py，或作用域不对。"
+        },
+        "werkzeug_404": {
+          "match": "The requested URL was not found on the server",
+          "level": "error",
+          "explain": "路由不存在（404）。检查路由注册和请求路径、方法是否匹配。"
+        },
+        "celery_task_not_registered": {
+          "match": "unregistered task",
+          "level": "error",
+          "explain": "worker 里没有注册这个任务。检查任务名和 include 配置，确认 worker 加载了该模块。"
+        },
+        "relative_import_error": {
+          "match": "attempted relative import with no known parent package",
+          "level": "error",
+          "explain": "相对导入越出了包边界。以模块方式运行（python -m 包.模块），或改用绝对导入。"
+        },
+        "pickle_attribute_error": {
+          "match": "Can't get attribute",
+          "level": "error",
+          "explain": "反序列化时找不到类定义。类被移动或改名了，保持原路径或自定义 unpickler。"
         }
       }
     },
@@ -808,6 +908,96 @@
           "match": "net::ERR_CONNECTION_REFUSED",
           "level": "error",
           "explain": "浏览器连接被拒绝，目标端口没有服务在监听。确认服务已启动且端口正确。"
+        },
+        "webpack_cant_resolve": {
+          "match": "Can't resolve",
+          "level": "fatal",
+          "explain": "打包器解析不了这个导入。检查路径大小写、别名配置和依赖是否安装。"
+        },
+        "module_parse_failed": {
+          "match": "Module parse failed",
+          "level": "fatal",
+          "explain": "这个文件不是有效的 JS 模块。检查是否把非 JS 文件导入了，或需要相应 loader。"
+        },
+        "eslint_parsing_error": {
+          "match": "Parsing error",
+          "level": "fatal",
+          "explain": "ESLint 解析失败。代码可能有语法错误，或解析器配置（ecmaVersion/parser）不匹配。"
+        },
+        "babel_experimental_syntax": {
+          "match": "Support for the experimental syntax",
+          "level": "fatal",
+          "explain": "用了实验性语法但没启用插件。按提示在 babel 配置里加对应插件。"
+        },
+        "regenerator_runtime": {
+          "match": "regeneratorRuntime is not defined",
+          "level": "fatal",
+          "explain": "babel 转译 async/generator 后缺少运行时。安装 @babel/plugin-transform-runtime 并配置。"
+        },
+        "vite_error_during_build": {
+          "match": "error during build",
+          "level": "fatal",
+          "explain": "Vite 构建失败。看上面的具体错误：导入解析、语法或插件问题。"
+        },
+        "vite_outdated_optimize": {
+          "match": "Outdated Optimize Dep",
+          "level": "error",
+          "explain": "依赖预构建缓存过期。重启 dev server，必要时 rm -rf node_modules/.vite。"
+        },
+        "react_max_update_depth": {
+          "match": "Maximum update depth exceeded",
+          "level": "fatal",
+          "explain": "setState 触发了无限循环重渲染。检查 useEffect 的依赖数组和渲染函数里的直接 setState。"
+        },
+        "react_state_unmounted": {
+          "match": "state update on an unmounted component",
+          "level": "warning",
+          "explain": "组件卸载后还在 setState。在清理函数里取消订阅/请求，或用 ref 标记。"
+        },
+        "jest_exceeded_timeout": {
+          "match": "Exceeded timeout of",
+          "level": "error",
+          "explain": "测试超时。异步断言没有 await，或用例真的太慢，设置更长超时。"
+        },
+        "yarn_network_trouble": {
+          "match": "trouble with your network connection",
+          "level": "error",
+          "explain": "yarn 下载失败。检查网络和镜像源，重试即可。"
+        },
+        "node_native_version_mismatch": {
+          "match": "compiled against a different Node.js version",
+          "level": "error",
+          "explain": "原生模块和 Node 版本不匹配。npm rebuild 重编译，或换用匹配的模块版本。"
+        },
+        "node_wrong_version_number": {
+          "match": "wrong version number",
+          "level": "error",
+          "explain": "TLS 握手失败，常见于用 https 请求了 http 端口。检查协议和端口。"
+        },
+        "node_write_epipe": {
+          "match": "write EPIPE",
+          "level": "error",
+          "explain": "输出管道已关闭还在写数据，比如进程输出被截断。检查下游消费者的生命周期。"
+        },
+        "http_parse_error": {
+          "match": "Parse Error: Expected HTTP/",
+          "level": "error",
+          "explain": "收到的不是合法 HTTP 响应。检查目标是不是 HTTP 服务、代理配置是否正确。"
+        },
+        "payload_too_large": {
+          "match": "PayloadTooLargeError",
+          "level": "error",
+          "explain": "请求体超过大小限制。调整 body-parser 的 limit 配置或压缩上传内容。"
+        },
+        "mocha_timeout": {
+          "match": "Timeout of",
+          "level": "error",
+          "explain": "测试用例超时。异步操作没完成或超时设置太短，检查 this.timeout()。"
+        },
+        "express_cannot_get": {
+          "match": "Cannot GET ||Cannot POST ",
+          "level": "error",
+          "explain": "Express 没有注册这个路由。检查路由定义的路径和 HTTP 方法。"
         }
       }
     },
@@ -1213,6 +1403,71 @@
           "match": "Application run failed",
           "level": "fatal",
           "explain": "Spring Boot 启动失败。往下看 caused by 的第一个异常，通常是配置或 Bean 的问题。"
+        },
+        "spring_datasource_config": {
+          "match": "Failed to configure a DataSource",
+          "level": "fatal",
+          "explain": "Spring Boot 没配好数据源。检查 application.yml 的 spring.datasource 配置和驱动依赖。"
+        },
+        "spring_port_in_use": {
+          "match": "was already in use",
+          "level": "fatal",
+          "explain": "Web 服务端口被占用。换 server.port 或结束占用端口的进程。"
+        },
+        "spring_bean_not_unique": {
+          "match": "expected single matching bean but found",
+          "level": "error",
+          "explain": "自动装配时有多个候选 Bean。用 @Primary 或 @Qualifier 指定。"
+        },
+        "spring_rollback_only": {
+          "match": "marked as rollback-only",
+          "level": "error",
+          "explain": "内层事务抛异常把外层事务标记为只读回滚了。检查嵌套事务的异常处理，别在内部吞掉异常。"
+        },
+        "junit_no_runnable": {
+          "match": "No runnable methods",
+          "level": "error",
+          "explain": "测试类里没有可运行的 @Test 方法。检查注解和 JUnit 版本（4/5 注解不通用）。"
+        },
+        "junit_initialization_error": {
+          "match": "initializationError",
+          "level": "error",
+          "explain": "测试类初始化失败。看 caused by：常见为构造函数、静态块或注解使用错误。"
+        },
+        "maven_forked_vm": {
+          "match": "The forked VM terminated",
+          "level": "error",
+          "explain": "surefire 的测试进程崩溃了。多为内存不足或 System.exit，调大 argLine 或排查测试代码。"
+        },
+        "javac_target_release": {
+          "match": "invalid target release",
+          "level": "fatal",
+          "explain": "编译目标版本比当前 JDK 新。换 JDK 或降低 maven.compiler.target。"
+        },
+        "java_nio_no_such": {
+          "match": "NoSuchFileException",
+          "level": "error",
+          "explain": "NIO 找不到文件。检查路径拼写和相对路径基准。"
+        },
+        "java_access_denied_nio": {
+          "match": "AccessDeniedException",
+          "level": "error",
+          "explain": "没有文件访问权限。检查权限设置和运行身份。"
+        },
+        "java_deadlock_found": {
+          "match": "Found one Java-level deadlock",
+          "level": "fatal",
+          "explain": "JVM 检测到死锁。jstack 输出会指出互相等待的锁，统一加锁顺序。"
+        },
+        "java_sleep_interrupted": {
+          "match": "sleep interrupted",
+          "level": "error",
+          "explain": "线程在休眠时被中断。处理 InterruptedException 或检查中断逻辑。"
+        },
+        "java_zip_error": {
+          "match": "error in opening zip file",
+          "level": "error",
+          "explain": "jar/zip 文件损坏或不完整。重新下载或构建依赖。"
         }
       }
     },
@@ -4453,6 +4708,51 @@
           "match": "TS2722",
           "level": "error",
           "explain": "对象可能是 undefined，不能直接调用。先判空或用可选链。"
+        },
+        "ts6059_rootdir": {
+          "match": "not under 'rootDir'",
+          "level": "fatal",
+          "explain": "引用了 rootDir 之外的文件。调整 tsconfig 的 rootDir/include，或移动文件。"
+        },
+        "ts6231_resolve_path": {
+          "match": "Could not resolve the path",
+          "level": "fatal",
+          "explain": "找不到输入文件的路径。检查 tsc 命令参数和文件是否存在。"
+        },
+        "ts5055_overwrite": {
+          "match": "would overwrite input file",
+          "level": "fatal",
+          "explain": "编译输出会覆盖源文件。配置 outDir 把产物输出到别的目录。"
+        },
+        "ts2875_jsx_runtime": {
+          "match": "react/jsx-runtime",
+          "level": "fatal",
+          "explain": "找不到新的 JSX 运行时。升级 React 到 17+ 并确认 types 和 jsx 配置匹配。"
+        },
+        "ts2556_spread_arg": {
+          "match": "spread argument",
+          "level": "error",
+          "explain": "展开传参要求元组类型。给数据标注 as const 或元组类型。"
+        },
+        "ts2783_overwritten": {
+          "match": "specified more than once",
+          "level": "warning",
+          "explain": "对象展开时后面的属性会覆盖前面显式写的同名属性。调整顺序确认意图。"
+        },
+        "ts2591_target_library": {
+          "match": "Do you need to change your target library",
+          "level": "error",
+          "explain": "缺少对应的类型定义（如 @types/node）。安装或调整 tsconfig 的 lib/types。"
+        },
+        "ts8020_jsdoc": {
+          "match": "JSDoc types",
+          "level": "error",
+          "explain": "JSDoc 类型标注只能用于注释上下文。检查 .ts 文件里的写法。"
+        },
+        "ts6053_file_not_found": {
+          "match": "File '.*' not found",
+          "level": "fatal",
+          "explain": "tsc 找不到指定的输入文件。检查路径和 include 配置。"
         }
       }
     },

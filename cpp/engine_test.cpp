@@ -94,6 +94,10 @@ int main(int argc, char** argv) {
         {"java.lang.IllegalStateException: Cannot get property 'name' on null object", "Groovy"},
         {"** (MatchError) no match of right hand side value: :error", "Elixir"},
         {"** (KeyError) key :name not found in: %{}", "Elixir"},
+        {"ImproperlyConfigured: The SECRET_KEY setting must not be empty.", "Python"},
+        {"fixture 'client' not found\n> available fixtures: cache", "Python"},
+        {"Module not found: Error: Can't resolve './config' in '/app/src'", "JavaScript"},
+        {"***************************\nAPPLICATION FAILED TO START\nDescription:\nFailed to configure a DataSource", "Java"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
