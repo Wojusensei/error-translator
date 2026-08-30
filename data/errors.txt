@@ -1,6 +1,6 @@
 Python|NameError|error|你用了还没有定义的变量。检查变量名拼写是否正确，或者在用它之前先给它赋值。
 Python|IndexError||list index out of range||tuple index out of range||string index out of range||list assignment index out of range|error|列表、元组或字符串的索引超出范围了。你可能多取了一个位置，检查一下长度，或者用 len() 确认边界。
-Python|KeyError|error|字典里没有这个键。检查键名拼写，或者先用 .get() / in 判断键是否存在。
+Python|KeyError:|error|字典里没有这个键。检查键名拼写，或者先用 .get() / in 判断键是否存在。
 Python|TypeError|error|操作的类型不对。比如把字符串和数字直接相加，或者对不支持的类型用了某个函数。
 Python|AttributeError||has no attribute|error|对象没有这个属性或方法。检查对象类型是否正确，或者是否拼错了方法名。
 Python|ValueError|error|传入的值有问题，类型对了但内容不合理。检查数据的格式和取值范围。
@@ -596,7 +596,7 @@ Ruby|RegexpError||end pattern with unmatched parenthesis|error|正则表达式�
 Ruby|Encoding::UndefinedConversionError|error|编码转换时目标编码表示不了某些字符。统一编码为 UTF-8，或设置 replace 参数。
 Ruby|Encoding::InvalidByteSequenceError||invalid byte sequence|error|字节序列不是合法的当前编码。确认文件实际编码，用正确编码打开。
 Ruby|incompatible character encodings||Encoding::CompatibilityError|error|两种编码的字符串做拼接/比较。用 force_encoding 统一编码再操作。
-Ruby|KeyError||key not found|error|Hash 里没有这个键。用 fetch 给默认值，或先判断 key? 再取。
+Ruby|KeyError:||key not found|error|Hash 里没有这个键。用 fetch 给默认值，或先判断 key? 再取。
 Ruby|IndexError|error|下标越界。数组取值超出了范围，先检查 size。
 Ruby|StopIteration|warning|迭代器用完了。loop 会自动捕获它结束循环，手动 next 则需自行处理。
 Ruby|ThreadError||deadlock; recursive locking|error|线程使用有误。比如同一个线程重复加锁，检查 Mutex 的使用范围。
@@ -1383,7 +1383,7 @@ Scala|diverging implicit expansion||ambiguous implicit values|error|隐式解析
 Scala|pattern type is incompatible|error|case 的模式类型和匹配对象不兼容。检查类型拼写或添加运行时判断。
 Scala|None.get|fatal|对 None 调了 get，抛 NoSuchElementException。用 getOrElse、map 或模式匹配处理空值。
 Scala|head of empty list||tail of empty list||last of empty list|fatal|集合是空的还取了 head/tail。先判断 nonEmpty，或用 headOption。
-Scala|MatchError|fatal|match 没有任何分支命中。编译期的非穷尽警告变成了运行时崩溃，补全 case。
+Scala|scala.MatchError|fatal|match 没有任何分支命中。编译期的非穷尽警告变成了运行时崩溃，补全 case。
 Scala|reassignment to val|error|val 是只读的，不能重新赋值。需要修改用 var。
 Scala|cyclic reference involving||illegal cyclic reference|error|定义互相引用形成了循环。检查类/对象之间的依赖顺序。
 Scala|double definition||is defined twice|error|同名成员重复定义了。删掉一个或重命名。
@@ -1614,7 +1614,7 @@ Julia|DimensionMismatch|error|维度对不上。检查 size，必要时 reshape�
 Julia|used in boolean context|error|条件里出现了非布尔值（比如 missing）。先处理缺失值或用 coalesce。
 Julia|unsupported keyword argument|error|函数没有这个关键字参数。检查参数名拼写和版本。
 Julia|UndefKeywordError|error|必填的关键字参数没传。补上这个 kwarg。
-Julia|key :.* not found|error|字典里没有这个键。用 get(dict, key, 默认值) 或先 haskey 判断。
+Julia|KeyError: key|error|字典里没有这个键。用 get(dict, key, 默认值) 或先 haskey 判断。
 Julia|immutable struct of type|error|不可变结构体的字段不能修改。声明成 mutable struct 或重建对象。
 Julia|has no field|error|这个类型没有该字段。检查字段名和类型定义。
 Julia|redefinition of constant|error|const 常量不能重新定义。重启会话或换变量名。
@@ -1645,3 +1645,81 @@ Julia|no method matching convert|error|没定义这个转换。自己写 Base.co
 Julia|no method matching getindex|error|这个类型不支持该下标访问。检查索引类型和维度。
 Julia|no method matching setindex!|error|这个类型不支持赋值下标操作。检查是否为不可变类型。
 Julia|tried to get element|error|迭代器在 collect 时提前结束或越界。检查迭代器实现。
+Groovy|No signature of method||MissingMethodException|fatal|找不到参数匹配的方法。报错列出了候选签名，检查方法名拼写和参数类型个数。
+Groovy|No such property||No such field||MissingPropertyException|fatal|类上没有这个属性。检查属性名拼写，Groovy 属性访问等价于 getter。
+Groovy|read-only property||ReadOnlyPropertyException|fatal|该属性只读。补 setter 或改用可写属性。
+Groovy|GroovyCastException|fatal|对象无法 as 成目标类型。检查两边的类型兼容性。
+Groovy|matching constructor|fatal|找不到匹配的构造函数。检查参数个数和类型。
+Groovy|unable to resolve class|fatal|找不到这个类。检查 import、依赖 jar 和类名拼写。
+Groovy|expecting '}'||expecting EOF|fatal|语法错误，缺少提示的符号。检查花括号配对和字符串闭合。
+Groovy|unexpected token||unexpected char|fatal|出现了不该出现的符号。常见于中文标点、缺逗号或关键字误用。
+Groovy|MultipleCompilationErrorsException||during semantic analysis||during conversion|fatal|编译发现多处错误。看日志逐条修复，通常第一条会引发后面的错误。
+Groovy|illegal string body character after dollar sign|fatal|GString 里的 $ 后面要跟表达式或 { }。想输出字面 $ 用 \\ 转义。
+Groovy|A problem occurred|error|构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。
+Groovy|BUILD FAILED|error|构建失败。往上看 * What went wrong 部分定位任务和原因。
+Groovy|not found in root project|error|这个 task 不存在。gradlew tasks 查看可用任务列表。
+Groovy|Timeout waiting to lock|error|Gradle 锁被占用。结束其他 gradle 进程或删除锁文件。
+Groovy|daemon disappeared unexpectedly|error|Gradle 守护进程被杀，常见为内存不足。调大 org.gradle.jvmargs。
+Groovy|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查内存参数和 JAVA_HOME。
+Groovy|Could not reserve enough space for object heap|fatal|堆内存超过系统可用上限，调小 -Xmx。
+Groovy|NotSerializableException||Task not serializable|fatal|对象不可序列化。实现 Serializable，或把不可序列化依赖移出闭包。
+Groovy|Cannot run program|error|启动外部进程失败。检查命令是否在 PATH 里。
+Groovy|AnalysisException|error|Spark SQL 分析失败。看具体列/表名，检查 schema。
+Groovy|Broker may not be available|error|Kafka 连不上 broker。检查 bootstrap.servers 和网络。
+Groovy|No configuration setting found for key|error|Typesafe Config 缺少配置项。检查 application.conf 路径和键名。
+Groovy|was not equal to|error|Spock/断言失败，期望值与实际值不符。对照输出排查。
+Groovy|Cannot invoke method|fatal|对 null 对象调方法。上游返回了 null，先判空再用。
+Groovy|Cannot get property||Cannot set property|fatal|在 null 上取/设属性。检查对象为什么是 null。
+Groovy|Ambiguous method overloading|fatal|重载调用有歧义。显式转换参数类型帮助选择。
+Groovy|BUG! exception in phase|fatal|Groovy 编译器内部错误。简化触发代码，或升级 Groovy/Gradle 版本。
+Groovy|grabbing Grapes|fatal|@Grab 下载依赖失败。检查仓库地址、网络和依赖坐标。
+Groovy|Could not determine java version|error|Gradle 识别不了 Java 版本。检查 JAVA_HOME 和 gradle wrapper 版本。
+Groovy|Minimum supported Gradle version|error|当前 Gradle 版本太旧。升级 gradle wrapper 版本。
+Groovy|Could not GET||Could not HEAD|error|Gradle 下载依赖/插件失败。检查网络、代理和仓库地址。
+Groovy|as a task with that name already exists|error|重名 task。换个名字，或先检查已有 task。
+Groovy|Could not create service of type|error|Gradle 内部服务创建失败。清理 .gradle 缓存重试。
+Groovy|generic class cache|error|Gradle 的类缓存损坏。删除 .gradle/caches 后重试。
+Groovy|malformed \uxxxx encoding|error|gradle.properties 里的 unicode 转义写错了。检查编码属性值。
+Groovy|Could not install Gradle distribution||Could not download Gradle distribution|error|Gradle 发行版下载失败。检查网络和 distributionUrl，可配置镜像。
+Groovy|Expected a step|fatal|Jenkinsfile 语法错误，这一行应该是 pipeline step。检查缩进和指令位置。
+Elixir|no match of right hand side value|fatal|模式匹配失败：= 右边的值和左边的模式对不上。检查数据结构是否和预期一致。
+Elixir|no function clause matching||no case clause matching||CaseClauseError||FunctionClauseError|fatal|没有函数/case 子句能匹配这些参数。检查子句的模式和守卫是否覆盖了这个输入。
+Elixir|UndefinedFunctionError||is undefined or private||function .* is undefined|fatal|函数没定义或是私有的。检查模块名、函数名和参数个数（如 x/2），确认模块已编译。
+Elixir|key :.* not found||KeyError||(KeyError) key|fatal|Map/Keyword 里没有这个键。用 Map.get/  Access.get 提供默认值，或先 has_key? 判断。
+Elixir|errors were found at the given arguments||ArgumentError|fatal|参数不合法。报错列出了每个参数的期望类型和实际值，对照修正。
+Elixir|protocol.*not implemented|fatal|协议没有为这个类型实现。写 defimpl，或检查数据是不是预期的类型。
+Elixir|syntax error before||TokenMissingError||SyntaxError|fatal|语法错误。常见为缺 end、缺逗号、缺括号，看 before/after 指出的 token。
+Elixir|variable ".*" is unused|warning|变量绑定了但没用。重命名为 _x 表示有意忽略，或补上使用。
+Elixir|alias is unused|warning|alias 没有被使用。删除这条 alias。
+Elixir|immutable struct||cannot be modified after creation|fatal|Elixir 的结构体不可变。用 %{struct / field: 新值} 的更新语法创建新结构体。
+Elixir|is not available (module||module .* is not available|fatal|模块不存在或没编译。确认文件在正确的目录、模块名与路径一致，重新 mix compile。
+Elixir|could not compile dependency|fatal|依赖编译失败。往上看依赖内部的具体报错。
+Elixir|dependency is not available|fatal|依赖没拉取。运行 mix deps.get。
+Elixir|Dependencies have diverged|error|依赖版本冲突。按 mix 提示用 override 或统一版本约束。
+Elixir|lock file is out of sync||the lock file is outdated|error|mix.lock 和 mix.exs 不同步。运行 mix deps.get 更新锁文件。
+Elixir|No package with name|error|Hex 上没有这个包。检查包名拼写和是否已发布。
+Elixir|GenServer.*terminating|fatal|GenServer 异常终止。看最后的 call/backtrace 和 caused by 定位回调里的错误。
+Elixir|the process is not alive||noproc|fatal|目标进程已经不存在。检查进程的生命周期和注册名。
+Elixir|exited in: GenServer.call|fatal|GenServer.call 超时。服务端阻塞或没回复，检查 handle_call 是否返回，或调大超时。
+Elixir|DBConnection.ConnectionError|error|数据库连接异常。常见为连接池耗尽或超时，检查连接数和查询耗时。
+Elixir|has no primary key|fatal|schema 没有主键。Ecto 增删改需要主键，在 schema 里声明。
+Elixir|constraint error when attempting|fatal|数据库约束冲突（唯一键/外键）。用 changeset 的 unique_constraint 声明并处理。
+Elixir|Jason.DecodeError|fatal|JSON 解析失败。响应可能不是合法 JSON，打印原始内容检查。
+Elixir|Erlang error:|error|底层 Erlang/OTP 抛出的错误。看具体消息定位到调用。
+Elixir|File.Error|error|文件操作失败。检查路径、权限和文件是否存在。
+Elixir|bad argument in arithmetic|fatal|对非数字做了算术运算。检查变量类型，必要时转换。
+Elixir|bad boolean expression|fatal|守卫表达式不合法。守卫只能用受限的函数集合。
+Elixir|undefined variable|fatal|变量未定义。注意 Elixir 里未绑定变量会被当成零参函数调用。
+Elixir|is not a function|fatal|把非函数的值当函数调用了。检查变量绑定和捕获语法 &。
+Elixir|expected a map, got|fatal|更新语法 %{} 要求操作数是 map。检查变量实际类型。
+Elixir|is not a struct|fatal|更新结构体语法要求左边是 struct。检查变量和 defstruct。
+Elixir|wrong number of arguments.*expected|fatal|函数参数个数不对。对照定义检查（注意 Elixir 函数名带元数，如 x/2）。
+Elixir|guard test|fatal|守卫条件在运行时抛错。检查守卫里的函数和参数类型。
+Elixir|connection not available and request was queued|error|连接池耗尽。检查 DBConnection 池大小和慢查询。
+Elixir|view module.*not implemented||could not render|fatal|视图函数没实现或渲染失败。检查 view 模块名和模板文件是否对应。
+Elixir|expected at least one result but got none|fatal|Repo.get!/one! 没查到记录。改用 get/one 的安全版本或先判断空。
+Elixir|failures, |error|有测试用例失败。看 ExUnit 输出里每个失败的断言和期望值。
+Elixir|no function clause returning|fatal|函数子句遍历完没命中。补充兜底子句或修正参数。
+Elixir|Plug.Conn.WrapperError|fatal|Plug 处理过程中抛出的异常。看 caused by 的根因。
+Elixir|this clause cannot match|warning|编译器警告：这个子句永远匹配不上。检查子句顺序和模式。
+Elixir|is deprecated. Use|warning|用了废弃的 API。按提示迁移到新函数。

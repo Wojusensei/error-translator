@@ -15,7 +15,7 @@
           "explain": "列表、元组或字符串的索引超出范围了。你可能多取了一个位置，检查一下长度，或者用 len() 确认边界。"
         },
         "key_error": {
-          "match": "KeyError",
+          "match": "KeyError:",
           "level": "error",
           "explain": "字典里没有这个键。检查键名拼写，或者先用 .get() / in 判断键是否存在。"
         },
@@ -3030,7 +3030,7 @@
           "explain": "两种编码的字符串做拼接/比较。用 force_encoding 统一编码再操作。"
         },
         "key_error": {
-          "match": "KeyError||key not found",
+          "match": "KeyError:||key not found",
           "level": "error",
           "explain": "Hash 里没有这个键。用 fetch 给默认值，或先判断 key? 再取。"
         },
@@ -7015,7 +7015,7 @@
           "explain": "集合是空的还取了 head/tail。先判断 nonEmpty，或用 headOption。"
         },
         "match_error_scala": {
-          "match": "MatchError",
+          "match": "scala.MatchError",
           "level": "fatal",
           "explain": "match 没有任何分支命中。编译期的非穷尽警告变成了运行时崩溃，补全 case。"
         },
@@ -8190,7 +8190,7 @@
           "explain": "必填的关键字参数没传。补上这个 kwarg。"
         },
         "key_not_found_julia": {
-          "match": "key :.* not found",
+          "match": "KeyError: key",
           "level": "error",
           "explain": "字典里没有这个键。用 get(dict, key, 默认值) 或先 haskey 判断。"
         },
@@ -8343,6 +8343,406 @@
           "match": "tried to get element",
           "level": "error",
           "explain": "迭代器在 collect 时提前结束或越界。检查迭代器实现。"
+        }
+      }
+    },
+    "groovy": {
+      "name": "Groovy",
+      "patterns": {
+        "no_signature_of_method": {
+          "match": "No signature of method||MissingMethodException",
+          "level": "fatal",
+          "explain": "找不到参数匹配的方法。报错列出了候选签名，检查方法名拼写和参数类型个数。"
+        },
+        "no_such_property": {
+          "match": "No such property||No such field||MissingPropertyException",
+          "level": "fatal",
+          "explain": "类上没有这个属性。检查属性名拼写，Groovy 属性访问等价于 getter。"
+        },
+        "read_only_property": {
+          "match": "read-only property||ReadOnlyPropertyException",
+          "level": "fatal",
+          "explain": "该属性只读。补 setter 或改用可写属性。"
+        },
+        "groovy_cast_exception": {
+          "match": "GroovyCastException",
+          "level": "fatal",
+          "explain": "对象无法 as 成目标类型。检查两边的类型兼容性。"
+        },
+        "matching_constructor": {
+          "match": "matching constructor",
+          "level": "fatal",
+          "explain": "找不到匹配的构造函数。检查参数个数和类型。"
+        },
+        "unable_to_resolve_class": {
+          "match": "unable to resolve class",
+          "level": "fatal",
+          "explain": "找不到这个类。检查 import、依赖 jar 和类名拼写。"
+        },
+        "expecting_groovy": {
+          "match": "expecting '}'||expecting EOF",
+          "level": "fatal",
+          "explain": "语法错误，缺少提示的符号。检查花括号配对和字符串闭合。"
+        },
+        "unexpected_token_groovy": {
+          "match": "unexpected token||unexpected char",
+          "level": "fatal",
+          "explain": "出现了不该出现的符号。常见于中文标点、缺逗号或关键字误用。"
+        },
+        "multiple_compilation_errors": {
+          "match": "MultipleCompilationErrorsException||during semantic analysis||during conversion",
+          "level": "fatal",
+          "explain": "编译发现多处错误。看日志逐条修复，通常第一条会引发后面的错误。"
+        },
+        "illegal_dollar": {
+          "match": "illegal string body character after dollar sign",
+          "level": "fatal",
+          "explain": "GString 里的 $ 后面要跟表达式或 { }。想输出字面 $ 用 \\\\ 转义。"
+        },
+        "a_problem_occurred_groovy": {
+          "match": "A problem occurred",
+          "level": "error",
+          "explain": "构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。"
+        },
+        "build_failed_gradle": {
+          "match": "BUILD FAILED",
+          "level": "error",
+          "explain": "构建失败。往上看 * What went wrong 部分定位任务和原因。"
+        },
+        "gradle_task_not_found": {
+          "match": "not found in root project",
+          "level": "error",
+          "explain": "这个 task 不存在。gradlew tasks 查看可用任务列表。"
+        },
+        "gradle_lock_timeout": {
+          "match": "Timeout waiting to lock",
+          "level": "error",
+          "explain": "Gradle 锁被占用。结束其他 gradle 进程或删除锁文件。"
+        },
+        "daemon_disappeared_groovy": {
+          "match": "daemon disappeared unexpectedly",
+          "level": "error",
+          "explain": "Gradle 守护进程被杀，常见为内存不足。调大 org.gradle.jvmargs。"
+        },
+        "could_not_create_jvm_groovy": {
+          "match": "Could not create the Java Virtual Machine",
+          "level": "fatal",
+          "explain": "JVM 启动失败。检查内存参数和 JAVA_HOME。"
+        },
+        "heap_reserve_groovy": {
+          "match": "Could not reserve enough space for object heap",
+          "level": "fatal",
+          "explain": "堆内存超过系统可用上限，调小 -Xmx。"
+        },
+        "not_serializable_groovy": {
+          "match": "NotSerializableException||Task not serializable",
+          "level": "fatal",
+          "explain": "对象不可序列化。实现 Serializable，或把不可序列化依赖移出闭包。"
+        },
+        "cannot_run_program_groovy": {
+          "match": "Cannot run program",
+          "level": "error",
+          "explain": "启动外部进程失败。检查命令是否在 PATH 里。"
+        },
+        "analysis_exception_groovy": {
+          "match": "AnalysisException",
+          "level": "error",
+          "explain": "Spark SQL 分析失败。看具体列/表名，检查 schema。"
+        },
+        "broker_not_available_groovy": {
+          "match": "Broker may not be available",
+          "level": "error",
+          "explain": "Kafka 连不上 broker。检查 bootstrap.servers 和网络。"
+        },
+        "config_missing_groovy": {
+          "match": "No configuration setting found for key",
+          "level": "error",
+          "explain": "Typesafe Config 缺少配置项。检查 application.conf 路径和键名。"
+        },
+        "was_not_equal_groovy": {
+          "match": "was not equal to",
+          "level": "error",
+          "explain": "Spock/断言失败，期望值与实际值不符。对照输出排查。"
+        },
+        "groovy_null_invoke": {
+          "match": "Cannot invoke method",
+          "level": "fatal",
+          "explain": "对 null 对象调方法。上游返回了 null，先判空再用。"
+        },
+        "cannot_get_property": {
+          "match": "Cannot get property||Cannot set property",
+          "level": "fatal",
+          "explain": "在 null 上取/设属性。检查对象为什么是 null。"
+        },
+        "ambiguous_overload_groovy": {
+          "match": "Ambiguous method overloading",
+          "level": "fatal",
+          "explain": "重载调用有歧义。显式转换参数类型帮助选择。"
+        },
+        "compiler_bug": {
+          "match": "BUG! exception in phase",
+          "level": "fatal",
+          "explain": "Groovy 编译器内部错误。简化触发代码，或升级 Groovy/Gradle 版本。"
+        },
+        "grab_error": {
+          "match": "grabbing Grapes",
+          "level": "fatal",
+          "explain": "@Grab 下载依赖失败。检查仓库地址、网络和依赖坐标。"
+        },
+        "gradle_java_version": {
+          "match": "Could not determine java version",
+          "level": "error",
+          "explain": "Gradle 识别不了 Java 版本。检查 JAVA_HOME 和 gradle wrapper 版本。"
+        },
+        "min_gradle_version": {
+          "match": "Minimum supported Gradle version",
+          "level": "error",
+          "explain": "当前 Gradle 版本太旧。升级 gradle wrapper 版本。"
+        },
+        "gradle_network": {
+          "match": "Could not GET||Could not HEAD",
+          "level": "error",
+          "explain": "Gradle 下载依赖/插件失败。检查网络、代理和仓库地址。"
+        },
+        "task_exists": {
+          "match": "as a task with that name already exists",
+          "level": "error",
+          "explain": "重名 task。换个名字，或先检查已有 task。"
+        },
+        "gradle_service_error": {
+          "match": "Could not create service of type",
+          "level": "error",
+          "explain": "Gradle 内部服务创建失败。清理 .gradle 缓存重试。"
+        },
+        "class_cache": {
+          "match": "generic class cache",
+          "level": "error",
+          "explain": "Gradle 的类缓存损坏。删除 .gradle/caches 后重试。"
+        },
+        "malformed_unicode_escape": {
+          "match": "malformed \\uxxxx encoding",
+          "level": "error",
+          "explain": "gradle.properties 里的 unicode 转义写错了。检查编码属性值。"
+        },
+        "gradle_distro": {
+          "match": "Could not install Gradle distribution||Could not download Gradle distribution",
+          "level": "error",
+          "explain": "Gradle 发行版下载失败。检查网络和 distributionUrl，可配置镜像。"
+        },
+        "jenkins_expected_step": {
+          "match": "Expected a step",
+          "level": "fatal",
+          "explain": "Jenkinsfile 语法错误，这一行应该是 pipeline step。检查缩进和指令位置。"
+        }
+      }
+    },
+    "elixir": {
+      "name": "Elixir",
+      "patterns": {
+        "no_match_rhs": {
+          "match": "no match of right hand side value",
+          "level": "fatal",
+          "explain": "模式匹配失败：= 右边的值和左边的模式对不上。检查数据结构是否和预期一致。"
+        },
+        "clause_matching": {
+          "match": "no function clause matching||no case clause matching||CaseClauseError||FunctionClauseError",
+          "level": "fatal",
+          "explain": "没有函数/case 子句能匹配这些参数。检查子句的模式和守卫是否覆盖了这个输入。"
+        },
+        "undefined_fn_elixir": {
+          "match": "UndefinedFunctionError||is undefined or private||function .* is undefined",
+          "level": "fatal",
+          "explain": "函数没定义或是私有的。检查模块名、函数名和参数个数（如 x/2），确认模块已编译。"
+        },
+        "key_not_found_elixir": {
+          "match": "key :.* not found||KeyError||(KeyError) key",
+          "level": "fatal",
+          "explain": "Map/Keyword 里没有这个键。用 Map.get/  Access.get 提供默认值，或先 has_key? 判断。"
+        },
+        "bad_arg_given": {
+          "match": "errors were found at the given arguments||ArgumentError",
+          "level": "fatal",
+          "explain": "参数不合法。报错列出了每个参数的期望类型和实际值，对照修正。"
+        },
+        "protocol_not_implemented": {
+          "match": "protocol.*not implemented",
+          "level": "fatal",
+          "explain": "协议没有为这个类型实现。写 defimpl，或检查数据是不是预期的类型。"
+        },
+        "syntax_elixir": {
+          "match": "syntax error before||TokenMissingError||SyntaxError",
+          "level": "fatal",
+          "explain": "语法错误。常见为缺 end、缺逗号、缺括号，看 before/after 指出的 token。"
+        },
+        "variable_unused_elixir": {
+          "match": "variable \".*\" is unused",
+          "level": "warning",
+          "explain": "变量绑定了但没用。重命名为 _x 表示有意忽略，或补上使用。"
+        },
+        "alias_unused_elixir": {
+          "match": "alias is unused",
+          "level": "warning",
+          "explain": "alias 没有被使用。删除这条 alias。"
+        },
+        "immutable_field_elixir": {
+          "match": "immutable struct||cannot be modified after creation",
+          "level": "fatal",
+          "explain": "Elixir 的结构体不可变。用 %{struct | field: 新值} 的更新语法创建新结构体。"
+        },
+        "undefined_module": {
+          "match": "is not available (module||module .* is not available",
+          "level": "fatal",
+          "explain": "模块不存在或没编译。确认文件在正确的目录、模块名与路径一致，重新 mix compile。"
+        },
+        "could_not_compile_dep": {
+          "match": "could not compile dependency",
+          "level": "fatal",
+          "explain": "依赖编译失败。往上看依赖内部的具体报错。"
+        },
+        "dependency_not_available": {
+          "match": "dependency is not available",
+          "level": "fatal",
+          "explain": "依赖没拉取。运行 mix deps.get。"
+        },
+        "deps_diverged": {
+          "match": "Dependencies have diverged",
+          "level": "error",
+          "explain": "依赖版本冲突。按 mix 提示用 override 或统一版本约束。"
+        },
+        "lockfile_elixir": {
+          "match": "lock file is out of sync||the lock file is outdated",
+          "level": "error",
+          "explain": "mix.lock 和 mix.exs 不同步。运行 mix deps.get 更新锁文件。"
+        },
+        "hex_not_found": {
+          "match": "No package with name",
+          "level": "error",
+          "explain": "Hex 上没有这个包。检查包名拼写和是否已发布。"
+        },
+        "gen_server_terminating": {
+          "match": "GenServer.*terminating",
+          "level": "fatal",
+          "explain": "GenServer 异常终止。看最后的 call/backtrace 和 caused by 定位回调里的错误。"
+        },
+        "process_not_alive": {
+          "match": "the process is not alive||noproc",
+          "level": "fatal",
+          "explain": "目标进程已经不存在。检查进程的生命周期和注册名。"
+        },
+        "genserver_timeout": {
+          "match": "exited in: GenServer.call",
+          "level": "fatal",
+          "explain": "GenServer.call 超时。服务端阻塞或没回复，检查 handle_call 是否返回，或调大超时。"
+        },
+        "dbconnection_error": {
+          "match": "DBConnection.ConnectionError",
+          "level": "error",
+          "explain": "数据库连接异常。常见为连接池耗尽或超时，检查连接数和查询耗时。"
+        },
+        "ecto_primary_key": {
+          "match": "has no primary key",
+          "level": "fatal",
+          "explain": "schema 没有主键。Ecto 增删改需要主键，在 schema 里声明。"
+        },
+        "ecto_constraint": {
+          "match": "constraint error when attempting",
+          "level": "fatal",
+          "explain": "数据库约束冲突（唯一键/外键）。用 changeset 的 unique_constraint 声明并处理。"
+        },
+        "jason_decode_error": {
+          "match": "Jason.DecodeError",
+          "level": "fatal",
+          "explain": "JSON 解析失败。响应可能不是合法 JSON，打印原始内容检查。"
+        },
+        "erlang_error": {
+          "match": "Erlang error:",
+          "level": "error",
+          "explain": "底层 Erlang/OTP 抛出的错误。看具体消息定位到调用。"
+        },
+        "file_error_elixir": {
+          "match": "File.Error",
+          "level": "error",
+          "explain": "文件操作失败。检查路径、权限和文件是否存在。"
+        },
+        "arith_bad_arg": {
+          "match": "bad argument in arithmetic",
+          "level": "fatal",
+          "explain": "对非数字做了算术运算。检查变量类型，必要时转换。"
+        },
+        "bad_boolean_guard": {
+          "match": "bad boolean expression",
+          "level": "fatal",
+          "explain": "守卫表达式不合法。守卫只能用受限的函数集合。"
+        },
+        "undefined_variable_elixir": {
+          "match": "undefined variable",
+          "level": "fatal",
+          "explain": "变量未定义。注意 Elixir 里未绑定变量会被当成零参函数调用。"
+        },
+        "not_callable_elixir": {
+          "match": "is not a function",
+          "level": "fatal",
+          "explain": "把非函数的值当函数调用了。检查变量绑定和捕获语法 &。"
+        },
+        "bad_map_update": {
+          "match": "expected a map, got",
+          "level": "fatal",
+          "explain": "更新语法 %{} 要求操作数是 map。检查变量实际类型。"
+        },
+        "bad_struct_update": {
+          "match": "is not a struct",
+          "level": "fatal",
+          "explain": "更新结构体语法要求左边是 struct。检查变量和 defstruct。"
+        },
+        "bad_arg_count": {
+          "match": "wrong number of arguments.*expected",
+          "level": "fatal",
+          "explain": "函数参数个数不对。对照定义检查（注意 Elixir 函数名带元数，如 x/2）。"
+        },
+        "guard_error": {
+          "match": "guard test",
+          "level": "fatal",
+          "explain": "守卫条件在运行时抛错。检查守卫里的函数和参数类型。"
+        },
+        "timeout_ecto": {
+          "match": "connection not available and request was queued",
+          "level": "error",
+          "explain": "连接池耗尽。检查 DBConnection 池大小和慢查询。"
+        },
+        "phoenix_missing_view": {
+          "match": "view module.*not implemented||could not render",
+          "level": "fatal",
+          "explain": "视图函数没实现或渲染失败。检查 view 模块名和模板文件是否对应。"
+        },
+        "phoenix_ecto_no_results": {
+          "match": "expected at least one result but got none",
+          "level": "fatal",
+          "explain": "Repo.get!/one! 没查到记录。改用 get/one 的安全版本或先判断空。"
+        },
+        "ex_unit_failures": {
+          "match": "failures, ",
+          "level": "error",
+          "explain": "有测试用例失败。看 ExUnit 输出里每个失败的断言和期望值。"
+        },
+        "dispatch_unmatched?": {
+          "match": "no function clause returning",
+          "level": "fatal",
+          "explain": "函数子句遍历完没命中。补充兜底子句或修正参数。"
+        },
+        "invalid_bandit?": {
+          "match": "Plug.Conn.WrapperError",
+          "level": "fatal",
+          "explain": "Plug 处理过程中抛出的异常。看 caused by 的根因。"
+        },
+        "compile_warning_elixir": {
+          "match": "this clause cannot match",
+          "level": "warning",
+          "explain": "编译器警告：这个子句永远匹配不上。检查子句顺序和模式。"
+        },
+        "deprecated_elixir": {
+          "match": "is deprecated. Use",
+          "level": "warning",
+          "explain": "用了废弃的 API。按提示迁移到新函数。"
         }
       }
     }

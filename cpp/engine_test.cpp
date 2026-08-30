@@ -90,6 +90,10 @@ int main(int argc, char** argv) {
         {"*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[Foo bar]'", "Objective-C"},
         {"MethodError: no method matching +(::String, ::Int64)", "Julia"},
         {"UndefVarError: df not defined", "Julia"},
+        {"groovy.lang.MissingMethodException: No signature of method: Script.foo()", "Groovy"},
+        {"java.lang.IllegalStateException: Cannot get property 'name' on null object", "Groovy"},
+        {"** (MatchError) no match of right hand side value: :error", "Elixir"},
+        {"** (KeyError) key :name not found in: %{}", "Elixir"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

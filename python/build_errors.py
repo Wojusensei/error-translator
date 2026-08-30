@@ -33,6 +33,8 @@ SAMPLES = {
     "Perl": "Can't call method \"get\" on an undefined value at script.pl line 12.",
     "Objective-C": "-[UIView setFoo:]: unrecognized selector sent to instance 0x0",
     "Julia": "MethodError: no method matching +(::String, ::Int64)",
+    "Groovy": "groovy.lang.MissingMethodException: No signature of method: Script.foo()",
+    "Elixir": "** (MatchError) no match of right hand side value: :error",
     "Scala": "type mismatch;\n found   : String\n required: Int"
 }
 

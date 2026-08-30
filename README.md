@@ -2,7 +2,7 @@
 
 一款玩具式多语言程序报错翻译工具，可以**粘贴报错信息，返回解释和修复建议**
 
-目前支持 22 种编程语言，共收录 1434 条报错类型，加上多个匹配别名能识别 1784+ 种真实报错变体，当然过于复杂的没做匹配
+目前支持 24 种编程语言，共收录 1434 条报错类型，加上多个匹配别名能识别 1784+ 种真实报错变体，当然过于复杂的没做匹配
 
 这是个很烂的模版化小项目，甚至只支持了 Windows ，后端代码都是写着玩的，做复习用，有大部分报错并未收录，请谅解
 
@@ -50,6 +50,8 @@
 | Perl        | 72 | `Can't call method on an undefined value`、`requires explicit package name`     |
 | Objective-C | 49 | `unrecognized selector`、`key value coding-compliant`、AutoLayout 约束冲突       |
 | Julia       | 44 | `MethodError`、`UndefVarError`、`BoundsError`、`InexactError`、Pkg 报错         |
+| Groovy      | 37 | `No signature of method`、`No such property`、Gradle/Jenkins 管线报错           |
+| Elixir      | 41 | `no match of right hand side`、`KeyError`、协议未实现、GenServer/mix 报错       |
 
 ---
 
