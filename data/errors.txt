@@ -271,7 +271,7 @@ C++|std::out_of_range||vector::_M_range_check||map::at||vector subscript out of 
 C++|std::length_error|fatal|容器长度超过了最大限制。检查是否误传了负数或超大值作为大小。
 C++|std::bad_function_call|fatal|调用了空的 std::function。调用前用 operator bool 判断是否已绑定可调用对象。
 C++|terminate called after throwing an instance of|fatal|有异常抛出但没有被捕获，程序直接终止。看异常类型和 what() 内容，补上 try/catch。
-C++|uncaught exception|fatal|异常没有被捕获。检查 main 或线程入口是否缺少 try/catch 保护。
+C++|terminate called without an active exception||std::terminate|fatal|异常没有被捕获。检查 main 或线程入口是否缺少 try/catch 保护。
 C++|abort() has been called|fatal|程序调用了 abort。常见于 assert 失败、未捕获异常或 CRT 检测到错误。
 C++|Debug Assertion Failed|fatal|MSVC 调试版的运行时断言失败。看 Expression 提示，常见为迭代器失效、空指针、越界。
 C++|invalid null pointer|fatal|把空指针传给了要求非空的函数。使用前判断指针是否为空。
@@ -512,7 +512,7 @@ C#|NullReferenceException||Object reference not set|error|空引用。你对一�
 C#|IndexOutOfRangeException||Index was outside the bounds|error|数组索引越界。你访问了一个不存在的数组位置，检查索引范围。
 C#|ArgumentOutOfRangeException||Index was out of range. Must be non-negative||Index and length must refer|error|参数超出允许范围。常见于 Substring 的索引超出字符串长度，先检查长度。
 C#|ArgumentNullException||Value cannot be null|error|把 null 传给了不允许为空的方法参数。调用前先判空。
-C#|ArgumentException|error|方法收到了不合理的参数值。看报错里的参数名和消息定位。
+C#|System.ArgumentException||ArgumentException:|error|方法收到了不合理的参数值。看报错里的参数名和消息定位。
 C#|InvalidOperationException||Collection was modified||Sequence contains no elements||Sequence contains no matching element|error|对象当前状态下不允许这个操作。常见于：遍历时修改集合、LINQ 取不到元素、连接未打开。
 C#|DivideByZeroException|error|整数除以零。整数除法不做浮点处理，除法前检查除数。
 C#|FormatException||Input string was not in a correct format|error|字符串格式转换失败。int.Parse 收到了不是数字的内容，用 TryParse 更安全。
@@ -1013,7 +1013,6 @@ Swift|Undefined symbol|fatal|链接时找不到符号。检查是否漏了实现
 Swift|No profiles for|fatal|找不到匹配的描述文件。在开发者账号里生成对应 Bundle ID 的 profile 并下载。
 Swift|requires a development team|fatal|没有配置签名团队。在 Signing & Capabilities 里选择你的开发者账号。
 Swift|Unable to find a destination|error|找不到匹配的运行设备。检查模拟器/真机列表和 scheme 的目标设置。
-Swift|unrecognized selector sent to|fatal|调用了对象不存在的方法（ObjC 运行时崩溃）。检查 target-action 选择器签名和对象类型。
 Swift|Could not cast value of type|fatal|运行时强转失败。从 storyboard/ nib 取出的对象类型和代码声明不一致，检查关联。
 Swift|Precondition failed|fatal|前置条件不成立导致崩溃。看断言消息，检查为什么数据不符合预期。
 Swift|EXC_BAD|fatal|访问了已释放或非法的内存。检查循环引用、已释放对象的使用（可用僵尸对象调试）。
@@ -1553,3 +1552,96 @@ Perl|Character in 'C' column|warning|对 UTF-8 字符串按字节操作会出错
 Perl|Can't modify glob|fatal|给文件句柄类型团赋值的方式不对。用 open 或词法句柄。
 Perl|Unmatched ( in regex; marked|fatal|正则里的左括号没有对应的右括号。检查分组配对。
 Perl|is a directory|warning|把目录当文件打开了。检查路径最后是不是文件。
+Objective-C|unrecognized selector sent to|fatal|调用了对象不存在的方法（ObjC 运行时崩溃）。检查 selector 拼写、对象实际类型和 target-action 签名。
+Objective-C|Terminating app due to uncaught exception|fatal|未捕获的 NSException 导致崩溃。看括号里的异常类型和 reason 定位。
+Objective-C|key value coding-compliant for the key|fatal|这个类没有报错里说的属性。Storyboard/XIB 的 Outlet 连接断了或指向了已删除的属性，断开重连。
+Objective-C|Could not load NIB in bundle|fatal|XIB/NIB 加载失败。检查文件名拼写和是否加进了 target。
+Objective-C|Unknown class .* in Interface Builder file|error|Interface Builder 里指定的类在运行时找不到。检查类名拼写和模块（Module）字段是否为空。
+Objective-C|No visible @interface for|error|编译器认为该对象上没有这个方法。检查方法声明、类名拼写和 import。
+Objective-C|Property '.*' not found on object|error|对象上没有这个属性。检查属性声明和头文件 import。
+Objective-C|Method definition for|warning|声明了协议方法但没有实现。补上实现，否则运行时 unrecognized selector。
+Objective-C|not available in automatic reference counting mode|fatal|ARC 下不能手动 retain/release/dealloc。删掉这些调用，用弱引用管理生命周期。
+Objective-C|ARC forbids|fatal|ARC 禁止这个内存管理操作。改用 ARC 的方式（weak/strong）管理引用。
+Objective-C|requires a bridging cast|fatal|Objective-C 对象和 C 指针之间转换需要 __bridge 等桥接。按所有权选择 __bridge/__bridge_retained。
+Objective-C|Library not loaded||Symbol not found|fatal|动态库加载失败。检查 Embedded Binaries、@rpath 设置和 Frameworks 是否完整。
+Objective-C|was mutated while being enumerated|fatal|遍历集合时又修改了它。用 copy 遍历副本，或先收集再修改。
+Objective-C|beyond bounds|fatal|数组下标越界。报错里有索引和数组大小，检查索引来源（常见于空的 table 数据源）。
+Objective-C|object cannot be nil||insert nil object from|fatal|往 NSArray/NSDictionary 里插入了 nil，容器不允许 nil。插入前判空。
+Objective-C|The model used to open the store is incompatible|fatal|Core Data 模型文件改了但旧数据还在。做轻量迁移或删除旧存储。
+Objective-C|The Internet connection appears to be offline|error|设备没有网络连接。检查网络状态，必要时给出离线提示。
+Objective-C|specified hostname could not be found||The request timed out|error|域名解析不了或请求超时。检查接口地址、网络权限（NSAppTransportSecurity）。
+Objective-C|deallocated while key value observers were still registered|fatal|对象释放时还有 KVO 观察者没移除。在 dealloc 里移除观察者。
+Objective-C|Unable to simultaneously satisfy constraints||will attempt to recover by breaking constraint|error|自动布局约束互相矛盾。看日志里列出的约束，删掉或降低优先级。
+Objective-C|whose view is not in the window view hierarchy|fatal|在视图还没上屏时做了 present 等操作。放到 viewDidAppear 或等窗口就绪后再调用。
+Objective-C|unable to dequeue a cell with identifier|fatal|dequeueReusableCellWithIdentifier 找不到这个标识。先 registerNib/registerClass，或检查 identifier 拼写。
+Objective-C|has no segue with identifier|fatal|Storyboard 里没有这个标识的 segue。检查连线是否存在、identifier 是否一致。
+Objective-C|could not instantiate|fatal|无法实例化 storyboard 里的类。检查类名和 Module 设置是否正确。
+Objective-C|message sent to deallocated instance|fatal|向已释放的对象发消息（僵尸对象）。开启 Zombies 检测，检查引用计数和弱引用。
+Objective-C|Cannot find protocol declaration|error|找不到协议声明。import 协议所在的头文件，或检查协议名拼写。
+Objective-C|Cannot find interface declaration|error|找不到类声明。检查 @class 前向声明和 import。
+Objective-C|NSInternalInconsistencyException|fatal|内部状态不一致导致的异常，常见于 NSAssert 失败。看 reason 里的断言信息。
+Objective-C|Invalid parameter not satisfying|fatal|NSParameterAssert 检查的参数不满足条件。看断言表达式，检查为什么参数不合法。
+Objective-C|App Transport Security has blocked|error|iOS 禁止明文 HTTP 请求。改用 HTTPS，或在 Info.plist 配置例外域。
+Objective-C|does not contain bitcode|fatal|三方库没带 bitcode。让库方提供，或把工程和 target 的 Enable Bitcode 关掉。
+Objective-C|Could not build module||Module '.*' not found|fatal|模块编译/导入失败。检查 pod install、framework search path 和头文件循环引用。
+Objective-C|No known class method for selector|error|类上没有这个类方法（+ 方法）。检查方法声明是否是实例方法（-），或拼写。
+Objective-C|not found (return type defaults|error|实例方法找不到，编译器默认按 id 返回。检查方法声明和对象类型。
+Objective-C|NSRangeException|fatal|越界访问的运行时异常。看 reason 里的索引和长度。
+Objective-C|Invalid update.*invalid number|fatal|UITableView 增删行前后数量对不上。保持数据源和 numberOfRowsInSection 一致，增删要配套 begin/endUpdates。
+Objective-C|NSURLErrorDomain Code=-1009|error|设备无网络连接（-1009）。检查网络状态并给出离线提示。
+Objective-C|pointer being freed was not allocated|fatal|释放了没分配或已释放的内存。检查 malloc/free 配对和重复释放。
+Objective-C|with no pool in place|warning|没有 autorelease pool 却有自动释放对象。在子线程入口包 @autoreleasepool。
+Objective-C|failed to import bridging header|fatal|桥接头文件导入失败。检查路径设置和头文件里的编译错误。
+Objective-C|first deprecated in iOS|warning|这个 API 从某版本起已弃用。按提示换用新接口。
+Objective-C|must be of object type|error|strong/retain 属性只能是对象类型。改用 assign 或换类型。
+Objective-C|Incompatible block pointer types|error|block 的签名和声明不匹配。检查参数和返回类型。
+Objective-C|duplicate symbol _OBJC_CLASS|fatal|同一个类被编译进了两个目标文件。检查同名 .m 文件是否重复加入 target。
+Objective-C|building for iOS Simulator, but linking in object file built for|fatal|库不支持模拟器架构。用支持 arm64/x86_64 模拟器的库版本，或用真机构建。
+Objective-C|Framework not found|fatal|找不到链接的框架。重新 pod install，检查 Frameworks 和 Search Paths。
+Objective-C|Assertion failure in|fatal|UIKit 内部断言失败。看括号里的方法名，常见于在非主线程更新 UI 或 cell 复用错误。
+Objective-C|expected to have a root view controller|fatal|启动后 UIWindow 没有设置 rootViewController。在 AppDelegate/SceneDelegate 里赋值。
+Objective-C|The operation couldn't be completed|error|Cocoa 操作失败。看 Error Domain 和 Code 定位具体原因。
+Julia|UndefVarError|error|这个变量/函数没定义。检查拼写和作用域，确认所在模块已 using/import。
+Julia|no method matching|error|没有匹配参数类型的方法。Julia 按类型分派，报错里列了实际参数类型，对照修正。
+Julia|are not callable|error|这个类型的对象不能当函数调用。检查是不是把值当函数用了。
+Julia|ArgumentError|error|参数不合法。看具体消息里的值和约束。
+Julia|errors were found at the given arguments|error|参数校验失败，报错列出了每个不符的参数。对照修正类型或取值。
+Julia|BoundsError||attempt to access|error|数组越界。Julia 索引从 1 开始，报错里有索引和数组大小。
+Julia|InexactError|error|无法精确转换，比如把 1.5 转成 Int。先 round/floor 或确认数据是整数。
+Julia|DomainError|error|参数超出函数定义域，比如对负数开方。检查输入范围。
+Julia|DivideError|error|整数除以零。除法前检查除数。
+Julia|DimensionMismatch|error|维度对不上。检查 size，必要时 reshape。
+Julia|used in boolean context|error|条件里出现了非布尔值（比如 missing）。先处理缺失值或用 coalesce。
+Julia|unsupported keyword argument|error|函数没有这个关键字参数。检查参数名拼写和版本。
+Julia|UndefKeywordError|error|必填的关键字参数没传。补上这个 kwarg。
+Julia|key :.* not found|error|字典里没有这个键。用 get(dict, key, 默认值) 或先 haskey 判断。
+Julia|immutable struct of type|error|不可变结构体的字段不能修改。声明成 mutable struct 或重建对象。
+Julia|has no field|error|这个类型没有该字段。检查字段名和类型定义。
+Julia|redefinition of constant|error|const 常量不能重新定义。重启会话或换变量名。
+Julia|invalid assignment location|error|赋值左边不是合法的变量位置。检查表达式结构。
+Julia|ParseError|fatal|解析失败。看报错的行列号，检查括号配对和关键字。
+Julia|syntax: |fatal|语法错误。报错直接说明了问题，比如 unexpected = 或缺少 end。
+Julia|incomplete: premature end of input|fatal|代码到结尾还没闭合，缺 end 或右括号。配对检查。
+Julia|StringIndexError|error|下标落在多字节 UTF-8 字符中间。用 firstindex/lastindex 或 prevind 调整。
+Julia|not found in current path||not found in registry|error|找不到这个包。用 Pkg.add 加包名 安装，或检查激活的环境是否正确。
+Julia|Error during precompilation|error|包预编译失败。看 caused by 里的具体错误，多数是依赖或 Julia 版本问题。
+Julia|Unsatisfiable requirements|error|依赖版本无法同时满足。Pkg.resolve 或放宽版本约束。
+Julia|was not instantiated|error|当前环境还没安装依赖。在项目目录运行 julia --project=. 后 Pkg.instantiate()。
+Julia|running in world age|error|在编译之后才定义的方法不可见。重启会话，或避免在运行中修改已调用的函数。
+Julia|could not load library|error|动态库加载失败。检查库是否安装、路径是否在 ENV 里。
+Julia|SystemError: opening|error|系统调用失败，多为文件打不开。检查路径和权限。
+Julia|failed process|error|外部命令执行失败。看 exit code 和命令输出定位。
+Julia|reducing over an empty collection|error|对空集合做 reduce。用 fold 提供初始值或先判断 isempty。
+Julia|InterruptException|warning|你按 Ctrl+C 中断了执行，不是代码错误。
+Julia|Erlang error:|error|底层 C/Erlang 库抛出的错误。看消息定位到具体库调用。
+Julia|Test Failed|error|单元测试断言失败。看表达式两侧的期望值和实际值。
+Julia|cannot serialize|error|对象无法序列化传输（多为分布式/worker 场景）。检查类型定义是否对 worker 可见。
+Julia|UnicodeError|error|Unicode 处理出错。检查字符编码和索引。
+Julia|MethodError: write|error|写入类型不支持。检查流的类型和内容。
+Julia|LoadError:|error|脚本在加载阶段就抛了异常。看 caused by 定位第一处错误。
+Julia|in expression starting at|error|异常从这个文件行开始。往 caused by 链上找根本原因。
+Julia|to a common size|error|数组广播尺寸对不上。检查各数组的 size，必要时 reshape。
+Julia|no method matching convert|error|没定义这个转换。自己写 Base.convert(::Type{T}, x) 方法或改用解析函数。
+Julia|no method matching getindex|error|这个类型不支持该下标访问。检查索引类型和维度。
+Julia|no method matching setindex!|error|这个类型不支持赋值下标操作。检查是否为不可变类型。
+Julia|tried to get element|error|迭代器在 collect 时提前结束或越界。检查迭代器实现。

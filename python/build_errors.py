@@ -31,6 +31,8 @@ SAMPLES = {
     "R": "Error: object 'df' not found",
     "Lua": "attempt to index a nil value (global 'config')",
     "Perl": "Can't call method \"get\" on an undefined value at script.pl line 12.",
+    "Objective-C": "-[UIView setFoo:]: unrecognized selector sent to instance 0x0",
+    "Julia": "MethodError: no method matching +(::String, ::Int64)",
     "Scala": "type mismatch;\n found   : String\n required: Int"
 }
 

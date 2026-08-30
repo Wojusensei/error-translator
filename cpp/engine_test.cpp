@@ -86,6 +86,10 @@ int main(int argc, char** argv) {
         {"Can't call method \"get\" on an undefined value at script.pl line 12.", "Perl"},
         {"Can't locate DBI.pm in @INC (you may need to install the DBI module)", "Perl"},
         {"Global symbol \"$coutn\" requires explicit package name at a.pl line 5.", "Perl"},
+        {"-[UIView setFoo:]: unrecognized selector sent to instance 0x0", "Objective-C"},
+        {"*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[Foo bar]'", "Objective-C"},
+        {"MethodError: no method matching +(::String, ::Int64)", "Julia"},
+        {"UndefVarError: df not defined", "Julia"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
