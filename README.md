@@ -2,7 +2,7 @@
 
 一款玩具式多语言程序报错翻译工具，可以**粘贴报错信息，返回解释和修复建议**
 
-目前支持 16 种编程语言，每种语言收录 80 条报错类型（共 1280 条），加上多个匹配别名能识别 1600+ 种真实报错变体，当然过于复杂的没做匹配
+目前支持 18 种编程语言，共收录 1434 条报错类型，加上多个匹配别名能识别 1784+ 种真实报错变体，当然过于复杂的没做匹配
 
 这是个很烂的模版化小项目，甚至只支持了 Windows ，后端代码都是写着玩的，做复习用，有大部分报错并未收录，请谅解
 
@@ -44,6 +44,8 @@
 | Dart/Flutter| 80 | `Null check operator`、`setState()` 时机、`RenderFlex overflowed`               |
 | SQL         | 80 | `ERROR 1064`、唯一键/外键冲突、`relation does not exist`（MySQL/PG/SQLite/MSSQL）|
 | Shell       | 80 | `syntax error near unexpected token`、`command not found`、`curl` 网络报错      |
+| R           | 80 | `object not found`、`there is no package called`、ggplot2/dplyr 系列报错        |
+| Scala       | 79 | `type mismatch`、`not found: value`、`Task not serializable`、sbt/Spark 报错    |
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "version": "2.0",
+  "version": "2.1",
   "languages": {
     "python": {
       "name": "Python",
@@ -6478,6 +6478,786 @@
           "match": "bind: ",
           "level": "error",
           "explain": "绑定端口失败，已被占用或权限不足。换端口，或结束占用进程。"
+        }
+      }
+    },
+    "r": {
+      "name": "R",
+      "patterns": {
+        "object_not_found": {
+          "match": "object '.*' not found",
+          "level": "error",
+          "explain": "找不到这个对象。变量名拼写错误，或者它是在别的函数/环境里创建的还没加载。"
+        },
+        "could_not_find_function": {
+          "match": "could not find function",
+          "level": "error",
+          "explain": "找不到这个函数。先 library() 加载对应的包，或检查函数名拼写。"
+        },
+        "unexpected_symbol": {
+          "match": "unexpected symbol",
+          "level": "fatal",
+          "explain": "语法错误，这个位置不该出现标识符。常见于缺逗号、缺括号或赋值符写错。"
+        },
+        "unexpected_close": {
+          "match": "unexpected ')'||unexpected '}'",
+          "level": "fatal",
+          "explain": "括号不匹配。检查是否有多的右括号，或上一行漏了内容。"
+        },
+        "unexpected_constant": {
+          "match": "unexpected string constant||unexpected numeric constant",
+          "level": "fatal",
+          "explain": "这个位置不该出现字符串或数字。常见于函数参数间少了逗号。"
+        },
+        "unexpected_input_r": {
+          "match": "unexpected input in",
+          "level": "fatal",
+          "explain": "代码里混入了非法字符，常见于中文引号、全角空格或从网页复制时带上的特殊符号。"
+        },
+        "unexpected_end_r": {
+          "match": "unexpected end of input",
+          "level": "fatal",
+          "explain": "代码写到一半就结束了，括号或引号没闭合。R 控制台一直显示 + 就是这个原因。"
+        },
+        "unexpected_else": {
+          "match": "unexpected 'else'",
+          "level": "fatal",
+          "explain": "else 必须紧跟 if 块的右花括号，不能单独起一行。把 } else 写在同一行。"
+        },
+        "undefined_columns": {
+          "match": "undefined columns selected",
+          "level": "error",
+          "explain": "数据框里没有这些列。检查列名拼写和大小写，用 colnames() 看看实际有哪些列。"
+        },
+        "subscript_out_of_bounds": {
+          "match": "subscript out of bounds",
+          "level": "error",
+          "explain": "下标越界。取的行/列超出了数据框或向量的范围，先用 nrow/ncol/length 确认边界。"
+        },
+        "na_where_logical": {
+          "match": "missing value where TRUE/FALSE needed",
+          "level": "error",
+          "explain": "if 的条件里含有 NA，R 不知道真假。判断前用 is.na() 过滤，或用 %in% 代替 ==。"
+        },
+        "condition_length": {
+          "match": "condition has length",
+          "level": "warning",
+          "explain": "if 的条件长度大于 1，只用了第一个元素。想逐个判断用 ifelse() 或向量化写法。"
+        },
+        "argument_length_zero": {
+          "match": "argument is of length zero",
+          "level": "error",
+          "explain": "if 的条件是空向量，长度为 0 不是合法的布尔值。检查上游数据是不是空的。"
+        },
+        "longer_object_length": {
+          "match": "longer object length is not a multiple of shorter object length",
+          "level": "warning",
+          "explain": "两个向量长度不成倍数，循环时会错位。检查两列数据是不是没对齐。"
+        },
+        "replacement_length": {
+          "match": "replacement has",
+          "level": "warning",
+          "explain": "赋值的两边长度不一致，数据会被截断或循环填充。检查替换值和目标是不是同样大小。"
+        },
+        "cannot_coerce": {
+          "match": "cannot coerce",
+          "level": "error",
+          "explain": "类型转换失败。比如把文字转成数字，检查数据里是不是混入了非数字内容。"
+        },
+        "non_numeric_argument": {
+          "match": "non-numeric argument to mathematical function",
+          "level": "error",
+          "explain": "数学函数收到了非数字参数。检查传入的列是不是字符型，先用 as.numeric() 转换。"
+        },
+        "unused_argument": {
+          "match": "unused argument",
+          "level": "error",
+          "explain": "函数没有这个参数。检查参数名拼写，或确认用的包版本支持这个参数。"
+        },
+        "matched_by_multiple": {
+          "match": "matched by multiple actual arguments",
+          "level": "error",
+          "explain": "同一个形参被传了两次值。检查是不是位置参数和命名参数重复指定了。"
+        },
+        "differing_rows": {
+          "match": "arguments imply differing number of rows",
+          "level": "error",
+          "explain": "构造 data.frame 的各列行数不一致。检查每列的数据长度是否相同。"
+        },
+        "vctrs_size": {
+          "match": "must be size",
+          "level": "error",
+          "explain": "dplyr/tidyr 要求这个值长度为 1 或与数据行数一致。检查 mutate/filter 里的表达式。"
+        },
+        "no_applicable_method": {
+          "match": "no applicable method for",
+          "level": "error",
+          "explain": "这个对象类型没有对应的方法。检查对象是不是预期的类型，比如把向量传给了只接受 data.frame 的函数。"
+        },
+        "not_subsettable": {
+          "match": "is not subsettable",
+          "level": "error",
+          "explain": "你对函数用了 $ 或 []。常见于写 x$mean 时 x 是函数名，检查变量是不是被覆盖了。"
+        },
+        "cannot_open_connection": {
+          "match": "cannot open the connection||cannot open file",
+          "level": "error",
+          "explain": "文件打不开。检查路径是否正确（注意工作目录 getwd()）和文件权限。"
+        },
+        "incomplete_final_line": {
+          "match": "incomplete final line",
+          "level": "warning",
+          "explain": "文件最后一行没有换行符。不影响读取，想消除就在文件末尾补一个回车。"
+        },
+        "more_columns_than_names": {
+          "match": "more columns than column names",
+          "level": "error",
+          "explain": "数据行比表头列数多。常见为分隔符不对，指定正确的 sep 参数。"
+        },
+        "line_elements": {
+          "match": "did not contain",
+          "level": "error",
+          "explain": "读文件时某行的字段数和预期不一致。检查分隔符和缺失值标记，或加 fill=TRUE。"
+        },
+        "duplicate_row_names": {
+          "match": "duplicate 'row.names'",
+          "level": "error",
+          "explain": "行名重复了。读取时用 row.names=NULL 让 R 自动编号。"
+        },
+        "invalid_factor_level": {
+          "match": "invalid factor level, NA generated",
+          "level": "warning",
+          "explain": "给因子赋了不存在的水平值，变成了 NA。新值要先用 levels() 或 forcats 添加水平。"
+        },
+        "standard_unambiguous": {
+          "match": "standard unambiguous format",
+          "level": "error",
+          "explain": "as.Date 认不出这个日期字符串。用 format 参数指定格式，比如 as.Date(x, format='%d/%m/%Y')。"
+        },
+        "origin_must_supplied": {
+          "match": "'origin' must be supplied",
+          "level": "error",
+          "explain": "把数值转日期必须指定起始日，如 as.Date(n, origin='1970-01-01')。"
+        },
+        "do_not_know_convert": {
+          "match": "Do not know how to convert",
+          "level": "error",
+          "explain": "不知道怎么把这个类型转成目标类型。检查 as.* 的目标类型是否合理。"
+        },
+        "plot_new": {
+          "match": "plot.new has not been called",
+          "level": "error",
+          "explain": "画图设备还没准备好。可能是没有可用的图形设备，或在非交互环境要先开 png()/pdf()。"
+        },
+        "figure_margins": {
+          "match": "figure margins too large",
+          "level": "error",
+          "explain": "画布太小放不下图。把绘图窗口放大，或用 par(mar=) 调小边距。"
+        },
+        "plot_region_small": {
+          "match": "plot region too small",
+          "level": "error",
+          "explain": "绘图区域太小。调整窗口大小或 par 参数，分页画图。"
+        },
+        "need_finite": {
+          "match": "need finite 'ylim' values",
+          "level": "error",
+          "explain": "坐标轴范围里有 NA 或 Inf。检查数据是否含缺失值，或手动设置 ylim。"
+        },
+        "ggplot_add": {
+          "match": "to a <ggplot> object",
+          "level": "error",
+          "explain": "不能用 + 把这个对象加到 ggplot 上。检查是不是把函数名当对象用了（写成 geom_point 而不是 geom_point()）。"
+        },
+        "ggplot_aes_length": {
+          "match": "Aesthetics must be either length 1 or the same as the data",
+          "level": "error",
+          "explain": "映射的向量长度和数据行数对不上。检查 aes 里传入的变量。"
+        },
+        "ggplot_missing_aes": {
+          "match": "requires the following missing aesthetics",
+          "level": "error",
+          "explain": "这个几何对象需要必填的美学映射。比如 geom_bar 要 x，geom_point 要 x 和 y。"
+        },
+        "non_finite_removed": {
+          "match": "containing non-finite values",
+          "level": "warning",
+          "explain": "有 NA/Inf 的行被画图时剔除了。数据里有缺失值，先处理再画。"
+        },
+        "scale_mismatch": {
+          "match": "Discrete value supplied to continuous scale||Continuous value supplied to discrete scale",
+          "level": "error",
+          "explain": "数据和坐标轴的类型不匹配。连续列要用连续标度，分类列用离散标度，检查列类型。"
+        },
+        "cant_subset_columns": {
+          "match": "Can't subset columns that don't exist",
+          "level": "error",
+          "explain": "dplyr 找不到这些列。检查 select()/mutate() 里的列名拼写。"
+        },
+        "glm_fitted_probs": {
+          "match": "fitted probabilities numerically 0 or 1",
+          "level": "warning",
+          "explain": "逻辑回归出现完美分离，拟合值是 0 或 1。检查是否存在完全区分的变量，考虑正则化。"
+        },
+        "not_converged": {
+          "match": "algorithm did not converge",
+          "level": "warning",
+          "explain": "迭代没收敛就停了。增加 maxit 或检查数据尺度和模型设定。"
+        },
+        "cannot_allocate": {
+          "match": "cannot allocate vector of size",
+          "level": "error",
+          "explain": "内存不够分配了。数据太大，分块处理或用 data.table/arrow，或加大内存。"
+        },
+        "c_stack_usage": {
+          "match": "C stack usage",
+          "level": "error",
+          "explain": "C 栈接近上限，通常是递归太深或包之间冲突。减小递归深度或调大栈限制。"
+        },
+        "no_package_called": {
+          "match": "there is no package called||is not available",
+          "level": "error",
+          "explain": "这个包没安装。install.packages() 装一下；装了还报错检查是否用对了 R 版本的库路径。"
+        },
+        "nonzero_exit_status": {
+          "match": "had non-zero exit status",
+          "level": "error",
+          "explain": "包安装时编译失败。Windows 通常缺 Rtools，macOS 缺 Xcode 命令行工具，看上面具体的编译报错。"
+        },
+        "rtools_required": {
+          "match": "Rtools is required",
+          "level": "warning",
+          "explain": "Windows 上编译源码包需要 Rtools。去 CRAN 下载对应 R 版本的 Rtools 安装。"
+        },
+        "masked_objects": {
+          "match": "are masked",
+          "level": "warning",
+          "explain": "后加载的包里有同名函数，把先前的遮住了。用 包名::函数名 明确调用。"
+        },
+        "already_loaded_version": {
+          "match": "is already loaded, but",
+          "level": "error",
+          "explain": "已加载的包版本太旧，不满足依赖要求。重启 R 会话后更新这个包。"
+        },
+        "invalid_model_formula": {
+          "match": "invalid model formula",
+          "level": "error",
+          "explain": "模型公式写错了。检查变量名、交互项符号 * 和 : 的用法。"
+        },
+        "variable_lengths_differ": {
+          "match": "variable lengths differ",
+          "level": "error",
+          "explain": "公式里各变量的长度不一致，数据里有 NA 被丢掉了。先用 na.omit 清理数据再建模。"
+        },
+        "new_levels": {
+          "match": "has new levels",
+          "level": "error",
+          "explain": "预测时出现了训练数据里没有的因子水平。合并前统一水平或用 xgboost 等能处理的模型。"
+        },
+        "rank_deficient": {
+          "match": "rank-deficient",
+          "level": "warning",
+          "explain": "设计矩阵不满秩，有些系数不可估。常见于变量共线或样本太少，检查特征。"
+        },
+        "nas_coercion": {
+          "match": "NAs introduced by coercion",
+          "level": "warning",
+          "explain": "转换时无法解析的值变成了 NA。检查数据里混入的文字、空格或特殊字符。"
+        },
+        "is_deprecated": {
+          "match": "is deprecated",
+          "level": "warning",
+          "explain": "这个函数已被弃用。按提示改用新函数，未来版本会移除。"
+        },
+        "cannot_change_wd": {
+          "match": "cannot change working directory",
+          "level": "error",
+          "explain": "工作目录不存在。检查 setwd() 的路径拼写，Windows 路径要用 / 或双反斜杠。"
+        },
+        "invalid_multibyte": {
+          "match": "invalid multibyte string",
+          "level": "error",
+          "explain": "字符串里有损坏的多字节字符。文件编码不是 UTF-8，用 iconv 转换或指定 fileEncoding。"
+        },
+        "apply_non_function": {
+          "match": "attempt to apply non-function",
+          "level": "error",
+          "explain": "把不是函数的东西当函数调用了。检查变量名是否覆盖了函数。"
+        },
+        "incorrect_dims": {
+          "match": "incorrect number of dimensions",
+          "level": "error",
+          "explain": "下标的维数和数组不匹配。对矩阵要用 [i, j] 两个下标，或先确认对象类型。"
+        },
+        "dims_product_mismatch": {
+          "match": "do not match the length of object",
+          "level": "error",
+          "explain": "dim 设置的总元素数和数据长度不一致。检查 dim() 乘积是否等于向量长度。"
+        },
+        "replace_not_multiple": {
+          "match": "number of items to replace is not a multiple of replacement length",
+          "level": "warning",
+          "explain": "替换值的个数和被替换的位置数不成倍数，数据会循环填充。检查两边长度。"
+        },
+        "nas_subscripted": {
+          "match": "NAs are not allowed in subscripted assignments",
+          "level": "error",
+          "explain": "用 NA 当下标赋值不行。先处理 NA，或用 which(is.na(x)) 定位。"
+        },
+        "package_in_use": {
+          "match": "is in use and will not be installed",
+          "level": "warning",
+          "explain": "包正在被使用，无法覆盖安装。重启 R 会话（Ctrl+Shift+F10）再装。"
+        },
+        "load_failed_r": {
+          "match": "package or namespace load failed||.onLoad failed in loadNamespace",
+          "level": "error",
+          "explain": "包加载失败。看具体原因：常见为依赖缺失、R 版本不匹配或缺系统库。"
+        },
+        "not_exported_r": {
+          "match": "not an exported object",
+          "level": "error",
+          "explain": "这个函数不是包的公开接口。用 包名:::函数名 调内部函数，或找公开替代。"
+        },
+        "invalid_type_variable": {
+          "match": "invalid type.*for variable",
+          "level": "error",
+          "explain": "公式里的变量类型不对，比如传了整个列表。检查数据框列的类型。"
+        },
+        "contrasts_factor": {
+          "match": "contrasts can be applied only to factors with 2 or more levels",
+          "level": "error",
+          "explain": "模型里的因子只有一个水平。检查分组变量是不是被误过滤成了单一取值。"
+        },
+        "non_na_cases": {
+          "match": "(non-NA) cases",
+          "level": "error",
+          "explain": "有效样本太少，模型无法估计。检查 NA 的比例和样本量。"
+        },
+        "wrong_sign_by": {
+          "match": "wrong sign in 'by' argument",
+          "level": "error",
+          "explain": "seq 的步进方向和起止范围矛盾，比如 seq(1, 10, by=-1)。检查 by 的正负号。"
+        },
+        "na_nan_argument": {
+          "match": "NA/NaN argument",
+          "level": "error",
+          "explain": "函数收到了 NA/NaN 参数。上游数据有缺失，先处理再计算。"
+        },
+        "merge_by_columns": {
+          "match": "must specify uniquely valid columns",
+          "level": "error",
+          "explain": "merge 的 by 参数写错了。确认两个表用于连接的列名都存在。"
+        },
+        "ties_warning": {
+          "match": "cannot compute exact p-value with ties",
+          "level": "warning",
+          "explain": "数据有重复值，精确检验算不了。结果仍可用，必要时改用近似方法。"
+        },
+        "sd_zero": {
+          "match": "the standard deviation is zero",
+          "level": "warning",
+          "explain": "数据没有波动，相关系数算不出来。检查这列是不是全是同一个值。"
+        },
+        "na_rm_false": {
+          "match": "missing values and NaN's not allowed if 'na.rm' is FALSE",
+          "level": "error",
+          "explain": "数据里有 NA 但没开启剔除。加 na.rm=TRUE 或先清理缺失值。"
+        },
+        "unable_access_index": {
+          "match": "unable to access index for repository",
+          "level": "warning",
+          "explain": "连不上 CRAN 镜像。换一个镜像源 options(repos=...) 或检查网络。"
+        },
+        "cannot_open_url": {
+          "match": "cannot open URL",
+          "level": "error",
+          "explain": "下载 URL 打不开。检查网络、代理和链接有效性。"
+        },
+        "shared_object_load": {
+          "match": "unable to load shared object",
+          "level": "fatal",
+          "explain": "加载编译好的包组件失败。通常是系统库缺失或架构不匹配，看具体缺哪个 .dll/.so。"
+        },
+        "no_lines_available": {
+          "match": "no lines available in input",
+          "level": "error",
+          "explain": "读到的文件是空的。检查文件路径和工作目录，确认文件有内容。"
+        }
+      }
+    },
+    "scala": {
+      "name": "Scala",
+      "patterns": {
+        "type_mismatch_scala": {
+          "match": "type mismatch",
+          "level": "error",
+          "explain": "类型不匹配。报错里有 found 和 required，对照修正变量类型或转换。"
+        },
+        "not_found_value": {
+          "match": "not found: value||not found: type",
+          "level": "error",
+          "explain": "这个值或类型找不到。检查拼写、import 是否写了，或包名是否正确。"
+        },
+        "not_found_object": {
+          "match": "not found: object",
+          "level": "error",
+          "explain": "找不到这个 object。检查包路径和依赖是否引入。"
+        },
+        "ambiguous_overload_scala": {
+          "match": "ambiguous reference to overloaded definition",
+          "level": "error",
+          "explain": "重载调用有歧义。显式指定参数类型帮助编译器选择。"
+        },
+        "overloaded_alternatives": {
+          "match": "with alternatives",
+          "level": "error",
+          "explain": "没有重载能匹配这次调用。报错列出了所有备选签名，对照检查参数。"
+        },
+        "too_many_args_scala": {
+          "match": "too many arguments for",
+          "level": "error",
+          "explain": "参数传多了。对照方法签名减少参数。"
+        },
+        "not_enough_args_scala": {
+          "match": "not enough arguments for",
+          "level": "error",
+          "explain": "必填参数没传够。补全参数或给参数加默认值。"
+        },
+        "missing_param_type": {
+          "match": "missing parameter type",
+          "level": "error",
+          "explain": "推不出这个参数的类型。给抽象类型、匿名函数参数显式标注类型。"
+        },
+        "missing_argument_list": {
+          "match": "missing argument list",
+          "level": "error",
+          "explain": "方法需要参数列表，可能漏了 ()，或想传方法本身要用 _ 转成函数。"
+        },
+        "wrong_number_of": {
+          "match": "wrong number of",
+          "level": "error",
+          "explain": "参数或类型参数的个数不对。对照定义检查 <> 和 () 里的数量。"
+        },
+        "may_not_exhaustive": {
+          "match": "match may not be exhaustive",
+          "level": "warning",
+          "explain": "match 没覆盖所有可能，运行时会抛 MatchError。补全 case 或加兜底分支。"
+        },
+        "type_args_not_conform": {
+          "match": "do not conform to",
+          "level": "error",
+          "explain": "类型参数不满足上界约束。检查泛型实参是否符合 <: 声明。"
+        },
+        "not_take_parameters": {
+          "match": "does not take parameters",
+          "level": "error",
+          "explain": "这个东西不接受参数。检查是不是把无参方法当函数值用了。"
+        },
+        "not_a_member": {
+          "match": "is not a member of",
+          "level": "error",
+          "explain": "这个对象上没有该成员。检查拼写、import，或是不是访问了别的类型。"
+        },
+        "object_creation_impossible": {
+          "match": "object creation impossible||needs to be abstract",
+          "level": "error",
+          "explain": "类没有实现继承要求的抽象成员，不能实例化。补全实现或声明为 abstract。"
+        },
+        "needs_override_modifier": {
+          "match": "needs `override' modifier||needs `override` modifier",
+          "level": "error",
+          "explain": "重写父类成员必须加 override 关键字。"
+        },
+        "cannot_override_final_scala": {
+          "match": "cannot override final member",
+          "level": "error",
+          "explain": "父类成员是 final 的，不能重写。"
+        },
+        "incompatible_type_override": {
+          "match": "is of incompatible type",
+          "level": "error",
+          "explain": "重写方法的返回类型和父类不兼容。保持类型一致或协变。"
+        },
+        "inherit_from_final_scala": {
+          "match": "inherit from final",
+          "level": "error",
+          "explain": "final 类不能被继承。去掉 final 或改用组合。"
+        },
+        "illegal_inheritance": {
+          "match": "illegal inheritance",
+          "level": "error",
+          "explain": "继承关系不合法。比如 final/sealed 类、self-type 不满足等，看具体提示。"
+        },
+        "conflicting_members": {
+          "match": "inherits conflicting members",
+          "level": "error",
+          "explain": "多个父 trait 有同名成员且没指定用哪个。用 override 或明确 super[T].method。"
+        },
+        "implicit_not_found": {
+          "match": "could not find implicit value||No implicit view available||could not find given||no given instance",
+          "level": "error",
+          "explain": "编译器找不到需要的隐式实例。检查 implicit 定义的作用域和类型签名是否匹配。"
+        },
+        "diverging_implicit": {
+          "match": "diverging implicit expansion||ambiguous implicit values",
+          "level": "error",
+          "explain": "隐式解析出错：要么无限递归，要么多个候选歧义。精简 implicit 定义并标注类型。"
+        },
+        "pattern_type_incompatible": {
+          "match": "pattern type is incompatible",
+          "level": "error",
+          "explain": "case 的模式类型和匹配对象不兼容。检查类型拼写或添加运行时判断。"
+        },
+        "none_get": {
+          "match": "None.get",
+          "level": "fatal",
+          "explain": "对 None 调了 get，抛 NoSuchElementException。用 getOrElse、map 或模式匹配处理空值。"
+        },
+        "empty_list_scala": {
+          "match": "head of empty list||tail of empty list||last of empty list",
+          "level": "fatal",
+          "explain": "集合是空的还取了 head/tail。先判断 nonEmpty，或用 headOption。"
+        },
+        "match_error_scala": {
+          "match": "MatchError",
+          "level": "fatal",
+          "explain": "match 没有任何分支命中。编译期的非穷尽警告变成了运行时崩溃，补全 case。"
+        },
+        "reassignment_to_val": {
+          "match": "reassignment to val",
+          "level": "error",
+          "explain": "val 是只读的，不能重新赋值。需要修改用 var。"
+        },
+        "cyclic_reference_scala": {
+          "match": "cyclic reference involving||illegal cyclic reference",
+          "level": "error",
+          "explain": "定义互相引用形成了循环。检查类/对象之间的依赖顺序。"
+        },
+        "double_definition": {
+          "match": "double definition||is defined twice",
+          "level": "error",
+          "explain": "同名成员重复定义了。删掉一个或重命名。"
+        },
+        "same_type_after_erasure": {
+          "match": "after erasure",
+          "level": "error",
+          "explain": "两个方法擦除泛型后签名相同，JVM 分不清。给其中一个方法改名或换参数类型。"
+        },
+        "contravariant_position": {
+          "match": "occurs in contravariant position",
+          "level": "error",
+          "explain": "协变类型参数出现在了不允许的位置（比如方法参数）。调整型变标注或改用不变。"
+        },
+        "expected_but": {
+          "match": "expected but",
+          "level": "fatal",
+          "explain": "语法错误，这个位置应该是提示里的符号。检查括号配对和缺的分号逗号。"
+        },
+        "illegal_start_simple": {
+          "match": "illegal start of simple expression||illegal start of definition",
+          "level": "fatal",
+          "explain": "表达式起始位置不合法。常见于括号没配对、修饰符放错位置。"
+        },
+        "spread_annotation": {
+          "match": "`: _*' annotation||`: _* annotation",
+          "level": "error",
+          "explain": "把序列展开传给变参方法要用 seq: _* 语法。检查展开写法。"
+        },
+        "unexpected_token_scala": {
+          "match": "unexpected token",
+          "level": "fatal",
+          "explain": "出现了不该出现的符号。检查括号配对和关键字拼写。"
+        },
+        "unexpected_char_scala": {
+          "match": "unexpected char",
+          "level": "fatal",
+          "explain": "代码里混入了非法字符，常见于中文标点或看不见的特殊符号。"
+        },
+        "modifier_not_allowed_scala": {
+          "match": "not allowed here",
+          "level": "error",
+          "explain": "这个修饰符用在了不合法的位置。检查 open/implicit/lazy 等修饰符的适用范围。"
+        },
+        "overrides_nothing": {
+          "match": "overrides nothing",
+          "level": "error",
+          "explain": "标了 override 但父类里没有这个成员。删掉 override 或检查签名。"
+        },
+        "needs_result_type": {
+          "match": "needs result type",
+          "level": "error",
+          "explain": "递归方法必须显式声明返回类型，编译器推不出来。给方法加上 : Type。"
+        },
+        "pure_expression": {
+          "match": "does nothing in statement position",
+          "level": "warning",
+          "explain": "这个表达式算了但没人用结果，比如单独一行 1 + 2。删除或赋值。"
+        },
+        "discarded_non_unit": {
+          "match": "discarded non-Unit value",
+          "level": "warning",
+          "explain": "表达式有返回值却被丢弃了。想忽略用 val _ = 或确认没漏掉后续逻辑。"
+        },
+        "expected_class_or_object": {
+          "match": "expected class or object definition",
+          "level": "fatal",
+          "explain": "这里需要类或对象定义。检查是否把语句写在了包级别，或少了 class/object 关键字。"
+        },
+        "scala3_indentation": {
+          "match": "missing indentation",
+          "level": "fatal",
+          "explain": "Scala 3 用缩进划分代码块。检查这一行的缩进层级是否正确。"
+        },
+        "auto_application": {
+          "match": "auto-application",
+          "level": "warning",
+          "explain": "Scala 3 里无参方法不再自动加 ()。显式写上方法调用括号。"
+        },
+        "tasty_version": {
+          "match": "TASTy file",
+          "level": "error",
+          "explain": "TASTy 文件版本和编译器不兼容。依赖是用更老或更新的 Scala 编译的，统一版本。"
+        },
+        "class_file_needed": {
+          "match": "class file needed by",
+          "level": "error",
+          "explain": "缺少依赖的 class 文件。检查依赖 jar 是否完整引入。"
+        },
+        "missing_dependency_scala": {
+          "match": "missing dependency",
+          "level": "error",
+          "explain": "编译需要某个类型但找不到。检查依赖版本和 classpath。"
+        },
+        "bad_symbolic_reference": {
+          "match": "bad symbolic reference",
+          "level": "error",
+          "explain": "依赖是用不兼容的 Scala 版本编译的。统一项目和依赖的 Scala 版本。"
+        },
+        "unresolved_dependency": {
+          "match": "unresolved dependency",
+          "level": "error",
+          "explain": "sbt 找不到这个依赖。检查坐标拼写和仓库配置，执行 sbt update。"
+        },
+        "sbt_invalid_key": {
+          "match": "not a valid key||Not a valid command",
+          "level": "error",
+          "explain": "sbt 不认识这个命令或设置键。检查拼写，或插件没有把该 key 引入。"
+        },
+        "a_problem_occurred": {
+          "match": "A problem occurred",
+          "level": "error",
+          "explain": "构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。"
+        },
+        "build_failed_gradle": {
+          "match": "BUILD FAILED",
+          "level": "error",
+          "explain": "构建失败。往上看 * What went wrong 部分，定位具体任务和原因。"
+        },
+        "gradle_task_not_found": {
+          "match": "not found in root project",
+          "level": "error",
+          "explain": "这个 task 不存在。gradlew tasks 查看可用任务，检查拼写和插件。"
+        },
+        "gradle_lock_timeout": {
+          "match": "Timeout waiting to lock",
+          "level": "error",
+          "explain": "Gradle 的锁被别的进程占着。结束其他 gradle 进程，或删除 .gradle 里的锁文件。"
+        },
+        "daemon_disappeared": {
+          "match": "daemon disappeared unexpectedly",
+          "level": "error",
+          "explain": "Gradle 守护进程被杀了，常见为内存不足。调大 org.gradle.jvmargs 或清理系统内存。"
+        },
+        "could_not_create_jvm": {
+          "match": "Could not create the Java Virtual Machine",
+          "level": "fatal",
+          "explain": "JVM 启动失败。检查 -Xmx 等内存参数是否超出机器可用内存，JAVA_HOME 是否正确。"
+        },
+        "heap_space_reserve": {
+          "match": "Could not reserve enough space for object heap",
+          "level": "fatal",
+          "explain": "给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。"
+        },
+        "spark_resolve": {
+          "match": "given input columns",
+          "level": "error",
+          "explain": "Spark SQL 找不到这个列。检查列名大小写，用 printSchema 看实际结构。"
+        },
+        "task_not_serializable": {
+          "match": "Task not serializable",
+          "level": "fatal",
+          "explain": "闭包引用了不可序列化的对象（常见是 outer class 或连接对象）。在算子内部创建连接，或把依赖提取为局部变量。"
+        },
+        "spark_job_aborted": {
+          "match": "Job aborted due to stage failure",
+          "level": "fatal",
+          "explain": "某个 stage 失败导致整个 Job 放弃。看 caused by 里第一个真正的异常。"
+        },
+        "yarn_memory": {
+          "match": "exceeding memory limits",
+          "level": "fatal",
+          "explain": "容器内存超限被 YARN 杀掉。调大 executor 内存或减少并行度。"
+        },
+        "config_missing": {
+          "match": "No configuration setting found for key",
+          "level": "error",
+          "explain": "Typesafe Config 里没有这个配置项。检查 application.conf 的路径和键名。"
+        },
+        "broker_not_available": {
+          "match": "Broker may not be available",
+          "level": "error",
+          "explain": "Kafka 连不上 broker。检查 bootstrap.servers、网络和安全协议配置。"
+        },
+        "was_not_equal": {
+          "match": "was not equal to",
+          "level": "error",
+          "explain": "ScalaTest 断言失败。报错直接展示了期望值和实际值，对照排查。"
+        },
+        "does_not_take_type_params": {
+          "match": "does not take type parameters",
+          "level": "error",
+          "explain": "这个类型不接受泛型参数。检查 <> 的使用。"
+        },
+        "unbound_placeholder": {
+          "match": "unbound placeholder parameter",
+          "level": "error",
+          "explain": "下划线占位符用在了推不出类型的位置。补全参数类型或改用具名参数。"
+        },
+        "repeated_modifier": {
+          "match": "repeated modifier",
+          "level": "error",
+          "explain": "同一个修饰符重复写了，或修饰符组合冲突。检查声明头部。"
+        },
+        "analysis_exception": {
+          "match": "AnalysisException",
+          "level": "error",
+          "explain": "Spark SQL 分析阶段失败。看消息里的具体列/表名，检查 schema 和查询写法。"
+        },
+        "executor_lost": {
+          "match": "ExecutorLostFailure",
+          "level": "fatal",
+          "explain": "Spark executor 掉线了，常见为内存超限被 YARN 杀掉或节点故障。调大内存或开启重试。"
+        },
+        "cannot_run_program": {
+          "match": "Cannot run program",
+          "level": "error",
+          "explain": "启动外部进程失败。检查命令是否在 PATH 里、路径是否写对。"
+        },
+        "not_serializable_java": {
+          "match": "NotSerializableException",
+          "level": "fatal",
+          "explain": "对象没有实现 Serializable 却被发送/序列化了。实现接口，或把不可序列化的依赖移出闭包。"
+        },
+        "kryo_error": {
+          "match": "KryoException",
+          "level": "fatal",
+          "explain": "Kryo 序列化失败。注册对应的类，或检查字段是否可序列化。"
+        },
+        "empty_reduce": {
+          "match": "empty.reduceLeft",
+          "level": "fatal",
+          "explain": "对空集合调用了 reduce。用 fold 提供初始值，或先判断非空。"
         }
       }
     }

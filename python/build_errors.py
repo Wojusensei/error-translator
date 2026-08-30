@@ -27,7 +27,9 @@ SAMPLES = {
     "Swift": "Fatal error: Unexpectedly found nil while unwrapping an Optional value",
     "Dart/Flutter": "Null check operator used on a null value",
     "SQL": "ERROR 1064 (42000): You have an error in your SQL syntax",
-    "Shell": "syntax error near unexpected token `fi'"
+    "Shell": "syntax error near unexpected token `fi'",
+    "R": "Error: object 'df' not found",
+    "Scala": "type mismatch;\n found   : String\n required: Int"
 }
 
 

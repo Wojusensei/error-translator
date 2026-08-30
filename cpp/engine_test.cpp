@@ -73,6 +73,14 @@ int main(int argc, char** argv) {
         {"zsh: no matches found: [abc]", "Shell"},
         {"NameError", "Python"},
         {"ReferenceError: x is not defined", "JavaScript"},
+        {"Error: object 'df' not found", "R"},
+        {"Error in x == y : missing value where TRUE/FALSE needed", "R"},
+        {"Error in library(tidyverse) : there is no package called 'tidyverse'", "R"},
+        {"Error: could not find function \"group_by\"", "R"},
+        {"type mismatch; found: String, required: Int", "Scala"},
+        {"error: not found: value sqlContext", "Scala"},
+        {"scala.MatchError: List() (of class scala.collection.immutable.Nil$)", "Scala"},
+        {"org.apache.spark.SparkException: Task not serializable", "Scala"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
