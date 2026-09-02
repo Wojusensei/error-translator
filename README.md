@@ -28,22 +28,22 @@
 
 | 语言 | 收录报错数 | 常见可识别报错举例 |
 |-------------|----|--------------------------------------------------------------------------------|
-| Python      | 100 | `NameError`、`IndexError`、`JSONDecodeError`、`pip` 安装报错                    |
-| JavaScript  | 98 | `ReferenceError`、`CORS` 跨域、`Unhandled promise rejection`、`npm ERESOLVE`    |
-| Java        | 93 | `NullPointerException`、`cannot find symbol`、`OutOfMemoryError`、Maven/Gradle  |
-| C++         | 99 | `undefined reference`、`Segmentation fault`、`C2065`、`heap-use-after-free`     |
-| C           | 80 | `implicit declaration`、`incompatible pointer types`、`double free`             |
-| Go          | 93 | `undefined:`、`declared and not used`、`nil pointer dereference`、`panic`       |
-| C#          | 91 | `NullReferenceException`、`CS1061`、`KeyNotFoundException`、`SqlException`      |
-| Ruby        | 87 | `NoMethodError`、`uninitialized constant`、`FrozenError`、`PG::ConnectionBad`   |
-| PHP         | 91 | `Parse error`、`Undefined variable`、`Allowed memory size`、`PDOException`      |
-| Rust        | 93 | `mismatched types`、`borrow of moved value`、`unwrap` on `Err`、Cargo 报错      |
-| TypeScript  | 89 | `TS2304`、`TS2339`、`TS2322`、`@types` 缺失                                     |
-| Kotlin      | 91 | `Unresolved reference`、`val cannot be reassigned`、`lateinit` 未初始化         |
-| Swift       | 86 | `No such module`、`Unexpectedly found nil`、`cannot convert value of type`      |
-| Dart/Flutter| 85 | `Null check operator`、`setState()` 时机、`RenderFlex overflowed`               |
-| SQL         | 80 | `ERROR 1064`、唯一键/外键冲突、`relation does not exist`（MySQL/PG/SQLite/MSSQL）|
-| Shell       | 68 | `syntax error near unexpected token`、`command not found`、`curl` 网络报错      |
+| Python      | 126 | `NameError`、`IndexError`、`JSONDecodeError`、`pip` 安装报错                    |
+| JavaScript  | 102 | `ReferenceError`、`CORS` 跨域、`Unhandled promise rejection`、`npm ERESOLVE`    |
+| Java        | 115 | `NullPointerException`、`cannot find symbol`、`OutOfMemoryError`、Maven/Gradle  |
+| C++         | 118 | `undefined reference`、`Segmentation fault`、`C2065`、`heap-use-after-free`     |
+| C           | 96 | `implicit declaration`、`incompatible pointer types`、`double free`             |
+| Go          | 98 | `undefined:`、`declared and not used`、`nil pointer dereference`、`panic`       |
+| C#          | 110 | `NullReferenceException`、`CS1061`、`KeyNotFoundException`、`SqlException`      |
+| Ruby        | 88 | `NoMethodError`、`uninitialized constant`、`FrozenError`、`PG::ConnectionBad`   |
+| PHP         | 94 | `Parse error`、`Undefined variable`、`Allowed memory size`、`PDOException`      |
+| Rust        | 97 | `mismatched types`、`borrow of moved value`、`unwrap` on `Err`、Cargo 报错      |
+| TypeScript  | 91 | `TS2304`、`TS2339`、`TS2322`、`@types` 缺失                                     |
+| Kotlin      | 92 | `Unresolved reference`、`val cannot be reassigned`、`lateinit` 未初始化         |
+| Swift       | 87 | `No such module`、`Unexpectedly found nil`、`cannot convert value of type`      |
+| Dart/Flutter| 87 | `Null check operator`、`setState()` 时机、`RenderFlex overflowed`               |
+| SQL         | 84 | `ERROR 1064`、唯一键/外键冲突、`relation does not exist`（MySQL/PG/SQLite/MSSQL）|
+| Shell       | 74 | `syntax error near unexpected token`、`command not found`、`curl` 网络报错      |
 | R           | 80 | `object not found`、`there is no package called`、ggplot2/dplyr 系列报错        |
 | Scala       | 74 | `type mismatch`、`not found: value`、`Task not serializable`、sbt/Spark 报错    |
 | Lua         | 49 | `attempt to index a nil value`、`attempt to call a nil value`、模块加载失败     |
@@ -52,11 +52,11 @@
 | Julia       | 44 | `MethodError`、`UndefVarError`、`BoundsError`、`InexactError`、Pkg 报错         |
 | Groovy      | 37 | `No signature of method`、`No such property`、Gradle/Jenkins 管线报错           |
 | Elixir      | 41 | `no match of right hand side`、`KeyError`、协议未实现、GenServer/mix 报错       |
-| Git         | 59 | `not a git repository`、推送被拒、冲突/合并中断、index.lock、身份未配置          |
-| Docker      | 61 | `Cannot connect to the Docker daemon`、端口占用、构建失败、compose/WSL2 报错     |
+| Git         | 61 | `not a git repository`、推送被拒、冲突/合并中断、index.lock、身份未配置          |
+| Docker      | 62 | `Cannot connect to the Docker daemon`、端口占用、构建失败、compose/WSL2 报错     |
 | PowerShell  | 30 | 执行策略禁用脚本、`is not recognized`、参数绑定、远程 WinRM、.NET 方法调用       |
 | VBA         | 31 | `Run-time error '1004'`、`Object required`、下标越界、类型不匹配、Automation 错误 |
-| MATLAB      | 26 | `Unrecognized function or variable`、下标越界、维度不一致、cell 用法、许可证       |
+| MATLAB      | 27 | `Unrecognized function or variable`、下标越界、维度不一致、cell 用法、许可证       |
 | Haskell     | 21 | `Variable not in scope`、`Couldn't match type`、`No instance for`、空列表崩溃      |
 
 ---

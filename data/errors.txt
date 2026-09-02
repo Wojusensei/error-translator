@@ -159,7 +159,7 @@ JavaScript|Unhandled promise rejection||UnhandledPromiseRejection|error|Promise 
 JavaScript|Unexpected token.*in JSON||JSON.parse|error|JSON.parse 解析失败。响应可能是空串、HTML 或单引号风格的数据，打印原文确认格式。
 JavaScript|Cannot find module|error|Node 找不到这个模块。检查包是否安装、相对路径 ./ 是否写对，或模块是否有对应入口。
 JavaScript|ERR_MODULE_NOT_FOUND|error|ESM 导入路径不对。相对导入必须写全 ./ 或 ../，包名导入则要确认已安装。
-JavaScript|ERR_REQUIRE_ESM||require() of ES Module|error|用 require 去加载一个纯 ESM 包。改用 import，或把项目 package.json 调整为支持 ESM。
+JavaScript|ERR_REQUIRE_ESM||require() of ES Module||Must use import to load ES Module|error|用 require 去加载一个纯 ESM 包。改用 import，或把项目 package.json 调整为支持 ESM。
 JavaScript|EADDRINUSE||address already in use|error|端口被占用了。换端口，或找到并结束占用端口的旧 Node 进程再启动。
 JavaScript|ECONNREFUSED|error|目标端口没人监听，连接被拒绝。确认服务已启动、主机和端口写对了。
 JavaScript|ECONNRESET||socket hang up|error|连接被对端强制断开。服务可能崩溃或主动关闭，加重试逻辑并查看服务端日志。
@@ -222,6 +222,10 @@ JavaScript|Parse Error: Expected HTTP/|error|收到的不是合法 HTTP 响应�
 JavaScript|PayloadTooLargeError|error|请求体超过大小限制。调整 body-parser 的 limit 配置或压缩上传内容。
 JavaScript|Timeout of|error|测试用例超时。异步操作没完成或超时设置太短，检查 this.timeout()。
 JavaScript|Cannot GET ||Cannot POST |error|Express 没有注册这个路由。检查路由定义的路径和 HTTP 方法。
+JavaScript|Module did not self-register|error|原生模块加载失败。Node 版本不匹配或模块损坏，npm rebuild 或重装。
+JavaScript|Dynamic require of|error|ESM 打包产物里出现动态 require。改用 import，或配置打包器允许。
+JavaScript|ERR_PACKAGE_PATH_NOT_EXPORTED|error|包的 exports 字段没放行这个子路径。用包官方导出的入口，或升级包。
+JavaScript|self-signed certificate in certificate chain||unable to verify the first certificate||certificate has expired|error|TLS 证书问题。更新系统证书；内网自签证书加入信任链。
 Java|NullPointerException||Cannot invoke.*because||Cannot read field.*because|error|空指针错误。你对一个 null 对象做了操作，报错里会指出哪个变量为 null，在调用前先判空。
 Java|ArrayIndexOutOfBoundsException||Index.*out of bounds for length|error|数组下标越界。你访问了一个不存在的数组位置，检查下标范围，注意数组从 0 开始。
 Java|StringIndexOutOfBoundsException||String index out of range|error|字符串下标越界。substring/charAt 的索引超过了字符串长度，先检查 length()。
@@ -644,6 +648,11 @@ Go|ambiguous import|error|这个包能从多个模块解析，歧义了。统一
 Go|tls: failed to verify certificate|error|TLS 证书校验失败。更新系统证书，内网自签证书加入信任池。
 Go|SECURITY ERROR|error|依赖校验和与 go.sum 不符。确认来源可信后执行 go mod tidy 更新。
 Go|panic: test timed out|fatal|测试超时被杀。看 panic 栈里卡住的 goroutine，检查死锁或过慢的用例。
+Go|certificate signed by unknown authority|error|TLS 证书不受信任。把 CA 证书加入系统信任库或 tls.Config 的 RootCAs。
+Go|TLS handshake timeout|error|TLS 握手超时。检查网络与对端证书配置。
+Go|expected .* destination arguments|error|Scan 的目标变量数和查询列数不一致。一一对应。
+Go|superfluous response.WriteHeader call|warning|响应头写过后又写。检查 handler 是否重复响应，send 后记得 return。
+Go|unexpected EOF|error|数据流提前结束。检查读取长度和上游是否截断。
 C#|CS0103|error|这个名字在当前上下文中不存在。检查拼写，确认变量已声明，或缺少 using 导入。
 C#|CS0246||CS0234|error|找不到类型或命名空间。缺少 using 引用或项目引用，也可能没装对应的 NuGet 包。
 C#|CS1061|error|该类型没有这个成员。检查方法/属性名拼写，确认是调用的对象类型正确。
@@ -783,7 +792,7 @@ Ruby|Errno::EEXIST|error|文件或目录已经存在。先判断 File.exist? 再
 Ruby|OpenURI::HTTPError||404 Not Found||401 Unauthorized|error|HTTP 请求返回了错误状态码。403/404 检查权限和地址，401 补认证信息。
 Ruby|OpenSSL::SSL::SSLError||certificate verify failed|error|SSL 证书校验失败。更新系统证书库，内网自签证书需导入信任。
 Ruby|JSON::ParserError||unexpected token at|error|JSON 解析失败。内容可能不是合法 JSON 或编码有问题，打印原文确认。
-Ruby|Psych::SyntaxError|error|YAML 格式错误。常见于缩进不对、冒号后缺空格、Tab 字符混入。
+Ruby|Psych::SyntaxError||Tab characters are not allowed|error|YAML 格式错误。常见于缩进不对、冒号后缺空格、Tab 字符混入。
 Ruby|RangeError||bignum too big|error|数值超出可表示范围。检查超大数转换或数组下标越界。
 Ruby|FloatDomainError|error|浮点数出现了 Infinity/NaN 还要转整数。转换前检查数值有效性。
 Ruby|StandardError|error|抛出了一个普通异常。看消息内容和抛出位置的业务逻辑。
@@ -841,6 +850,7 @@ Ruby|Association named|error|模型上没有这个关联。检查 has_many/belon
 Ruby|ConnectionTimeoutError|error|连接池耗尽。调大 pool 配置，或检查是否有连接泄漏。
 Ruby|ActiveRecord::Deadlocked|error|数据库死锁，事务被回滚。统一加锁顺序并加重试。
 Ruby|Failed to build gem native extension|fatal|gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。
+Ruby|ActionView::Template::Error|error|Rails 模板渲染出错。看 caused by 里的模板行号和变量。
 PHP|Parse error||syntax error, unexpected|fatal|语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合，看指向的行号。
 PHP|unexpected end of file|fatal|文件意外结束。某个花括号或 PHP 标签没闭合，配对检查大括号和 <?php 标签。
 PHP|Fatal error|fatal|致命错误，脚本直接终止。看后面的 Uncaught Error 描述定位问题。
@@ -932,6 +942,9 @@ PHP|Class 'PDO' not found|fatal|PHP 没启用 PDO 扩展。安装 php-pdo 并启
 PHP|The uploaded file exceeds|error|上传文件超过限制。调大 upload_max_filesize 和 post_max_size。
 PHP|POST Content-Length of|error|POST 数据超过 post_max_size。调大该配置并重启服务。
 PHP|Malformed UTF-8 characters|warning|json_encode 的内容含非法 UTF-8。检查数据来源编码，必要时转码。
+PHP|There is no active transaction|error|commit/rollBack 前事务已结束。检查 beginTransaction 的配对逻辑。
+PHP|Cannot unset offset in a non-array variable|fatal|对字符串等非数组用 unset 下标。转成数组再处理。
+PHP|Automatic conversion of false to array|warning|把 false 当数组自动转换，未来会报错。先判断返回值再使用。
 Rust|borrow of moved value||use of moved value|error|使用了已经被移动的值。Rust 所有权规则下，被 move 后的变量不能再使用，改用克隆或借用。
 Rust|cannot move out of|error|不能从这里把值移动走。部分引用类型或非 Copy 类型不能直接解引用取值，用克隆或 .clone()。
 Rust|cannot borrow|error|借用规则冲突。同一时间只能有一个可变借用，或可变与不可变借用不能共存，调整借用范围。
@@ -1025,6 +1038,10 @@ Rust|cannot be indexed|error|这个类型没有实现 Index。检查类型，或
 Rust|no default toolchain configured|fatal|rustup 没有默认工具链。运行 rustup default stable。
 Rust|link.exe not found|fatal|Windows 缺 MSVC 链接工具。安装 Visual Studio Build Tools 或改用 GNU 工具链。
 Rust|recursion limit reached|error|宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = "256"]。
+Rust|not all trait items implemented|error|没有实现 trait 要求的全部成员。补上缺失项，或加 default。
+Rust|trailing characters|error|JSON 解析完后还有剩余内容。确认数据里没有多余文本。
+Rust|proc macro panicked|fatal|宏展开时出错。看宏的报错消息，检查输入是否符合宏要求。
+Rust|conflicting implementations|error|同一类型有多个 trait 实现，冲突了。删除多余 impl 或区分类型。
 TypeScript|TS2304|error|找不到这个名字。检查变量/类型是否已声明、import 是否正确，或缺少 @types 声明包。
 TypeScript|TS2307|error|找不到模块或类型声明。检查路径拼写、是否安装了包和对应的 @types，路径别名是否配置。
 TypeScript|TS2339|error|这个类型上没有该属性。检查属性名拼写，或接口定义里漏了这个字段。
@@ -1059,7 +1076,7 @@ TypeScript|TS2571|error|对象是 unknown 类型，不能直接用。先类型�
 TypeScript|TS18046|error|值是 unknown 类型。unknown 比 any 严格，先收窄成具体类型再操作。
 TypeScript|TS2589|error|类型实例化过深或递归了。简化类型定义，减少深层递归的映射类型。
 TypeScript|TS2590|error|联合类型太复杂，编译器表示不了。拆分或简化类型定义。
-TypeScript|TS2305|error|模块里没有导出这个成员。检查导出名拼写和导出方式（named/default）。
+TypeScript|TS2305||has no exported member named||has no exported member|error|模块里没有导出这个成员。检查导出名拼写和导出方式（named/default）。
 TypeScript|TS2306|error|这个文件不是模块（没有 export/import）。给它加 export，或改用全局声明。
 TypeScript|TS2688|error|找不到类型定义文件。检查 @types/xxx 是否安装，或 tsconfig 的 typeRoots。
 TypeScript|TS2686|error|引用了 UMD 全局但当前文件是模块。显式 import 引入。
@@ -1114,6 +1131,8 @@ TypeScript|specified more than once|warning|对象展开时后面的属性会覆
 TypeScript|Do you need to change your target library|error|缺少对应的类型定义（如 @types/node）。安装或调整 tsconfig 的 lib/types。
 TypeScript|JSDoc types|error|JSDoc 类型标注只能用于注释上下文。检查 .ts 文件里的写法。
 TypeScript|File '.*' not found|fatal|tsc 找不到指定的输入文件。检查路径和 include 配置。
+TypeScript|cannot be named without a reference|error|推断出的类型无法命名。显式导入该类型并标注返回值。
+TypeScript|comes from an index signature, so it must be accessed with|error|索引签名的属性要用 obj['key'] 访问（noPropertyAccessFromIndexSignature）。
 Kotlin|Unresolved reference|error|找不到这个引用。检查导入、包名和类名拼写，确认依赖已添加到 build.gradle。
 Kotlin|Unresolved reference: R|error|R 类没生成。通常是资源文件有错误导致构建中断，先修复 XML 资源错误再 Rebuild。
 Kotlin|type mismatch: inferred type is|error|类型不匹配。看推断出的类型和期望类型，修改变量类型或转换赋值。
@@ -1136,7 +1155,7 @@ Kotlin|Cannot check for instance of erased type|error|泛型在运行时被擦�
 Kotlin|Unchecked cast|warning|强转没有运行时校验，可能出错。检查数据来源，必要时保留完整泛型信息。
 Kotlin|Platform declaration clash|error|Kotlin 声明和 Java 生成的签名冲突了。改名，或用 @JvmName 调整。
 Kotlin|cannot access non-public-API|error|public 的 inline 函数访问了私有 API，内联展开会破坏访问控制。把访问的部分改成 public 或 internal。
-Kotlin|should be called only from a coroutine|error|挂起函数只能在协程或另一个挂起函数里调用。用 runBlocking/协程作用域包起来。
+Kotlin|should be called only from a coroutine||Suspension functions can only be called within coroutine body|error|挂起函数只能在协程或另一个挂起函数里调用。用 runBlocking/协程作用域包起来。
 Kotlin|NullPointerException|error|空指针异常（多来自 Java 互操作或平台代码）。检查传入的外部数据是否为 null。
 Kotlin|KotlinNullPointerException|error|显式抛出的空指针，来自 !! 断言或 lateinit 检查。改用 ?. 和 ?: 处理空值。
 Kotlin|TypeCastException||null cannot be cast to non-null type|fatal|null 被强转成了非空类型。转换前先判空，或用 as? 安全转换。
@@ -1173,7 +1192,7 @@ Kotlin|has not called Looper.prepare()|fatal|在没有 Looper 的线程里创建
 Kotlin|same JVM signature|error|两个方法在 JVM 层面签名相同。改用 @JvmName 或重命名方法。
 Kotlin|Conflicting overloads|error|重复定义了签名相同的函数。删除多余定义。
 Kotlin|Overload resolution ambiguity|error|重载调用有歧义。显式指定参数类型帮助编译器选择。
-Kotlin|it is 'private' in||it is private in|error|访问了不可见的成员。检查可见性修饰符（private/internal/protected）。
+Kotlin|it is 'private' in||it is private in||it is invisible|error|访问了不可见的成员。检查可见性修饰符（private/internal/protected）。
 Kotlin|is not abstract and does not implement abstract|error|类没有实现接口/抽象父类的抽象成员。补全实现，或把类声明成 abstract。
 Kotlin|is never used|warning|参数或变量从未被使用。删除，或用下划线命名表示有意忽略。
 Kotlin|Cannot inline bytecode built with|error|依赖的 JVM target 比 当前的高，无法内联。统一各模块的 JVM target。
@@ -1205,6 +1224,7 @@ Kotlin|Unable to instantiate activity|fatal|Activity 无法创建。检查类名
 Kotlin|already has a parent|fatal|同一个 View 同时挂在两个父容器上。先从旧父容器 removeView 再添加。
 Kotlin|Resources\$NotFoundException|fatal|资源 ID 不存在。检查 R.xxx 引用和资源文件是否编译进包。
 Kotlin|Unable to add window|fatal|在 Activity 已销毁或 context 不对时弹窗。确认用 Activity context 且页面还存活。
+Kotlin|because of receiver type mismatch|error|候选重载因接收者类型不符被排除。检查调用对象类型与扩展函数定义。
 Swift|in scope||use of unresolved identifier|error|这个名字在当前作用域找不到。检查拼写、导入模块，确认变量/函数已定义。
 Swift|Expected declaration|fatal|这里应该写类型/函数声明，却出现了语句。常见于多写了大括号，把代码挤出了类型体。
 Swift|'{' in body of||Expected '{' in body|fatal|缺少函数体的左花括号。检查 func 声明后面是否漏了 {。
@@ -1262,7 +1282,7 @@ Swift|requires a development team|fatal|没有配置签名团队。在 Signing &
 Swift|Unable to find a destination|error|找不到匹配的运行设备。检查模拟器/真机列表和 scheme 的目标设置。
 Swift|Could not cast value of type|fatal|运行时强转失败。从 storyboard/ nib 取出的对象类型和代码声明不一致，检查关联。
 Swift|Precondition failed|fatal|前置条件不成立导致崩溃。看断言消息，检查为什么数据不符合预期。
-Swift|EXC_BAD|fatal|访问了已释放或非法的内存。检查循环引用、已释放对象的使用（可用僵尸对象调试）。
+Swift|EXC_BAD||EXC_BREAKPOINT||SIGABRT|fatal|访问了已释放或非法的内存。检查循环引用、已释放对象的使用（可用僵尸对象调试）。
 Swift|Invalid redeclaration|error|重复声明了同名成员。重命名其中一个。
 Swift|Cannot inherit from non-open|error|模块外的 public 类默认不可继承。给父类加 open 修饰符。
 Swift|is unused|warning|返回值没有使用。用 _ = 显式忽略，或补上后续处理。
@@ -1291,6 +1311,7 @@ Swift|String index is out of bounds|fatal|字符串下标越界。注意 Swift �
 Swift|must call a designated initializer of the superclass|error|子类 init 必须调用父类的指定初始化器，而不是 convenience。
 Swift|super.init isn't called before returning|error|初始化器结束前没调 super.init。补上父类初始化调用。
 Swift|must be initialized before calling super.init|error|先初始化自己的所有存储属性，再调 super.init。
+Swift|The data couldn't be read because it is missing|fatal|读 plist/UserDefaults 时数据缺失或格式不对。检查文件是否在 bundle 里、键名是否正确。
 Dart/Flutter|Undefined class||Undefined name|error|这个名字没定义。检查类名/变量拼写和 import 是否写了，flutter pub get 后再试。
 Dart/Flutter|isn't defined|error|该类型上没有这个方法或 getter。检查拼写，确认调用的对象类型正确。
 Dart/Flutter|Target of URI doesn't exist|error|导入的文件或包不存在。检查路径拼写，依赖要先在 pubspec.yaml 里声明并 pub get。
@@ -1376,6 +1397,8 @@ Dart/Flutter|PlatformException|error|原生平台代码抛了异常。看 code �
 Dart/Flutter|Stream has already been listened to|error|单订阅流被重复监听。改用 asBroadcastStream()，或每次创建新 Stream。
 Dart/Flutter|Could not find a generator for route|fatal|命名路由没找到页面生成器。检查 onGenerateRoute/routes 里注册的名字。
 Dart/Flutter|UnimplementedError|fatal|执行到了 throw UnimplementedError() 占位。补上具体实现。
+Dart/Flutter|Connection closed while receiving data|error|服务端中途断开了响应。检查服务端稳定性与代理超时。
+Dart/Flutter|BuildContext across async gaps|warning|await 之后还在用旧 context，可能已失效。保存 ScaffoldMessenger/Navigator，或加 mounted 判断。
 SQL|ERROR 1064||error in your SQL syntax|error|SQL 语法错误（MySQL）。检查关键字拼写、逗号括号、引号和表名是否用了保留字。
 SQL|ERROR 1054||Unknown column|error|表里没有这个列（MySQL）。检查列名拼写、是否加了表名前缀，或字段还没加进表。
 SQL|Table '.*' doesn't exist||ERROR 1146|error|表不存在（MySQL）。检查库名表名、连接的数据库是否正确，建表脚本是否执行过。
@@ -1456,6 +1479,10 @@ SQL|Login failed for user|error|登录失败（SQL Server 18456）。检查用�
 SQL|ERROR 1046||No database selected|error|没有选择数据库（MySQL）。先 USE 库名，或连接串里指定 database。
 SQL|deadlock victim|error|事务被选为死锁牺牲者回滚了（SQL Server）。捕获 1205 错误后重试事务。
 SQL|multi-part identifier|error|多部分标识符无法绑定（SQL Server）。检查表别名和列前缀是否写对。
+SQL|read-only transaction|error|只读连接/副本上执行了写操作。切到主库连接。
+SQL|Divide by zero error encountered|error|SQL Server 除以零。用 NULLIF(除数,0) 包住或先判断。
+SQL|ORA-00942|error|Oracle：表或视图不存在。检查 schema 前缀、权限和表名大小写。
+SQL|ORA-01722|error|Oracle：无效数字。WHERE/VALUES 里混入了非数字字符串。
 Shell|syntax error near unexpected token|fatal|Shell 语法错误。反引号 ` 和括号 ( 需要转义或加引号，检查 if/fi、for/done 是否配对。
 Shell|unexpected EOF while looking for matching||syntax error: unexpected end of file|fatal|引号、括号或 fi/done 没闭合，脚本读到结尾还没写完。配对检查引号和块结构。
 Shell|Permission denied (publickey|error|SSH 公钥认证失败。把本机公钥加到服务器的 authorized_keys，或改用正确的密钥文件。
@@ -1524,6 +1551,12 @@ Shell|Temporary failure in name resolution|error|DNS 暂时不可用。检查 /e
 Shell|Unable to locate package|error|软件源里找不到这个包（apt）。先 apt update，或检查包名和源配置。
 Shell|bash: .*: No such file or directory|error|bash 找不到脚本/命令文件。检查路径是否正确、文件是否存在。
 Shell|bind: |error|绑定端口失败，已被占用或权限不足。换端口，或结束占用进程。
+Shell|find: |error|find 报错。检查路径是否存在、权限是否足够。
+Shell|Authentication failure|error|su/sudo 密码错误。检查密码和账号状态。
+Shell|no tty present and no askpass program specified|error|非交互终端无法输密码。配置 NOPASSWD 或用 SSH 密钥免密。
+Shell|failed to create symbolic link|error|软链接创建失败：目标已存在或权限不足。加 -f 或先删除。
+Shell|unknown option to `s'|error|sed 的 s/// 里分隔符与内容冲突。换分隔符如 s/old/new/。
+Shell|here-document at line .* delimited by end-of-file|warning|heredoc 的结束标记没写对，读到文件尾。检查结束标记拼写与缩进。
 R|object '.*' not found|error|找不到这个对象。变量名拼写错误，或者它是在别的函数/环境里创建的还没加载。
 R|could not find function|error|找不到这个函数。先 library() 加载对应的包，或检查函数名拼写。
 R|unexpected symbol|fatal|语法错误，这个位置不该出现标识符。常见于缺逗号、缺括号或赋值符写错。
@@ -1971,7 +2004,7 @@ Elixir|Plug.Conn.WrapperError|fatal|Plug 处理过程中抛出的异常。看 ca
 Elixir|this clause cannot match|warning|编译器警告：这个子句永远匹配不上。检查子句顺序和模式。
 Elixir|is deprecated. Use|warning|用了废弃的 API。按提示迁移到新函数。
 Git|fatal: not a git repository||not a git repository|fatal|当前目录不是 git 仓库。cd 到项目根目录，或先 git init。
-Git|! [rejected]||fetch first|error|远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。
+Git|! [rejected]||fetch first||failed to fetch some refs|error|远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。
 Git|non-fast-forward|error|推送会覆盖远端历史被拒绝。先合并远端改动，确认无误再推。
 Git|Your local changes to the following files would be overwritten|error|本地有未提交修改会被覆盖。先 commit 或 stash，再执行 pull/checkout。
 Git|You are not currently on a branch|error|处于 detached HEAD 状态。git switch -c 新分支 保存改动，或 checkout 回分支。
@@ -2029,6 +2062,8 @@ Git|GH006|fatal|GitHub 分支保护规则拒绝了推送。检查保护规则或
 Git|refusing to merge unrelated histories|error|两个仓库没有共同祖先。确认后用 --allow-unrelated-histories 合并。
 Git|remote origin already exists|error|origin 已配置。git remote set-url 修改地址。
 Git|did not match any file(s) known to git|error|git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。
+Git|object file .* is empty|error|git 对象文件损坏（多半是断电/崩溃）。从远端重新克隆最稳妥。
+Git|invalid upstream|fatal|rebase/pull 指定的上游不存在。git log 检查分支名。
 Docker|Cannot connect to the Docker daemon||error during connect|fatal|连不上 Docker 守护进程。先启动 docker 服务（systemctl start docker 或打开 Docker Desktop）。
 Docker|Got permission denied while trying to connect|fatal|当前用户无权访问 docker。把用户加入 docker 组重新登录，或用 sudo。
 Docker|port is already allocated|fatal|容器要映射的宿主机端口已被占用。停掉占用方或换端口映射。
@@ -2072,7 +2107,7 @@ Docker|Hardware assisted virtualization|fatal|BIOS 没开虚拟化。进 BIOS �
 Docker|maximum supported API version||is too new|fatal|Docker CLI 和守护进程版本差异过大。统一升级 client/daemon。
 Docker|OCI runtime create failed||container init caused|fatal|容器启动失败。看 caused by：常见为命令不存在、权限或 cgroup 限制。
 Docker|no matching entries in passwd file|fatal|--user 指定的用户在镜像里不存在。用镜像内存在的 UID/用户名。
-Docker|unknown flag|fatal|docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。
+Docker|unknown flag||unknown shorthand flag|fatal|docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。
 Docker|is not a docker command|fatal|没有这个子命令。docker --help 查看可用命令。
 Docker|container .* is not running|fatal|容器已停止，无法 exec。先 docker start，或看它为什么退出。
 Docker|failed to register layer||Error processing tar file||applyLayer|fatal|镜像层导入失败。tar 内容可能损坏，重新构建/下载镜像。
@@ -2090,6 +2125,7 @@ Docker|Cannot perform an interactive login|fatal|非交互终端无法登录。�
 Docker|logging driver does not support reading|error|当前日志驱动不支持 docker logs。查看对应的外部日志存储。
 Docker|is not a docker command|fatal|系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。
 Docker|Encountered errors while bringing up the project|fatal|compose 启动时有服务失败。往上看每个服务的具体报错。
+Docker|endpoint with name .* already exists|fatal|同名网络端点残留。docker network disconnect 或重启 docker 清理。
 PowerShell|is not recognized as the name of a cmdlet||is not recognized as an internal or external command|error|找不到这个命令。检查拼写，确认模块已导入、程序在 PATH 里。
 PowerShell|running scripts is disabled on this system||is not digitally signed|fatal|执行策略禁止运行脚本。Set-ExecutionPolicy RemoteSigned -Scope CurrentUser，或对该文件 Unblock-File。
 PowerShell|Cannot bind argument to parameter|error|传给参数的值是 null。上游命令没返回数据，先判空再传。

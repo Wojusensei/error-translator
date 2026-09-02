@@ -815,7 +815,7 @@
           "explain": "ESM 导入路径不对。相对导入必须写全 ./ 或 ../，包名导入则要确认已安装。"
         },
         "err_require_esm": {
-          "match": "ERR_REQUIRE_ESM||require() of ES Module",
+          "match": "ERR_REQUIRE_ESM||require() of ES Module||Must use import to load ES Module",
           "level": "error",
           "explain": "用 require 去加载一个纯 ESM 包。改用 import，或把项目 package.json 调整为支持 ESM。"
         },
@@ -1128,6 +1128,26 @@
           "match": "Cannot GET ||Cannot POST ",
           "level": "error",
           "explain": "Express 没有注册这个路由。检查路由定义的路径和 HTTP 方法。"
+        },
+        "module_did_not_self_register": {
+          "match": "Module did not self-register",
+          "level": "error",
+          "explain": "原生模块加载失败。Node 版本不匹配或模块损坏，npm rebuild 或重装。"
+        },
+        "dynamic_require_unsupported": {
+          "match": "Dynamic require of",
+          "level": "error",
+          "explain": "ESM 打包产物里出现动态 require。改用 import，或配置打包器允许。"
+        },
+        "package_path_not_exported": {
+          "match": "ERR_PACKAGE_PATH_NOT_EXPORTED",
+          "level": "error",
+          "explain": "包的 exports 字段没放行这个子路径。用包官方导出的入口，或升级包。"
+        },
+        "node_cert_issues": {
+          "match": "self-signed certificate in certificate chain||unable to verify the first certificate||certificate has expired",
+          "level": "error",
+          "explain": "TLS 证书问题。更新系统证书；内网自签证书加入信任链。"
         }
       }
     },
@@ -3258,6 +3278,31 @@
           "match": "panic: test timed out",
           "level": "fatal",
           "explain": "测试超时被杀。看 panic 栈里卡住的 goroutine，检查死锁或过慢的用例。"
+        },
+        "x509_unknown_authority": {
+          "match": "certificate signed by unknown authority",
+          "level": "error",
+          "explain": "TLS 证书不受信任。把 CA 证书加入系统信任库或 tls.Config 的 RootCAs。"
+        },
+        "tls_handshake_timeout": {
+          "match": "TLS handshake timeout",
+          "level": "error",
+          "explain": "TLS 握手超时。检查网络与对端证书配置。"
+        },
+        "sql_scan_args": {
+          "match": "expected .* destination arguments",
+          "level": "error",
+          "explain": "Scan 的目标变量数和查询列数不一致。一一对应。"
+        },
+        "superfluous_writeheader": {
+          "match": "superfluous response.WriteHeader call",
+          "level": "warning",
+          "explain": "响应头写过后又写。检查 handler 是否重复响应，send 后记得 return。"
+        },
+        "go_unexpected_eof": {
+          "match": "unexpected EOF",
+          "level": "error",
+          "explain": "数据流提前结束。检查读取长度和上游是否截断。"
         }
       }
     },
@@ -3965,7 +4010,7 @@
           "explain": "JSON 解析失败。内容可能不是合法 JSON 或编码有问题，打印原文确认。"
         },
         "psych_syntax": {
-          "match": "Psych::SyntaxError",
+          "match": "Psych::SyntaxError||Tab characters are not allowed",
           "level": "error",
           "explain": "YAML 格式错误。常见于缩进不对、冒号后缺空格、Tab 字符混入。"
         },
@@ -4253,6 +4298,11 @@
           "match": "Failed to build gem native extension",
           "level": "fatal",
           "explain": "gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。"
+        },
+        "template_error_rails": {
+          "match": "ActionView::Template::Error",
+          "level": "error",
+          "explain": "Rails 模板渲染出错。看 caused by 里的模板行号和变量。"
         }
       }
     },
@@ -4713,6 +4763,21 @@
           "match": "Malformed UTF-8 characters",
           "level": "warning",
           "explain": "json_encode 的内容含非法 UTF-8。检查数据来源编码，必要时转码。"
+        },
+        "no_active_transaction": {
+          "match": "There is no active transaction",
+          "level": "error",
+          "explain": "commit/rollBack 前事务已结束。检查 beginTransaction 的配对逻辑。"
+        },
+        "unset_non_array": {
+          "match": "Cannot unset offset in a non-array variable",
+          "level": "fatal",
+          "explain": "对字符串等非数组用 unset 下标。转成数组再处理。"
+        },
+        "false_to_array_deprecation": {
+          "match": "Automatic conversion of false to array",
+          "level": "warning",
+          "explain": "把 false 当数组自动转换，未来会报错。先判断返回值再使用。"
         }
       }
     },
@@ -5183,6 +5248,26 @@
           "match": "recursion limit reached",
           "level": "error",
           "explain": "宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = \"256\"]。"
+        },
+        "trait_items_missing": {
+          "match": "not all trait items implemented",
+          "level": "error",
+          "explain": "没有实现 trait 要求的全部成员。补上缺失项，或加 default。"
+        },
+        "serde_trailing_chars": {
+          "match": "trailing characters",
+          "level": "error",
+          "explain": "JSON 解析完后还有剩余内容。确认数据里没有多余文本。"
+        },
+        "proc_macro_panicked": {
+          "match": "proc macro panicked",
+          "level": "fatal",
+          "explain": "宏展开时出错。看宏的报错消息，检查输入是否符合宏要求。"
+        },
+        "conflicting_impls": {
+          "match": "conflicting implementations",
+          "level": "error",
+          "explain": "同一类型有多个 trait 实现，冲突了。删除多余 impl 或区分类型。"
         }
       }
     },
@@ -5360,7 +5445,7 @@
           "explain": "联合类型太复杂，编译器表示不了。拆分或简化类型定义。"
         },
         "ts2305": {
-          "match": "TS2305",
+          "match": "TS2305||has no exported member named||has no exported member",
           "level": "error",
           "explain": "模块里没有导出这个成员。检查导出名拼写和导出方式（named/default）。"
         },
@@ -5633,6 +5718,16 @@
           "match": "File '.*' not found",
           "level": "fatal",
           "explain": "tsc 找不到指定的输入文件。检查路径和 include 配置。"
+        },
+        "ts2742_cannot_be_named": {
+          "match": "cannot be named without a reference",
+          "level": "error",
+          "explain": "推断出的类型无法命名。显式导入该类型并标注返回值。"
+        },
+        "ts4111_index_access": {
+          "match": "comes from an index signature, so it must be accessed with",
+          "level": "error",
+          "explain": "索引签名的属性要用 obj['key'] 访问（noPropertyAccessFromIndexSignature）。"
         }
       }
     },
@@ -5750,7 +5845,7 @@
           "explain": "public 的 inline 函数访问了私有 API，内联展开会破坏访问控制。把访问的部分改成 public 或 internal。"
         },
         "suspend_context": {
-          "match": "should be called only from a coroutine",
+          "match": "should be called only from a coroutine||Suspension functions can only be called within coroutine body",
           "level": "error",
           "explain": "挂起函数只能在协程或另一个挂起函数里调用。用 runBlocking/协程作用域包起来。"
         },
@@ -5935,7 +6030,7 @@
           "explain": "重载调用有歧义。显式指定参数类型帮助编译器选择。"
         },
         "cannot_access_private": {
-          "match": "it is 'private' in||it is private in",
+          "match": "it is 'private' in||it is private in||it is invisible",
           "level": "error",
           "explain": "访问了不可见的成员。检查可见性修饰符（private/internal/protected）。"
         },
@@ -6093,6 +6188,11 @@
           "match": "Unable to add window",
           "level": "fatal",
           "explain": "在 Activity 已销毁或 context 不对时弹窗。确认用 Activity context 且页面还存活。"
+        },
+        "receiver_mismatch": {
+          "match": "because of receiver type mismatch",
+          "level": "error",
+          "explain": "候选重载因接收者类型不符被排除。检查调用对象类型与扩展函数定义。"
         }
       }
     },
@@ -6385,7 +6485,7 @@
           "explain": "前置条件不成立导致崩溃。看断言消息，检查为什么数据不符合预期。"
         },
         "exc_bad_access": {
-          "match": "EXC_BAD",
+          "match": "EXC_BAD||EXC_BREAKPOINT||SIGABRT",
           "level": "fatal",
           "explain": "访问了已释放或非法的内存。检查循环引用、已释放对象的使用（可用僵尸对象调试）。"
         },
@@ -6528,6 +6628,11 @@
           "match": "must be initialized before calling super.init",
           "level": "error",
           "explain": "先初始化自己的所有存储属性，再调 super.init。"
+        },
+        "data_couldnt_be_read": {
+          "match": "The data couldn't be read because it is missing",
+          "level": "fatal",
+          "explain": "读 plist/UserDefaults 时数据缺失或格式不对。检查文件是否在 bundle 里、键名是否正确。"
         }
       }
     },
@@ -6958,6 +7063,16 @@
           "match": "UnimplementedError",
           "level": "fatal",
           "explain": "执行到了 throw UnimplementedError() 占位。补上具体实现。"
+        },
+        "dart_connection_closed": {
+          "match": "Connection closed while receiving data",
+          "level": "error",
+          "explain": "服务端中途断开了响应。检查服务端稳定性与代理超时。"
+        },
+        "async_gap_context": {
+          "match": "BuildContext across async gaps",
+          "level": "warning",
+          "explain": "await 之后还在用旧 context，可能已失效。保存 ScaffoldMessenger/Navigator，或加 mounted 判断。"
         }
       }
     },
@@ -7363,6 +7478,26 @@
           "match": "multi-part identifier",
           "level": "error",
           "explain": "多部分标识符无法绑定（SQL Server）。检查表别名和列前缀是否写对。"
+        },
+        "pg_readonly_tx": {
+          "match": "read-only transaction",
+          "level": "error",
+          "explain": "只读连接/副本上执行了写操作。切到主库连接。"
+        },
+        "mssql_divide_zero": {
+          "match": "Divide by zero error encountered",
+          "level": "error",
+          "explain": "SQL Server 除以零。用 NULLIF(除数,0) 包住或先判断。"
+        },
+        "ora_table": {
+          "match": "ORA-00942",
+          "level": "error",
+          "explain": "Oracle：表或视图不存在。检查 schema 前缀、权限和表名大小写。"
+        },
+        "ora_invalid_number": {
+          "match": "ORA-01722",
+          "level": "error",
+          "explain": "Oracle：无效数字。WHERE/VALUES 里混入了非数字字符串。"
         }
       }
     },
@@ -7708,6 +7843,36 @@
           "match": "bind: ",
           "level": "error",
           "explain": "绑定端口失败，已被占用或权限不足。换端口，或结束占用进程。"
+        },
+        "shell_find": {
+          "match": "find: ",
+          "level": "error",
+          "explain": "find 报错。检查路径是否存在、权限是否足够。"
+        },
+        "su_auth_fail": {
+          "match": "Authentication failure",
+          "level": "error",
+          "explain": "su/sudo 密码错误。检查密码和账号状态。"
+        },
+        "sudo_no_tty": {
+          "match": "no tty present and no askpass program specified",
+          "level": "error",
+          "explain": "非交互终端无法输密码。配置 NOPASSWD 或用 SSH 密钥免密。"
+        },
+        "symlink_exists": {
+          "match": "failed to create symbolic link",
+          "level": "error",
+          "explain": "软链接创建失败：目标已存在或权限不足。加 -f 或先删除。"
+        },
+        "sed_unknown_option": {
+          "match": "unknown option to `s'",
+          "level": "error",
+          "explain": "sed 的 s/// 里分隔符与内容冲突。换分隔符如 s|old|new|。"
+        },
+        "heredoc_eof": {
+          "match": "here-document at line .* delimited by end-of-file",
+          "level": "warning",
+          "explain": "heredoc 的结束标记没写对，读到文件尾。检查结束标记拼写与缩进。"
         }
       }
     },
@@ -9990,7 +10155,7 @@
           "explain": "当前目录不是 git 仓库。cd 到项目根目录，或先 git init。"
         },
         "push_rejected_fetch_first": {
-          "match": "! [rejected]||fetch first",
+          "match": "! [rejected]||fetch first||failed to fetch some refs",
           "level": "error",
           "explain": "远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。"
         },
@@ -10278,6 +10443,16 @@
           "match": "did not match any file(s) known to git",
           "level": "error",
           "explain": "git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。"
+        },
+        "object_file_empty": {
+          "match": "object file .* is empty",
+          "level": "error",
+          "explain": "git 对象文件损坏（多半是断电/崩溃）。从远端重新克隆最稳妥。"
+        },
+        "invalid_upstream": {
+          "match": "invalid upstream",
+          "level": "fatal",
+          "explain": "rebase/pull 指定的上游不存在。git log 检查分支名。"
         }
       }
     },
@@ -10500,7 +10675,7 @@
           "explain": "--user 指定的用户在镜像里不存在。用镜像内存在的 UID/用户名。"
         },
         "unknown_flag": {
-          "match": "unknown flag",
+          "match": "unknown flag||unknown shorthand flag",
           "level": "fatal",
           "explain": "docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。"
         },
@@ -10588,6 +10763,11 @@
           "match": "Encountered errors while bringing up the project",
           "level": "fatal",
           "explain": "compose 启动时有服务失败。往上看每个服务的具体报错。"
+        },
+        "endpoint_exists": {
+          "match": "endpoint with name .* already exists",
+          "level": "fatal",
+          "explain": "同名网络端点残留。docker network disconnect 或重启 docker 清理。"
         }
       }
     },
