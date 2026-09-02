@@ -13,14 +13,14 @@ Python|TabError||inconsistent use of tabs and spaces|fatal|Tab 和空格混用�
 Python|ZeroDivisionError||division by zero||integer division or modulo by zero|error|不能除以0。在做除法或取模之前检查除数是否可能为0。
 Python|ModuleNotFoundError||No module named|error|找不到你导入的模块。先用 pip install 安装对应的库，注意虚拟环境里装没装。
 Python|RecursionError||maximum recursion depth|fatal|递归太深了。函数一直调用自己没有结束条件，检查递归出口，或者改成循环实现。
-Python|PermissionError||Permission denied||Errno 13|error|没有权限访问文件。文件被其他程序占用了，或者需要管理员权限，检查文件是否只读。
+Python|PermissionError||Permission denied||Errno 13||WinError 5|error|没有权限访问文件。文件被其他程序占用了，或者需要管理员权限，检查文件是否只读。
 Python|StopIteration|warning|迭代器到头了。通常在 next() 调用时触发，可以用 for 循环代替手动迭代。
 Python|KeyboardInterrupt|warning|你按了 Ctrl+C 中断了程序。这不是代码的问题，是手动终止的。
 Python|UnboundLocalError||referenced before assignment|error|在函数里用了还没赋值的局部变量。如果你想把外面的全局变量拿进来用，加 global 声明。
 Python|EOFError||EOF when reading|error|输入到末尾了。通常是用 input() 读取时没收到足够的输入，检查文件或输入流。
 Python|MemoryError||Unable to allocate|fatal|内存不足。程序占用的内存超过了系统能给的极限。尝试减少一次处理的数据量，或用分块读取。
 Python|TimeoutError||timed out|error|操作超时。网络请求或某个操作等待太久没响应。检查网络连接或增加超时时间。
-Python|ConnectionError||Connection refused||Max retries exceeded|error|网络连接失败。目标服务器拒绝了连接或无法访问。检查网址、端口和网络。
+Python|ConnectionError||Connection refused||Max retries exceeded||WinError 10061|error|网络连接失败。目标服务器拒绝了连接或无法访问。检查网址、端口和网络。
 Python|ConnectionResetError||Connection reset by peer||Errno 104|error|连接被对方重置了。服务器中途断开，可能是请求太快被限流，或服务端出了问题，加重试逻辑。
 Python|OSError|error|操作系统相关的错误。可能是文件操作失败、路径问题或系统资源不足，看 Errno 编号定位。
 Python|RuntimeError|error|运行时错误。程序运行时遇到了意外的情况。检查代码逻辑是否有死循环或不合理的状态。
@@ -98,6 +98,32 @@ Python|The requested URL was not found on the server|error|路由不存在（404
 Python|unregistered task|error|worker 里没有注册这个任务。检查任务名和 include 配置，确认 worker 加载了该模块。
 Python|attempted relative import with no known parent package|error|相对导入越出了包边界。以模块方式运行（python -m 包.模块），或改用绝对导入。
 Python|Can't get attribute|error|反序列化时找不到类定义。类被移动或改名了，保持原路径或自定义 unpickler。
+Python|exception was never retrieved|warning|异步任务里抛了异常但没人取结果。给 future 加异常处理，或 await 它。
+Python|wrong version number|error|TLS 握手版本不对。常见为用 https 请求了 http 端口，或代理拦截。
+Python|hostname mismatch||certificate is not valid for|error|证书域名和访问的域名不一致。检查是否访问了错误的域名或 IP。
+Python|WinError 10060|error|Windows 连接超时。目标不可达或防火墙丢包，检查地址和网络。
+Python|WinError 206|error|文件路径超过 Windows 上限。缩短路径或使用长路径前缀。
+Python|BrokenProcessPool|fatal|子进程意外死亡，进程池失效。检查子进程是否 OOM 或被杀。
+Python|Exception in thread|error|某个线程抛了未捕获异常。看线程名和栈定位。
+Python|f-string: unterminated string||f-string: expecting '}'|fatal|f-string 语法错误：引号没闭合或表达式括号不配对。
+Python|a bytes-like object is required|error|这里需要 bytes 却给了 str。用 encode() 转换，或以文本模式打开文件。
+Python|is not JSON serializable|error|json.dumps 不认识这个类型（如 datetime/set）。写 default= 回调或先转换。
+Python|offset-naive and offset-aware|error|带时区和不带时区的 datetime 不能直接比较。统一补上 tzinfo。
+Python|shapes not aligned|error|矩阵乘法/运算的维度对不上。检查 shape，必要时转置。
+Python|has .* features, but|error|预测时的特征数和训练时不一致。保持列一致，或保存训练时的列顺序。
+Python|is not fitted yet|error|模型还没 fit 就调用了 predict。先 fit 再预测。
+Python|no $DISPLAY environment variable|error|服务器上没有图形界面。改用 Agg 后端：matplotlib.use('Agg')。
+Python|No section:|error|ini 配置里没有这个节。检查节名拼写和文件是否读对。
+Python|Invalid requirement|error|requirements 行写法不合法。检查版本号、注释和特殊字符。
+Python|invalid command 'bdist_wheel'|error|缺少 wheel 包。pip install wheel 后重试。
+Python|charmap' codec can't decode|error|Windows 默认编码读 UTF-8 文件失败。open 时指定 encoding='utf-8'。
+Python|Remote end closed connection without response|error|服务端没回响应就断开了。检查服务端日志、请求头和代理。
+Python|field larger than field limit|error|单行字段超过 csv 默认上限。csv.field_size_limit 调大。
+Python|new-line character seen in unquoted field|error|CSV 里有多余换行。用 newline='' 打开文件，检查数据格式。
+Python|unpack requires a buffer|error|struct 解包的数据太短。检查数据长度和格式串是否匹配。
+Python|UNIQUE constraint failed|error|唯一约束冲突，记录已存在。先查重或用 INSERT OR REPLACE。
+Python|QueuePool limit of size|error|连接池耗尽。检查连接泄漏（没 close 的会话），或调大 pool_size。
+Python|cannot assign to field|error|frozen dataclass 不可修改。用 dataclasses.replace 生成新对象。
 JavaScript|ReferenceError|error|引用了不存在的变量。检查变量名拼写，或者确认变量在使用前已经声明了。
 JavaScript|TypeError|error|数据的类型不对。常见于对 undefined 或 null 做了操作，或者把非函数当成函数调用。
 JavaScript|SyntaxError|fatal|语法错误。可能是少写了逗号、括号不匹配、引号没闭合，看报错里的行列号定位。
@@ -289,6 +315,28 @@ Java|AccessDeniedException|error|没有文件访问权限。检查权限设置�
 Java|Found one Java-level deadlock|fatal|JVM 检测到死锁。jstack 输出会指出互相等待的锁，统一加锁顺序。
 Java|sleep interrupted|error|线程在休眠时被中断。处理 InterruptedException 或检查中断逻辑。
 Java|error in opening zip file|error|jar/zip 文件损坏或不完整。重新下载或构建依赖。
+Java|Could not reserve enough space for object heap|fatal|堆内存超过系统可用上限。调小 -Xmx。
+Java|Unrecognized VM option|fatal|JVM 不认识这个参数。检查拼写或当前 JVM 版本是否支持。
+Java|no main manifest attribute|fatal|jar 包没指定 Main-Class。在构建配置里设置主类，或 java -cp 主类 运行。
+Java|HttpMessageNotReadableException|error|请求体解析失败。检查 JSON 格式和字段类型是否与 DTO 匹配。
+Java|Request method .* not supported|error|该接口不支持这种 HTTP 方法。检查 @GetMapping/@PostMapping 与请求一致。
+Java|currently in creation|error|Bean 循环依赖。检查相互注入的 Bean，用 @Lazy 打破循环。
+Java|Unable to determine Dialect|error|Hibernate 认不出数据库方言。显式配置 spring.jpa.database-platform。
+Java|detached entity passed to persist|error|把游离状态的实体传给了 persist。用 merge 或重新关联 Session。
+Java|Connection is closed|error|连接已关闭还在使用。检查连接池的归还逻辑和连接有效性。
+Java|BadSqlGrammarException|error|SQL 语法错误。看 caused by 里数据库的原始报错。
+Java|Module .* not found|error|模块系统找不到这个模块。检查 module-info.java 的 requires 和 module-path。
+Java|CancellationException|error|任务被取消了。捕获后按业务处理，注意别把它当异常吞掉。
+Java|InterruptedIOException|error|IO 操作被中断。检查线程中断逻辑和超时设置。
+Java|Comparison method violates its general contract|error|排序比较器不满足传递性/反对称。修正 compare 逻辑，避免依赖不稳定值。
+Java|InputMismatchException|error|Scanner 读到的内容和期望类型不符。检查输入格式。
+Java|RejectedExecutionException|error|线程池已关闭或队列满拒绝了任务。检查提交时机和拒绝策略。
+Java|Direct buffer memory|fatal|堆外内存耗尽。调大 -XX:MaxDirectMemorySize，检查 ByteBuffer 是否泄漏。
+Java|unable to create new native thread|fatal|线程数达到系统上限。检查线程泄漏，调大系统线程数限制。
+Java|IllegalFormatConversionException|error|String.format 的占位符和参数类型不匹配。检查 %d/%s 对应关系。
+Java|Non-resolvable parent POM|fatal|父 POM 拉不到。检查 relativePath、仓库配置和网络。
+Java|Invalid bound statement (not found)|error|MyBatis 找不到 SQL 映射。检查 mapper XML 的 namespace、id 与接口是否一致，以及打包是否包含 XML。
+Java|There is no getter for property|error|SQL 里引用了实体上不存在的属性。检查 #{} 参数名和实体字段。
 C++|was not declared in this scope||was not declared||use of undeclared identifier|error|这个变量或函数没有声明。检查头文件是否 #include，或者变量是否在作用域内、名字空间是否写对。
 C++|expected ';' before||expected ';'|fatal|缺少分号。C++ 的每条语句结尾必须有分号，检查报错指向的位置和上一行末尾。
 C++|expected '}' at end of input||expected '}'|fatal|缺少花括号。检查花括号是否成对出现，可能某个 { 没有对应的 }。
@@ -308,13 +356,13 @@ C++|undefined reference to||undefined symbol for architecture|fatal|链接时找
 C++|multiple definition of||duplicate symbol|fatal|同一个符号在多个编译单元里定义了。把定义移到 .cpp，头文件里只留声明，或加 inline/static。
 C++|cannot find -l||library not found|fatal|链接器找不到库文件。检查 -L 路径和库名拼写，确认库已安装或已编译。
 C++|is private within this context||is protected within this context|error|访问了私有的成员。检查是不是在类外部调用了 private/protected 方法或变量。
-C++|Segmentation fault||segmentation fault||SIGSEGV|fatal|段错误。访问了不该访问的内存，常见原因：空指针、数组越界、释放后继续使用。
+C++|Segmentation fault||segmentation fault||SIGSEGV||SEGV on unknown address|fatal|段错误。访问了不该访问的内存，常见原因：空指针、数组越界、释放后继续使用。
 C++|double free or corruption||free(): invalid pointer||free(): invalid size|fatal|同一块内存被释放了两次，或释放了非法指针。检查所有权归属，释放后置空指针。
 C++|malloc(): corrupted|fatal|堆结构被破坏了。多半是越界写坏了堆元数据，检查数组边界和字符串结尾符。
 C++|heap-use-after-free|fatal|内存释放后还在使用。记录对象生命周期，释放后置空，或改用智能指针。
 C++|heap-buffer-overflow|fatal|堆内存越界读写。检查 new 出来的数组边界，注意字符串结尾要留出结尾符的位置。
 C++|stack-buffer-overflow|fatal|栈上数组越界。检查局部数组大小和循环边界，不要往固定大小缓冲区写入过长内容。
-C++|memory leak||detected memory leaks|warning|检测到内存泄漏。new 出来的内存没有用 delete 释放，改用智能指针管理。
+C++|memory leak||detected memory leaks||Direct leak|warning|检测到内存泄漏。new 出来的内存没有用 delete 释放，改用智能指针管理。
 C++|pure virtual method called|fatal|对象构造/析构时调用了纯虚函数。子类没实现纯虚函数，或在构造函数里调用了虚函数。
 C++|std::bad_alloc|fatal|内存分配失败抛出的异常。请求的内存太大或系统内存不足，检查数据规模。
 C++|std::bad_cast|fatal|dynamic_cast 引用转换失败。转换前先用指针版 dynamic_cast 判断返回值。
@@ -378,7 +426,7 @@ C++|LNK2019|fatal|MSVC：无法解析的外部符号。检查函数签名、调�
 C++|does not match any in class|error|函数定义与类内声明不匹配。对照声明检查参数和 const。
 C++|out-of-line definition does not match|error|类外定义与声明不一致。检查签名、模板参数和 const。
 C++|candidate constructor not viable||candidate function not viable|error|候选构造/重载函数不可行。看每个候选被拒的原因（参数个数/类型）。
-C++|no viable conversion|error|没有可行的类型转换。检查构造函数是否 explicit、类型是否兼容。
+C++|no viable conversion||no viable overloaded|error|没有可行的类型转换。检查构造函数是否 explicit、类型是否兼容。
 C++|indirection requires pointer operand|error|对非指针用 *。检查变量是不是忘了取地址或声明类型。
 C++|unterminated conditional directive|fatal|#if/#ifdef 没有对应的 #endif。检查预处理指令配对。
 C++|invalid use of void expression|error|void 函数的返回值被使用了。void 调用不能作为值参与运算。
@@ -388,8 +436,27 @@ C++|specialization after instantiation|error|模板特化必须在首次实例�
 C++|C2259|error|MSVC：不能实例化抽象类。实现全部纯虚函数或用具体子类。
 C++|C2660|error|MSVC：函数不接受这个个数的参数。对照签名检查。
 C++|C2079|error|MSVC：使用了只有前向声明的类型。包含完整定义。
+C++|template instantiation depth exceeds maximum|fatal|模板递归实例化太深。简化模板，或加 -ftemplate-depth 调大上限。
+C++|need 'typename' before|error|模板依赖名要加 typename。在类型前写 typename 消除歧义。
+C++|is an ambiguous base|error|菱形继承导致基类有二义性。用虚继承或显式路径转换。
+C++|call to non-'constexpr' function|error|constexpr 上下文里调了非 constexpr 函数。检查函数是否满足编译期计算要求。
+C++|no type named 'type'|error|SFINAE/元编程失败： trait 没产出 type 成员。检查 enable_if 条件和类型萃取。
+C++|stack-use-after-scope|fatal|使用了超出作用域的栈变量。检查引用/指针是否指向了已结束的代码块。
+C++|stack-use-after-return|fatal|返回后还在用局部变量的引用/指针。改为返回值或堆分配。
+C++|container-overflow|fatal|容器容量内的非法区域被访问。常见于对 vector 的 reserve 区越界读写。
+C++|use-of-uninitialized-value|fatal|读取了未初始化的内存。声明时初始化，或检查分支遗漏的赋值。
+C++|ThreadSanitizer|fatal|ThreadSanitizer 检测到数据竞争。给共享数据加锁或改用原子操作。
+C++|signed integer overflow|fatal|有符号整数溢出（未定义行为）。检查运算范围，换更大类型或用无符号。
+C++|member call on null pointer||load of null pointer|fatal|对空指针调用成员/读取数据。调用前判空。
+C++|shift exponent .* is too large|fatal|移位位数超过类型位宽。检查移位量来源。
+C++|load of misaligned address|fatal|未对齐的指针访问。用 memcpy 或调整类型对齐。
+C++|C2672|error|MSVC：找不到匹配的重载函数。检查参数类型是否需要转换。
+C++|C4717|warning|检测到无限递归，所有控制路径都会递归调用自己。
+C++|C1083|fatal|MSVC：打不开包含文件。检查 include 路径（附加包含目录）和文件名。
+C++|LNK1120|fatal|有若干无法解析的外部命令。往上看 LNK2019 等具体符号。
+C++|LNK1104|fatal|MSVC：打不开输出/库文件。检查文件被占用、路径和库目录配置。
 C|implicit declaration of function||implicit declaration of built-in|warning|使用了没有声明的函数。忘记 #include 对应的头文件了，或者函数名拼写错误。
-C|use of undeclared identifier|error|这个变量或函数没声明过。检查拼写，确认头文件已包含、变量在使用前已定义。
+C|use of undeclared identifier||first use in this function|error|这个变量或函数没声明过。检查拼写，确认头文件已包含、变量在使用前已定义。
 C|unknown type name|error|类型名没被识别。检查头文件是否包含，结构体类型是否漏了 struct 关键字。
 C|expected ';' before||expected ';'|fatal|缺少分号。C 语言的每条语句结尾必须有分号，检查上一行末尾。
 C|expected ')'||expected '('|fatal|括号不匹配。检查函数调用、if/while 条件的括号是否成对。
@@ -453,7 +520,7 @@ C|null pointer||NULL pointer|error|空指针操作。在解引用指针之前检
 C|outside array bounds|warning|数组下标越界。检查索引计算和边界条件。
 C|Segmentation fault||segmentation fault||SIGSEGV|fatal|段错误。检查指针是否初始化、数组是否越界、是否访问了已释放的内存。
 C|Bus error|fatal|总线错误，通常是对齐问题或访问了非法内存映射。检查指针类型转换和地址对齐。
-C|double free or corruption||free(): invalid pointer|fatal|同一块内存被释放了两次，或释放了非法指针。检查所有权，释放后置空指针。
+C|double free or corruption||free(): invalid pointer||attempting double-free|fatal|同一块内存被释放了两次，或释放了非法指针。检查所有权，释放后置空指针。
 C|malloc(): corrupted|fatal|堆结构被破坏了。多半是越界写坏了堆元数据，检查数组边界和字符串结尾符。
 C|use-after-free|fatal|内存释放后还在使用。记录生命周期，释放后置空指针。
 C|stack smashing detected|fatal|检测到栈被写越界。检查局部数组边界和 strcpy/sprintf 等不安全函数。
@@ -468,6 +535,22 @@ C|return type defaults to int|warning|函数没写返回值类型，默认成了
 C|no type or storage class|error|声明里缺少类型名。检查类型拼写，或是否漏写了 int/void 等类型。
 C|variable-sized object may not be initialized|error|变长数组不能在声明时初始化。先声明再用循环赋值。
 C|requires a non-null argument|warning|给标记了 nonnull 的函数传了空指针。调用前检查参数是否为 NULL。
+C|memcpy-param-overlap|fatal|memcpy 源和目的区间重叠（未定义行为）。用 memmove。
+C|out of bounds for type|fatal|UBSan 检测到数组越界访问。报错里有类型和索引，检查边界。
+C|unknown escape sequence|warning|字符串里的转义序列不合法。需要字面反斜杠要写 \\。
+C|redeclared as different kind of symbol|error|同一个名字被声明成了不同类型的东西（变量 vs 函数）。检查名字冲突。
+C|buffer overflow detected|fatal|glibc FORTIFY 检测到缓冲区溢出并中止。检查 sprintf/strcpy 等的边界。
+C|used but never defined|fatal|声明了函数但没有实现。补上定义，或链接对应的源文件/库。
+C|collect2: error|fatal|链接阶段失败。往上看 ld 的具体报错定位缺的符号或库。
+C|file format not recognized|fatal|链接的文件不是有效的目标文件/库。检查文件是否损坏或架构不对。
+C|entry point .* undefined||undefined reference to `main|fatal|找不到 main 入口。检查是否漏写 main，或链接了错误的编译模式。
+C|overflow in implicit constant conversion|warning|常量隐式转换溢出。检查数值是否超出目标类型范围。
+C|unused parameter|warning|函数参数没被使用。删掉，或用 (void)param 标记有意不用。
+C|value computed is not used|warning|表达式算了结果但没用上。检查是否漏了赋值或该行多余。
+C|statement with no effect|warning|这条语句什么都没做。检查是不是漏了赋值或函数调用。
+C|type-punned pointer|warning|指针类型强转破坏严格别名规则。改用 memcpy 或 union。
+C|missing braces around initializer|warning|嵌套初始化缺内层花括号。按结构补全初始化列表。
+C|cast from pointer to integer of different size|warning|指针和整数宽度不同，强转会截断。用 intptr_t 中转。
 Go|undefined:|error|这个变量、函数或类型没有定义。检查拼写、是否漏了导入，或者作用域不对。
 Go|declared and not used||declared but not used|error|声明了变量但没有使用。Go 强制要求所有变量都要被使用，删掉或赋给 _。
 Go|imported and not used|error|导入的包没有被使用。Go 强制要求不用的包不能导入，删掉或者用 _ 前缀。
@@ -652,6 +735,25 @@ C#|Assets file ... not found||NU1004||Assets file|error|project.assets.json 不�
 C#|CS1520|fatal|方法必须声明返回类型。检查函数签名是否漏了 void 或类型。
 C#|CS0501|error|非抽象/extern 方法必须有方法体。补上大括号体或声明为 abstract。
 C#|CS0123|error|没有重载与委托签名匹配。对照委托定义检查方法签名。
+C#|DbUpdateConcurrencyException|error|并发修改冲突，行数据已被别人改过。用乐观锁 RowVersion 处理或重试。
+C#|Format of the initialization string does not conform|error|连接字符串格式不合法。检查 Key=Value 分隔符和引号。
+C#|The JSON value could not be converted|error|JSON 字段类型和模型对不上。看路径定位字段，修正类型。
+C#|configured HttpClient.Timeout|error|HttpClient 超时。下游太慢，调大 Timeout 或加 Polly 重试。
+C#|Error converting value {null}|error|把 null 反序列化成了不可空类型。字段改成可空或数据补值。
+C#|Method not found|error|运行时找不到方法，多为程序集版本不一致。统一依赖版本。
+C#|requested value .* was not found|error|枚举里没有这个值。检查数据，或用 TryParse 容错。
+C#|Invalid JSON primitive||Unexpected character encountered|error|JSON 格式不合法。响应可能是 HTML 或被截断，打印原文检查。
+C#|Cannot deserialize the current JSON object|error|JSON 结构和类型定义不符。对照 RequiresArray/Object 提示修正。
+C#|Invalid URI: The|error|URI 格式不合法。检查是否漏了协议头或含非法字符。
+C#|PathTooLongException|error|路径超过 Windows 长度上限。缩短路径，或启用长路径支持。
+C#|calling thread cannot access this object|fatal|WPF UI 对象只能由创建它的线程访问。用 Dispatcher.Invoke 切回 UI 线程。
+C#|XamlParseException|fatal|XAML 解析失败。看行号和 inner exception，常见为资源 key 或绑定错误。
+C#|CS0116|fatal|命名空间下不能直接放语句。把代码挪进类和方法。
+C#|CS0128|error|同一作用域里已有同名局部变量。删除重复声明。
+C#|CS0201|fatal|只有赋值/调用/自增自减能当语句。检查是否漏了方法调用括号。
+C#|MSB1009|fatal|找不到项目文件。检查 dotnet build/run 的工作目录和 csproj 路径。
+C#|specified command or file was not found|fatal|找不到该命令。检查 .NET SDK 是否安装、命令拼写。
+C#|NU1202|error|包和项目框架不兼容。检查 TargetFramework 和包支持的框架列表。
 Ruby|NoMethodError||undefined method for nil:NilClass||private method called|error|对象没有这个方法。特别注意对 nil 调方法的情况，往上找它为什么是 nil。
 Ruby|NameError||uninitialized constant||undefined local variable or method|error|未定义的变量、方法或常量。检查拼写和作用域，确认已定义或已 require。
 Ruby|syntax error, unexpected|fatal|语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了，看指向的行号。

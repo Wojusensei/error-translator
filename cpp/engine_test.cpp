@@ -117,6 +117,10 @@ int main(int argc, char** argv) {
         {"Subscript indices must either be real positive integers or logicals.", "MATLAB"},
         {"Prelude.head: empty list", "Haskell"},
         {" Couldn't match expected type `Int' with actual type `String'", "Haskell"},
+        {"TypeError: Object of type datetime is not JSON serializable", "Python"},
+        {"Exception has occurred: heap-buffer-overflow on address 0x60200000eff1", "C++"},
+        {"java.lang.IllegalStateException: Invalid bound statement (not found): com.foo.UserMapper.select", "Java"},
+        {"System.InvalidOperationException: The JSON value could not be converted to System.Int32", "C#"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
