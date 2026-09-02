@@ -113,6 +113,10 @@ int main(int argc, char** argv) {
         {"File C:\\script.ps1 cannot be loaded because running scripts is disabled on this system.", "PowerShell"},
         {"Run-time error '1004': Application-defined or object-defined error", "VBA"},
         {"Run-time error '91': Object variable or With block variable not set", "VBA"},
+        {"Index in position 1 exceeds array bounds (must not exceed 5).", "MATLAB"},
+        {"Subscript indices must either be real positive integers or logicals.", "MATLAB"},
+        {"Prelude.head: empty list", "Haskell"},
+        {" Couldn't match expected type `Int' with actual type `String'", "Haskell"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

@@ -2049,3 +2049,51 @@ VBA|ActiveX component can't create object||File name or class name not found dur
 VBA|Run-time error '11'||Division by zero|fatal|除以零。除法前检查除数。
 VBA|Run-time error '94'||Invalid use of Null|fatal|把 Null 赋给了不接受它的类型。先 IsNull 判断，或用 Nz()/默认值。
 VBA|Run-time error '381'||Invalid property array index|fatal|属性数组下标越界。检查索引范围。
+MATLAB|Unrecognized function or variable||Undefined function or variable||Undefined variable|error|这个名字没定义。检查拼写、大小写（MATLAB 区分大小写），确认脚本/函数在路径上。
+MATLAB|Index in position .* exceeds array bounds||Index exceeds the number of array elements||Index exceeds matrix dimensions|error|下标超出数组大小。MATLAB 索引从 1 开始，用 size 检查边界。
+MATLAB|Subscript indices must either be real positive integers or logicals||Array indices must be positive integers or logical values|error|下标必须是正整数或逻辑值。检查索引计算是否产生了 0、负数或小数。
+MATLAB|is not convertible to|error|赋值类型无法转换。检查左右两边的类型和尺寸。
+MATLAB|Unable to resolve the name|error|解析不了这个名字。检查是否在路径上、是否被变量遮蔽了函数名。
+MATLAB|Undefined operator||for input arguments of type|error|该类型不支持这个运算/函数。检查参数类型，可能需要转换或换函数。
+MATLAB|Too many input arguments|error|传入参数过多。对照函数定义减少参数。
+MATLAB|Not enough input arguments|error|必填参数没给够。对照函数定义补全。
+MATLAB|Out of memory|fatal|内存不足。数组太大，用 single/tiled 分块处理，或 clear 不用的大变量。
+MATLAB|Dimensions of arrays being concatenated|error|拼接的数组维度不匹配。horzcat 要求行数一致，vertcat 要求列数一致。
+MATLAB|dimensions must agree|error|矩阵运算维度不一致。检查矩阵形状，必要时转置或 reshape。
+MATLAB|sizes of the left and right sides do not match||Subscripted assignment dimension mismatch|error|赋值两边尺寸不一致。检查下标个数和右侧元素个数。
+MATLAB|not a valid target for assignment|error|等号左边不能被赋值。检查是表达式还是变量。
+MATLAB|use parentheses|fatal|函数调用/索引要用圆括号，而不是空格或方括号。检查写法。
+MATLAB|Unexpected MATLAB expression|fatal|表达式不完整或位置不对。检查是否漏了运算符或括号。
+MATLAB|Invalid use of operator|fatal|运算符用法不对。检查运算符两侧的操作数。
+MATLAB|Unbalanced or unexpected parenthesis or bracket|fatal|括号不配对。检查 [ ( { 的闭合。
+MATLAB|Attempt to execute SCRIPT as a function|error|把脚本当函数调用了。脚本不能带参数调用，改写成函数文件。
+MATLAB|to a static workspace|error|嵌套函数里动态创建了变量。变量必须在代码里显式定义，不能 eval 动态生成。
+MATLAB|case-sensitive|error|大小写不完全匹配。MATLAB 区分大小写，按提示修正。
+MATLAB|is not possible|error|类型转换不可行。检查源数据的类型和内容。
+MATLAB|Cell contents reference from a non-cell array||Cell contents assignment to a non-cell array|error|对非 cell 数组用了 {}。普通数组用 ()，cell 才用 {}。
+MATLAB|Expected one output from a curly brace or dot indexing|error|花括号/点索引只能取一个输出。逐个取值或循环处理。
+MATLAB|Dot indexing is not supported for variables of this type|error|该类型不支持点访问字段。检查变量是不是结构体或对象。
+MATLAB|The end operator must be used within an array indexing|error|end 只能用在数组下标里。检查是否写错了位置。
+MATLAB|Vectors must be the same length|error|两组向量长度不一致。检查绘图/运算的数据长度。
+MATLAB|License checkout failed||License Manager Error|fatal|许可证校验失败。检查 license 文件、服务器连接和工具箱授权。
+Haskell|Variable not in scope||Data constructor not in scope||Not in scope:|error|这个绑定不在作用域内。检查拼写、import 是否写了，或是否漏了模块前缀。
+Haskell|Couldn't match expected type|error|类型对不上。报错给出期望类型和实际类型，顺着定位到表达式修正。
+Haskell|Ambiguous type variable|error|推不出这个类型变量的具体类型。加类型标注，或用 type annotation 消歧。
+Haskell|No instance for|error|缺少类型类实例。补 deriving/implement，或确认类型确实满足该约束。
+Haskell|Could not deduce|error|类型推断需要这个约束但推不出来。加显式签名或补约束。
+Haskell|infinite type|error|类型无穷递归（如 a = [a]）。通常是函数应用写反了参数顺序。
+Haskell|parse error|fatal|语法错误，常见为缩进不对或括号不配对。Haskell 依赖缩进划分代码块。
+Haskell|empty list||empty structure|fatal|对空结构调用了 head/tail/maximum 等部分函数。用模式匹配或 safe 版本处理空值。
+Haskell|index too large|fatal|!! 的下标超出列表长度。先检查长度或用安全取值。
+Haskell|fromJust: Nothing|fatal|对 Nothing 调了 fromJust。用 maybe/模式匹配处理 Nothing。
+Haskell|divide by zero|fatal|除以零。除法前检查除数，或用 Ratio/Maybe 包装。
+Haskell|Non-exhaustive patterns|fatal|模式匹配没有覆盖所有情况，运行时崩了。补全分支或加通配兜底。
+Haskell|Irrefutable pattern failed|fatal|~ 惰性模式在真正取值时失败了。别用 ~ 掩盖匹配失败。
+Haskell|lacks an accompanying binding|error|写了类型签名但没有对应定义。补上实现，或检查名字拼写。
+Haskell|File name does not match module name|error|模块名和文件名不一致。Haskell 要求 Module.Foo 在 Module/Foo.hs。
+Haskell|Could not find module|error|找不到模块。检查依赖是否安装、package.yaml/cabal 是否声明。
+Haskell|Ambiguous occurrence|error|多个导入有同名绑定。用限定名 Module.name 或 import 限定导入。
+Haskell|Multiple declarations|error|同名绑定重复定义。删除多余定义或重命名。
+Haskell|last statement in a 'do' block must be an expression|fatal|do 块最后一行要是一个表达式（返回值）。检查是不是把绑定写在了最后。
+Haskell|Expecting one more argument|error|类型还差一个参数才完整。补全类型参数，如 Maybe Int。
+Haskell|Stack space overflow|fatal|栈溢出，常见于非惰性的大规模 fold。改用严格版本（foldl'）或调整惰性结构。

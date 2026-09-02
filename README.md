@@ -56,6 +56,8 @@
 | Docker      | 61 | `Cannot connect to the Docker daemon`、端口占用、构建失败、compose/WSL2 报错     |
 | PowerShell  | 30 | 执行策略禁用脚本、`is not recognized`、参数绑定、远程 WinRM、.NET 方法调用       |
 | VBA         | 31 | `Run-time error '1004'`、`Object required`、下标越界、类型不匹配、Automation 错误 |
+| MATLAB      | 26 | `Unrecognized function or variable`、下标越界、维度不一致、cell 用法、许可证       |
+| Haskell     | 21 | `Variable not in scope`、`Couldn't match type`、`No instance for`、空列表崩溃      |
 
 ---
 
