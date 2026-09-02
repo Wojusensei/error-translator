@@ -1,5 +1,5 @@
 {
-  "version": "2.1",
+  "version": "2.2",
   "languages": {
     "python": {
       "name": "Python",
@@ -10070,7 +10070,7 @@
           "explain": "当前日志驱动不支持 docker logs。查看对应的外部日志存储。"
         },
         "docker_not_in_path": {
-          "match": "is not recognized",
+          "match": "is not a docker command",
           "level": "fatal",
           "explain": "系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。"
         },
@@ -10078,6 +10078,321 @@
           "match": "Encountered errors while bringing up the project",
           "level": "fatal",
           "explain": "compose 启动时有服务失败。往上看每个服务的具体报错。"
+        }
+      }
+    },
+    "powershell": {
+      "name": "PowerShell",
+      "patterns": {
+        "cmdlet_not_recognized": {
+          "match": "is not recognized as the name of a cmdlet||is not recognized as an internal or external command",
+          "level": "error",
+          "explain": "找不到这个命令。检查拼写，确认模块已导入、程序在 PATH 里。"
+        },
+        "execution_policy_disabled": {
+          "match": "running scripts is disabled on this system||is not digitally signed",
+          "level": "fatal",
+          "explain": "执行策略禁止运行脚本。Set-ExecutionPolicy RemoteSigned -Scope CurrentUser，或对该文件 Unblock-File。"
+        },
+        "bind_null_argument": {
+          "match": "Cannot bind argument to parameter",
+          "level": "error",
+          "explain": "传给参数的值是 null。上游命令没返回数据，先判空再传。"
+        },
+        "parameter_not_found": {
+          "match": "A parameter cannot be found that matches parameter name",
+          "level": "error",
+          "explain": "这个 cmdlet 没有该参数。Get-Help 命令名 看支持的参数。"
+        },
+        "validate_argument_failed": {
+          "match": "Cannot validate argument on parameter",
+          "level": "error",
+          "explain": "参数值没通过校验。看提示的 Validate 校验条件，修正取值。"
+        },
+        "missing_terminator": {
+          "match": "missing the terminator",
+          "level": "fatal",
+          "explain": "字符串/引号没有闭合。检查单双引号和 here-string 的结尾标记。"
+        },
+        "unexpected_token_ps": {
+          "match": "Unexpected token",
+          "level": "fatal",
+          "explain": "语法错误，出现了不该出现的符号。检查管道符、括号和引号配对。"
+        },
+        "missing_closing_brace": {
+          "match": "Missing closing '}'||Missing ')' in method call||Missing expression after",
+          "level": "fatal",
+          "explain": "缺少闭合括号或表达式不完整。配对检查代码块。"
+        },
+        "cannot_convert_type": {
+          "match": "Cannot convert the",
+          "level": "error",
+          "explain": "类型转换失败。看期望类型和实际值，必要时用 [类型] 强转。"
+        },
+        "null_array_index": {
+          "match": "Cannot index into a null array||array index evaluated to null",
+          "level": "error",
+          "explain": "对 null 数组取下标。先确认数组已创建、有元素。"
+        },
+        "null_method_call": {
+          "match": "cannot call a method on a null-valued expression",
+          "level": "error",
+          "explain": "对 null 调方法。上游返回了空，先判空再调用。"
+        },
+        "property_not_found_ps": {
+          "match": "cannot be found on this object",
+          "level": "error",
+          "explain": "对象上没有该属性。检查属性名和对象的实际类型（Get-Member）。"
+        },
+        "module_not_loaded": {
+          "match": "was not loaded||could not be loaded",
+          "level": "error",
+          "explain": "模块加载失败。检查模块路径、版本和执行策略，Import-Module 重试。"
+        },
+        "winrm_failed": {
+          "match": "WinRM cannot process the request||Connecting to remote server",
+          "level": "error",
+          "explain": "远程 PowerShell 连接失败。检查 WinRM 服务、TrustedHosts 和防火墙。"
+        },
+        "cannot_find_drive": {
+          "match": "Cannot find drive||does not exist for this drive",
+          "level": "error",
+          "explain": "盘符/驱动器不存在。检查路径盘符和 PSDrive。"
+        },
+        "method_invocation_failed": {
+          "match": "Method invocation failed because",
+          "level": "error",
+          "explain": ".NET 方法调用失败。看 caused by 的底层异常定位。"
+        },
+        "exception_calling": {
+          "match": "Exception calling",
+          "level": "error",
+          "explain": "调用 .NET 方法时抛了异常。看括号里的异常消息定位。"
+        },
+        "cannot_find_path_ps": {
+          "match": "Cannot find path",
+          "level": "error",
+          "explain": "路径不存在。检查拼写和工作目录（Get-Location）。"
+        },
+        "parameter_set_unresolved": {
+          "match": "Parameter set cannot be resolved",
+          "level": "error",
+          "explain": "传入的参数组合匹配不到任何参数集。Get-Help 查看各参数集的要求。"
+        },
+        "positional_parameter": {
+          "match": "A positional parameter cannot be found that accepts argument",
+          "level": "error",
+          "explain": "多出来的位置参数没地方放。检查参数顺序，或该参数需要命名传递。"
+        },
+        "parameter_specified_twice": {
+          "match": "is specified more than once",
+          "level": "error",
+          "explain": "同一个参数传了两次。检查是否有脚本拼接重复了参数。"
+        },
+        "missing_mandatory_parameters": {
+          "match": "missing mandatory parameters",
+          "level": "error",
+          "explain": "必填参数没给。看提示的参数名补上。"
+        },
+        "cannot_overwrite_variable": {
+          "match": "Cannot overwrite variable",
+          "level": "error",
+          "explain": "该变量受保护或只读。换变量名，或用 Remove-Variable 后重建。"
+        },
+        "exception_setting": {
+          "match": "Exception setting",
+          "level": "error",
+          "explain": "设置属性失败。检查属性类型和对象状态。"
+        },
+        "system_cannot_find_file": {
+          "match": "The system cannot find the file specified||The system cannot find the path specified",
+          "level": "error",
+          "explain": "系统找不到文件/路径。检查外部命令路径和环境变量。"
+        },
+        "network_path_not_found": {
+          "match": "The network path was not found",
+          "level": "error",
+          "explain": "网络路径不通。检查 UNC 路径、共享权限和目标主机。"
+        },
+        "assembly_not_loaded": {
+          "match": "Unable to find type||Make sure that the assembly containing this type is loaded",
+          "level": "error",
+          "explain": "找不到 .NET 类型。Add-Type -AssemblyName 加载程序集，或检查类型全名。"
+        },
+        "argument_transformation_failed": {
+          "match": "Cannot process argument transformation",
+          "level": "error",
+          "explain": "参数转换器处理失败。检查传入值的类型和转换逻辑。"
+        },
+        "no_overload_found": {
+          "match": "Cannot find an overload",
+          "level": "error",
+          "explain": "没有匹配参数个数/类型的重载。检查传参类型。"
+        },
+        "iwr_server_error": {
+          "match": "The remote server returned an error||The operation has timed out",
+          "level": "error",
+          "explain": "远程请求失败或超时。看状态码：404 地址错、401 认证、500 服务端问题。"
+        }
+      }
+    },
+    "vba": {
+      "name": "VBA",
+      "patterns": {
+        "object_required": {
+          "match": "Run-time error '424'||Object required",
+          "level": "fatal",
+          "explain": "需要对象却拿到了别的值。检查 Set 是否漏写，或对象变量是否初始化。"
+        },
+        "application_defined_error": {
+          "match": "Run-time error '1004'||Application-defined or object-defined error||of object '_Global' failed||Unable to get the",
+          "level": "fatal",
+          "explain": "Excel/Office 内部操作失败。常见为区域引用错误、工作表不存在或宏安全限制，检查 Range 地址和表名。"
+        },
+        "subscript_out_of_range": {
+          "match": "Run-time error '9'||Subscript out of range",
+          "level": "fatal",
+          "explain": "下标越界：工作表名/数组下标/集合键不存在。检查 Sheets(\"名字\") 拼写和数组边界。"
+        },
+        "type_mismatch_vba": {
+          "match": "Run-time error '13'||Type mismatch",
+          "level": "fatal",
+          "explain": "类型不匹配。检查变量声明和赋值，注意 Variant 与具体类型的转换。"
+        },
+        "object_variable_not_set": {
+          "match": "Run-time error '91'||Object variable or With block variable not set",
+          "level": "fatal",
+          "explain": "对象变量没有 Set 初始化。声明后要用 Set obj = ... 赋值。"
+        },
+        "no_property_or_method": {
+          "match": "Run-time error '438'||Object doesn't support this property or method",
+          "level": "fatal",
+          "explain": "对象没有这个属性/方法。检查拼写和对象的实际类型，或引用库版本。"
+        },
+        "vba_overflow": {
+          "match": "Run-time error '6'||Overflow",
+          "level": "fatal",
+          "explain": "数值超出类型范围。Integer 上限 32767，改用 Long 或 Double。"
+        },
+        "invalid_procedure_call": {
+          "match": "Run-time error '5'||Invalid procedure call or argument",
+          "level": "fatal",
+          "explain": "过程调用或参数非法。检查函数参数范围和拼写。"
+        },
+        "vba_out_of_memory": {
+          "match": "Run-time error '7'||Out of memory",
+          "level": "fatal",
+          "explain": "内存不足。检查是否有超大数组、对象循环创建未释放。"
+        },
+        "vba_permission_denied": {
+          "match": "Run-time error '70'||Permission denied",
+          "level": "fatal",
+          "explain": "权限不足。文件被占用或需要管理员权限，检查文件属性。"
+        },
+        "path_file_access_error": {
+          "match": "Run-time error '75'||Path/File access error",
+          "level": "fatal",
+          "explain": "路径/文件访问失败。检查路径拼写、文件是否只读或被占用。"
+        },
+        "vba_path_not_found": {
+          "match": "Run-time error '76'||Path not found",
+          "level": "fatal",
+          "explain": "路径不存在。检查目录拼写，需要先 MkDir 创建。"
+        },
+        "vba_file_not_found": {
+          "match": "Run-time error '53'||File not found",
+          "level": "fatal",
+          "explain": "文件找不到。检查路径和当前目录，用 Dir() 先判断存在。"
+        },
+        "input_past_eof": {
+          "match": "Run-time error '62'||Input past end of file",
+          "level": "fatal",
+          "explain": "读到文件末尾还在读。用 EOF() 判断，或检查循环边界。"
+        },
+        "compile_error_vba": {
+          "match": "Compile error",
+          "level": "fatal",
+          "explain": "编译错误。看提示：变量未定义、缺 End If/Sub、语法错误等，逐个修复。"
+        },
+        "byref_mismatch": {
+          "match": "ByRef argument type mismatch",
+          "level": "fatal",
+          "explain": "按引用传参的类型和声明不一致。参数声明成 Variant，或传匹配类型的变量。"
+        },
+        "argument_not_optional": {
+          "match": "Argument not optional",
+          "level": "fatal",
+          "explain": "必填参数没传。对照过程签名补全参数。"
+        },
+        "sub_not_defined": {
+          "match": "Sub or Function not defined",
+          "level": "fatal",
+          "explain": "调用的过程不存在。检查名字拼写，或所在模块没有被引用。"
+        },
+        "invalid_outside_procedure": {
+          "match": "Invalid outside procedure",
+          "level": "fatal",
+          "explain": "语句写在了过程外面。可执行语句要放到 Sub/Function 里。"
+        },
+        "project_or_library_missing": {
+          "match": "Can't find project or library",
+          "level": "fatal",
+          "explain": "引用的库缺失。工具-引用里取消丢失项（MISSING）并重新勾选正确版本。"
+        },
+        "macro_not_found": {
+          "match": "The macro cannot be found||Cannot run the macro",
+          "level": "fatal",
+          "explain": "找不到要运行的宏。检查宏名、所在工作簿和安全设置。"
+        },
+        "file_corrupted_vba": {
+          "match": "cannot be accessed. The file may be corrupted",
+          "level": "fatal",
+          "explain": "文件损坏或被锁定。用 Excel 打开修复，或关闭占用它的进程。"
+        },
+        "ole_waiting": {
+          "match": "waiting for another application to complete an OLE action",
+          "level": "warning",
+          "explain": "OLE 调用等待对方响应。对方（如 Word）可能弹了对话框，切过去处理。"
+        },
+        "out_of_stack_space": {
+          "match": "Out of stack space",
+          "level": "fatal",
+          "explain": "栈溢出，通常是无限递归。检查递归终止条件。"
+        },
+        "automation_error": {
+          "match": "Automation error||The object invoked has disconnected from its clients",
+          "level": "fatal",
+          "explain": "COM 自动化失败。对象连接断开，常见于早期关闭了 Office 应用或权限不足。"
+        },
+        "format_extension_mismatch": {
+          "match": "format and extension of",
+          "level": "warning",
+          "explain": "文件内容与扩展名不符。另存为正确格式，或调整打开方式。"
+        },
+        "external_table_format": {
+          "match": "External table is not in the expected format",
+          "level": "fatal",
+          "explain": "导入的外部表格式不对。检查文件真实格式，xlsx 要用不同的连接串。"
+        },
+        "activex_cannot_create": {
+          "match": "ActiveX component can't create object||File name or class name not found during Automation",
+          "level": "fatal",
+          "explain": "无法创建 COM 对象。组件未注册（regsvr32）或 32/64 位不匹配。"
+        },
+        "vba_division_by_zero": {
+          "match": "Run-time error '11'||Division by zero",
+          "level": "fatal",
+          "explain": "除以零。除法前检查除数。"
+        },
+        "invalid_use_of_null": {
+          "match": "Run-time error '94'||Invalid use of Null",
+          "level": "fatal",
+          "explain": "把 Null 赋给了不接受它的类型。先 IsNull 判断，或用 Nz()/默认值。"
+        },
+        "invalid_property_array_index": {
+          "match": "Run-time error '381'||Invalid property array index",
+          "level": "fatal",
+          "explain": "属性数组下标越界。检查索引范围。"
         }
       }
     }

@@ -109,6 +109,10 @@ int main(int argc, char** argv) {
         {"fatal: Please tell me who you are", "Git"},
         {"Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?", "Docker"},
         {"docker: Error response from daemon: driver failed programming external connectivity on endpoint web: Bind for 0.0.0.0:8080 failed", "Docker"},
+        {"Get-ItemPropertyValue : The term 'Get-ItemPropertyValue' is not recognized as the name of a cmdlet", "PowerShell"},
+        {"File C:\\script.ps1 cannot be loaded because running scripts is disabled on this system.", "PowerShell"},
+        {"Run-time error '1004': Application-defined or object-defined error", "VBA"},
+        {"Run-time error '91': Object variable or With block variable not set", "VBA"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

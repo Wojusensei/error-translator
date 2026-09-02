@@ -1986,5 +1986,66 @@ Docker|declared as external, but could not be found|fatal|声明为 external 的
 Docker|unable to configure the Docker daemon with file|fatal|daemon.json 解析失败。检查 JSON 语法和字段名。
 Docker|Cannot perform an interactive login|fatal|非交互终端无法登录。改用 docker login -u -p 或配置凭据存储。
 Docker|logging driver does not support reading|error|当前日志驱动不支持 docker logs。查看对应的外部日志存储。
-Docker|is not recognized|fatal|系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。
+Docker|is not a docker command|fatal|系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。
 Docker|Encountered errors while bringing up the project|fatal|compose 启动时有服务失败。往上看每个服务的具体报错。
+PowerShell|is not recognized as the name of a cmdlet||is not recognized as an internal or external command|error|找不到这个命令。检查拼写，确认模块已导入、程序在 PATH 里。
+PowerShell|running scripts is disabled on this system||is not digitally signed|fatal|执行策略禁止运行脚本。Set-ExecutionPolicy RemoteSigned -Scope CurrentUser，或对该文件 Unblock-File。
+PowerShell|Cannot bind argument to parameter|error|传给参数的值是 null。上游命令没返回数据，先判空再传。
+PowerShell|A parameter cannot be found that matches parameter name|error|这个 cmdlet 没有该参数。Get-Help 命令名 看支持的参数。
+PowerShell|Cannot validate argument on parameter|error|参数值没通过校验。看提示的 Validate 校验条件，修正取值。
+PowerShell|missing the terminator|fatal|字符串/引号没有闭合。检查单双引号和 here-string 的结尾标记。
+PowerShell|Unexpected token|fatal|语法错误，出现了不该出现的符号。检查管道符、括号和引号配对。
+PowerShell|Missing closing '}'||Missing ')' in method call||Missing expression after|fatal|缺少闭合括号或表达式不完整。配对检查代码块。
+PowerShell|Cannot convert the|error|类型转换失败。看期望类型和实际值，必要时用 [类型] 强转。
+PowerShell|Cannot index into a null array||array index evaluated to null|error|对 null 数组取下标。先确认数组已创建、有元素。
+PowerShell|cannot call a method on a null-valued expression|error|对 null 调方法。上游返回了空，先判空再调用。
+PowerShell|cannot be found on this object|error|对象上没有该属性。检查属性名和对象的实际类型（Get-Member）。
+PowerShell|was not loaded||could not be loaded|error|模块加载失败。检查模块路径、版本和执行策略，Import-Module 重试。
+PowerShell|WinRM cannot process the request||Connecting to remote server|error|远程 PowerShell 连接失败。检查 WinRM 服务、TrustedHosts 和防火墙。
+PowerShell|Cannot find drive||does not exist for this drive|error|盘符/驱动器不存在。检查路径盘符和 PSDrive。
+PowerShell|Method invocation failed because|error|.NET 方法调用失败。看 caused by 的底层异常定位。
+PowerShell|Exception calling|error|调用 .NET 方法时抛了异常。看括号里的异常消息定位。
+PowerShell|Cannot find path|error|路径不存在。检查拼写和工作目录（Get-Location）。
+PowerShell|Parameter set cannot be resolved|error|传入的参数组合匹配不到任何参数集。Get-Help 查看各参数集的要求。
+PowerShell|A positional parameter cannot be found that accepts argument|error|多出来的位置参数没地方放。检查参数顺序，或该参数需要命名传递。
+PowerShell|is specified more than once|error|同一个参数传了两次。检查是否有脚本拼接重复了参数。
+PowerShell|missing mandatory parameters|error|必填参数没给。看提示的参数名补上。
+PowerShell|Cannot overwrite variable|error|该变量受保护或只读。换变量名，或用 Remove-Variable 后重建。
+PowerShell|Exception setting|error|设置属性失败。检查属性类型和对象状态。
+PowerShell|The system cannot find the file specified||The system cannot find the path specified|error|系统找不到文件/路径。检查外部命令路径和环境变量。
+PowerShell|The network path was not found|error|网络路径不通。检查 UNC 路径、共享权限和目标主机。
+PowerShell|Unable to find type||Make sure that the assembly containing this type is loaded|error|找不到 .NET 类型。Add-Type -AssemblyName 加载程序集，或检查类型全名。
+PowerShell|Cannot process argument transformation|error|参数转换器处理失败。检查传入值的类型和转换逻辑。
+PowerShell|Cannot find an overload|error|没有匹配参数个数/类型的重载。检查传参类型。
+PowerShell|The remote server returned an error||The operation has timed out|error|远程请求失败或超时。看状态码：404 地址错、401 认证、500 服务端问题。
+VBA|Run-time error '424'||Object required|fatal|需要对象却拿到了别的值。检查 Set 是否漏写，或对象变量是否初始化。
+VBA|Run-time error '1004'||Application-defined or object-defined error||of object '_Global' failed||Unable to get the|fatal|Excel/Office 内部操作失败。常见为区域引用错误、工作表不存在或宏安全限制，检查 Range 地址和表名。
+VBA|Run-time error '9'||Subscript out of range|fatal|下标越界：工作表名/数组下标/集合键不存在。检查 Sheets("名字") 拼写和数组边界。
+VBA|Run-time error '13'||Type mismatch|fatal|类型不匹配。检查变量声明和赋值，注意 Variant 与具体类型的转换。
+VBA|Run-time error '91'||Object variable or With block variable not set|fatal|对象变量没有 Set 初始化。声明后要用 Set obj = ... 赋值。
+VBA|Run-time error '438'||Object doesn't support this property or method|fatal|对象没有这个属性/方法。检查拼写和对象的实际类型，或引用库版本。
+VBA|Run-time error '6'||Overflow|fatal|数值超出类型范围。Integer 上限 32767，改用 Long 或 Double。
+VBA|Run-time error '5'||Invalid procedure call or argument|fatal|过程调用或参数非法。检查函数参数范围和拼写。
+VBA|Run-time error '7'||Out of memory|fatal|内存不足。检查是否有超大数组、对象循环创建未释放。
+VBA|Run-time error '70'||Permission denied|fatal|权限不足。文件被占用或需要管理员权限，检查文件属性。
+VBA|Run-time error '75'||Path/File access error|fatal|路径/文件访问失败。检查路径拼写、文件是否只读或被占用。
+VBA|Run-time error '76'||Path not found|fatal|路径不存在。检查目录拼写，需要先 MkDir 创建。
+VBA|Run-time error '53'||File not found|fatal|文件找不到。检查路径和当前目录，用 Dir() 先判断存在。
+VBA|Run-time error '62'||Input past end of file|fatal|读到文件末尾还在读。用 EOF() 判断，或检查循环边界。
+VBA|Compile error|fatal|编译错误。看提示：变量未定义、缺 End If/Sub、语法错误等，逐个修复。
+VBA|ByRef argument type mismatch|fatal|按引用传参的类型和声明不一致。参数声明成 Variant，或传匹配类型的变量。
+VBA|Argument not optional|fatal|必填参数没传。对照过程签名补全参数。
+VBA|Sub or Function not defined|fatal|调用的过程不存在。检查名字拼写，或所在模块没有被引用。
+VBA|Invalid outside procedure|fatal|语句写在了过程外面。可执行语句要放到 Sub/Function 里。
+VBA|Can't find project or library|fatal|引用的库缺失。工具-引用里取消丢失项（MISSING）并重新勾选正确版本。
+VBA|The macro cannot be found||Cannot run the macro|fatal|找不到要运行的宏。检查宏名、所在工作簿和安全设置。
+VBA|cannot be accessed. The file may be corrupted|fatal|文件损坏或被锁定。用 Excel 打开修复，或关闭占用它的进程。
+VBA|waiting for another application to complete an OLE action|warning|OLE 调用等待对方响应。对方（如 Word）可能弹了对话框，切过去处理。
+VBA|Out of stack space|fatal|栈溢出，通常是无限递归。检查递归终止条件。
+VBA|Automation error||The object invoked has disconnected from its clients|fatal|COM 自动化失败。对象连接断开，常见于早期关闭了 Office 应用或权限不足。
+VBA|format and extension of|warning|文件内容与扩展名不符。另存为正确格式，或调整打开方式。
+VBA|External table is not in the expected format|fatal|导入的外部表格式不对。检查文件真实格式，xlsx 要用不同的连接串。
+VBA|ActiveX component can't create object||File name or class name not found during Automation|fatal|无法创建 COM 对象。组件未注册（regsvr32）或 32/64 位不匹配。
+VBA|Run-time error '11'||Division by zero|fatal|除以零。除法前检查除数。
+VBA|Run-time error '94'||Invalid use of Null|fatal|把 Null 赋给了不接受它的类型。先 IsNull 判断，或用 Nz()/默认值。
+VBA|Run-time error '381'||Invalid property array index|fatal|属性数组下标越界。检查索引范围。

@@ -54,6 +54,8 @@
 | Elixir      | 41 | `no match of right hand side`、`KeyError`、协议未实现、GenServer/mix 报错       |
 | Git         | 59 | `not a git repository`、推送被拒、冲突/合并中断、index.lock、身份未配置          |
 | Docker      | 61 | `Cannot connect to the Docker daemon`、端口占用、构建失败、compose/WSL2 报错     |
+| PowerShell  | 30 | 执行策略禁用脚本、`is not recognized`、参数绑定、远程 WinRM、.NET 方法调用       |
+| VBA         | 31 | `Run-time error '1004'`、`Object required`、下标越界、类型不匹配、Automation 错误 |
 
 ---
 
