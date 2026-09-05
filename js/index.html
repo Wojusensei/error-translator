@@ -454,6 +454,11 @@ html[data-theme="light"] .kbd{box-shadow:0 1px 0 rgba(0,0,0,.06)}
 .side-panel-body{padding:13px 13px 10px;overflow-y:auto;max-height:420px}
 .side-title{font-size:11px;font-weight:700;color:var(--text-2)}
 .side-count{font-size:10.5px;font-family:var(--mono);color:var(--muted)}
+.category-select{
+  height:24px;max-width:110px;padding:0 4px;
+  border:1px solid var(--border);border-radius:5px;
+  background:var(--panel);color:var(--text-2);font-size:11px;
+}
 .lang-list{display:flex;flex-direction:column;gap:3px}
 .lang-row{
   display:grid;
@@ -667,6 +672,7 @@ html[data-theme="light"] .kbd{box-shadow:0 1px 0 rgba(0,0,0,.06)}
           </div>
           <div class="found-side">
             <span class="level-badge" id="resLevel"></span>
+            <span class="source-tag" id="resCategory"></span>
             <span class="source-tag" id="resSource"></span>
           </div>
         </div>
@@ -710,6 +716,7 @@ html[data-theme="light"] .kbd{box-shadow:0 1px 0 rgba(0,0,0,.06)}
     <div class="panel side-panel">
       <div class="panel-head">
         <span class="side-title">规则库</span>
+        <select id="categoryFilter" class="category-select" title="按类别筛选规则库"></select>
         <span class="side-count" id="ruleTotal">--</span>
       </div>
       <div class="side-panel-body" id="langList"></div>
@@ -1047,6 +1054,7 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     lv.textContent = (rule.level || "error").toUpperCase();
     $("resExplain").textContent = rule.explain;
     $("resSource").textContent = source;
+    $("resCategory").textContent = rule.category || "";
 
     const hit = hitToken ? hitLineInfo(text, hitToken) : null;
     $("hitBlock").hidden = !hit;
@@ -1125,11 +1133,28 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     setState("notfound");
   }
 
+  let activeCategory = "";
+
   function renderLangList() {
-    const max = Math.max(...LANGS.map(l => l.count));
-    const list = $("langList");
-    list.textContent = "";
-    for (const lang of LANGS) {
+    const counts = new Map();
+    for (const r of RULES) {
+      if (activeCategory && r.category !== activeCategory) continue;
+      counts.set(r.lang, (counts.get(r.lang) || 0) + 1);
+    }
+    const list = Array.from(counts, ([name, count]) => ({name, count}));
+    $("ruleTotal").textContent = list.reduce((s, l) => s + l.count, 0) + " 条";
+    if (!list.length) {
+      $("langList").textContent = "";
+      const empty = document.createElement("div");
+      empty.className = "history-empty";
+      empty.textContent = "该类别暂无规则";
+      $("langList").appendChild(empty);
+      return;
+    }
+    const max = Math.max(...list.map(l => l.count));
+    const listEl = $("langList");
+    listEl.textContent = "";
+    for (const lang of list) {
       const row = document.createElement("button");
       row.className = "lang-row";
       const name = document.createElement("span");
@@ -1153,8 +1178,29 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
           analyze();
         }
       });
-      list.appendChild(row);
+      listEl.appendChild(row);
     }
+  }
+
+  function renderCategoryFilter() {
+    const cats = Array.from(new Set(RULES.map(r => r.category || "运行时"))).sort();
+    const sel = $("categoryFilter");
+    sel.textContent = "";
+    const all = document.createElement("option");
+    all.value = "";
+    all.textContent = "全部类别";
+    sel.appendChild(all);
+    for (const c of cats) {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      sel.appendChild(opt);
+    }
+    sel.addEventListener("change", () => {
+      activeCategory = sel.value;
+      renderCategoryFilter();
+    renderLangList();
+    });
   }
 
   function loadHistory() {
