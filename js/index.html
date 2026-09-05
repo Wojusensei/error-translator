@@ -678,6 +678,10 @@ html[data-theme="light"] .kbd{box-shadow:0 1px 0 rgba(0,0,0,.06)}
           <div class="block-label">命中位置 <b id="hitLineNo"></b></div>
           <pre class="hit-code" id="resHit"></pre>
         </div>
+        <div class="found-block" id="altBlock" hidden>
+          <div class="block-label">其他可能</div>
+          <div class="chips chips-btn" id="resAlternatives"></div>
+        </div>
         <div class="found-block" id="relatedBlock">
           <div class="block-label">同语言相关报错</div>
           <div class="chips chips-btn" id="resRelated"></div>
@@ -847,14 +851,46 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     return null;
   }
 
-  function matchRules(text, rules) {
+  function rankMatches(text, target, subset, n) {
+    const hits = [];
+    for (const r of subset) {
+      let bestPos = Infinity;
+      for (const token of r.match.split("||")) {
+        const pos = findToken(target, token);
+        if (pos && pos.start < bestPos) bestPos = pos.start;
+      }
+      if (bestPos !== Infinity) hits.push([bestPos, r]);
+    }
+    let ranked;
+    if (hits.length) {
+      hits.sort((a, b) => a[0] - b[0]);
+      ranked = hits.map(h => h[1]);
+    } else {
+      ranked = subset.filter(r => r.match.split("||").some(t => findToken(text, t)));
+    }
+    return ranked.slice(0, n);
+  }
+
+  function pickCandidates(text, rules) {
     const target = extractKeywords(text);
     const lang = detectLanguage(text);
     if (lang) {
-      const scoped = matchIn(text, target, rules.filter(r => r.lang === lang));
-      if (scoped) return scoped;
+      const ranked = rankMatches(text, target, rules.filter(r => r.lang === lang), 3);
+      if (ranked.length) return ranked;
     }
-    return matchIn(text, target, rules);
+    return rankMatches(text, target, rules, 3);
+  }
+
+  function matchRules(text, rules) {
+    const ranked = pickCandidates(text, rules);
+    if (!ranked.length) return null;
+    const target = extractKeywords(text);
+    const primary = ranked[0];
+    let hitToken = null;
+    for (const token of primary.match.split("||")) {
+      if (findToken(target, token) || findToken(text, token)) { hitToken = token; break; }
+    }
+    return {rule: primary, hitToken, alternatives: ranked.slice(1)};
   }
 
   function plainToken(token) {
@@ -945,7 +981,8 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
       lang: langName,
       match: data.match || "",
       level: data.level || "error",
-      explain: data.explain || ""
+      explain: data.explain || "",
+      alternatives: (data.alternatives || []).map(a => ({rule: a}))
     };
   }
 
@@ -974,7 +1011,7 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     if (!result) {
       const m = matchRules(text, RULES);
       if (m) {
-        result = {rule: m.rule, hitToken: m.hitToken};
+        result = {rule: m.rule, hitToken: m.hitToken, alternatives: m.alternatives};
         source = "LOCAL";
       }
     }
@@ -984,16 +1021,16 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     if (elapsed < minWait) await sleep(minWait - elapsed);
 
     if (result && result.rule) {
-      renderFound(result.rule, result.hitToken, text, source, elapsed);
+      renderFound(result.rule, result.hitToken, text, source, elapsed, result.alternatives || []);
     } else if (result) {
-      renderFound(result, "", text, source, elapsed);
+      renderFound(result, "", text, source, elapsed, result.alternatives || []);
     } else {
       renderNotFound(text, elapsed);
     }
     addHistory(text, result ? result.rule || result : null);
   }
 
-  function renderFound(rule, hitToken, text, source, elapsed) {
+  function renderFound(rule, hitToken, text, source, elapsed, alternatives) {
     $("resLang").textContent = rule.lang;
     const chips = $("resChips");
     chips.textContent = "";
@@ -1044,6 +1081,23 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
       if (count >= 4) break;
     }
     $("relatedBlock").hidden = count === 0;
+
+    const alts = alternatives || [];
+    const altBox = $("resAlternatives");
+    altBox.textContent = "";
+    alts.forEach(a => {
+      const alt = a.rule || a;
+      const b = document.createElement("button");
+      b.className = "chip-btn";
+      const label = (alt.match || "").split("||").map(plainToken).filter(Boolean)[0] || alt.match || "";
+      b.textContent = (alt.lang || "?") + " · " + (label.length > 30 ? label.slice(0, 30) + "…" : label);
+      b.title = alt.explain || "";
+      b.addEventListener("click", () => {
+        renderFound(alt, null, text, source, elapsed, alts.filter(x => (x.rule || x) !== alt));
+      });
+      altBox.appendChild(b);
+    });
+    $("altBlock").hidden = alts.length === 0;
 
     $("resMeta").textContent = "耗时 " + elapsed + " ms · " + (source === "SERVER" ? "服务端匹配" : "本地引擎");
     setState("found");
