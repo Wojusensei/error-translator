@@ -2274,3 +2274,12 @@ CI/CD|must contain at least one job with no 'needs' dependency|fatal|所有 job 
 CI/CD|Invalid cron expression|fatal|定时触发的 cron 写法不对。注意 GHA 用的是标准五段 cron，且以 UTC 计时。|运行时
 CI/CD|No event triggers defined in|warning|workflow 没有定义 on 触发器，永远不会运行。补上 push/pull_request/schedule 等。|运行时
 CI/CD|Every step must have a `uses` or `run` key|fatal|每个 step 必须有 uses 或 run。检查漏写的步骤。|运行时
+CI/CD|No such DSL method|fatal|Jenkinsfile 里没有这个 DSL 方法。检查插件是否安装、是否漏了封装步骤（如 withCredentials）。|文件/IO
+CI/CD|Required context class|fatal|声明的上下文类型不对。检查 currentBuild/node 等对象在当前作用域是否可用。|依赖/环境
+CI/CD|Failed to connect to repository|fatal|Jenkins 连不上代码仓库。检查凭据、SSH key 和仓库地址（Jenkins 系统配置里测试连接）。|运行时
+CI/CD|Scripts not permitted to use method|fatal|被沙箱拦截的方法。在 In-process Script Approval 里批准，或改用受支持的写法。|运行时
+CI/CD|hudson.AbortException|fatal|流水线主动中止。看上面一行：常见为 sh 步骤返回非零或 archive 找不到文件。|运行时
+CI/CD|This GitLab CI configuration is invalid|fatal|GitLab CI 配置校验失败。看冒号后的具体原因，或用 CI Lint 工具检查 .gitlab-ci.yml。|配置
+CI/CD|config contains unknown keys|fatal|job 里用错了字段名。对照 GitLab 关键字文档，检查拼写。|运行时
+CI/CD|doesn't have any runners online||no runners online|error|没有可用 runner。检查 runner 是否注册在线、tag 是否与 job 匹配。|运行时
+CI/CD|jobs config should be a hash of hashes|fatal|.gitlab-ci.yml 的 jobs 段结构不对。每个 job 名下必须是对象，不能直接写字符串。|运行时

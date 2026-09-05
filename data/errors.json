@@ -11538,6 +11538,51 @@
           "match": "Every step must have a `uses` or `run` key",
           "level": "fatal",
           "explain": "每个 step 必须有 uses 或 run。检查漏写的步骤。"
+        },
+        "jenkins_no_dsl_method": {
+          "match": "No such DSL method",
+          "level": "fatal",
+          "explain": "Jenkinsfile 里没有这个 DSL 方法。检查插件是否安装、是否漏了封装步骤（如 withCredentials）。"
+        },
+        "jenkins_required_context": {
+          "match": "Required context class",
+          "level": "fatal",
+          "explain": "声明的上下文类型不对。检查 currentBuild/node 等对象在当前作用域是否可用。"
+        },
+        "jenkins_repo_connect": {
+          "match": "Failed to connect to repository",
+          "level": "fatal",
+          "explain": "Jenkins 连不上代码仓库。检查凭据、SSH key 和仓库地址（Jenkins 系统配置里测试连接）。"
+        },
+        "jenkins_script_sandbox": {
+          "match": "Scripts not permitted to use method",
+          "level": "fatal",
+          "explain": "被沙箱拦截的方法。在 In-process Script Approval 里批准，或改用受支持的写法。"
+        },
+        "jenkins_abort_exception": {
+          "match": "hudson.AbortException",
+          "level": "fatal",
+          "explain": "流水线主动中止。看上面一行：常见为 sh 步骤返回非零或 archive 找不到文件。"
+        },
+        "gitlab_ci_invalid": {
+          "match": "This GitLab CI configuration is invalid",
+          "level": "fatal",
+          "explain": "GitLab CI 配置校验失败。看冒号后的具体原因，或用 CI Lint 工具检查 .gitlab-ci.yml。"
+        },
+        "gitlab_unknown_keys": {
+          "match": "config contains unknown keys",
+          "level": "fatal",
+          "explain": "job 里用错了字段名。对照 GitLab 关键字文档，检查拼写。"
+        },
+        "gitlab_no_runner": {
+          "match": "doesn't have any runners online||no runners online",
+          "level": "error",
+          "explain": "没有可用 runner。检查 runner 是否注册在线、tag 是否与 job 匹配。"
+        },
+        "gitlab_needs_script": {
+          "match": "jobs config should be a hash of hashes",
+          "level": "fatal",
+          "explain": ".gitlab-ci.yml 的 jobs 段结构不对。每个 job 名下必须是对象，不能直接写字符串。"
         }
       }
     }
