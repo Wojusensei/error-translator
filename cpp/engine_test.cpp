@@ -133,6 +133,17 @@ int main(int argc, char** argv) {
                std::string("input [") + t[0] + "] expected lang " + t[1] + " got: " + json.substr(0, 80));
     }
 
+    // top-3 候选：alternatives 按位置排序给出，主结果不变
+    {
+        std::string json = translate("undefined reference to `foo'", rules);
+        expect(json.find("\"alternatives\"") != std::string::npos, "alternatives present for multi-lang hit");
+        expect(lang_is(json, "C++"), "primary unchanged with alternatives");
+    }
+    {
+        std::string json = translate("ImproperlyConfigured: The SECRET_KEY setting must not be empty.", rules);
+        expect(json.find("\"alternatives\"") == std::string::npos, "no alternatives when single hit");
+    }
+
     // 没有匹配时要返回 found:false，而不是崩溃或乱给结果
     expect(translate("hello world this is not an error", rules) == "{\"found\":false}", "no-match returns found:false");
 

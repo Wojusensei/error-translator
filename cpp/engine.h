@@ -8,6 +8,7 @@
 #ifndef ERROR_TRANSLATOR_ENGINE_H
 #define ERROR_TRANSLATOR_ENGINE_H
 
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -173,21 +174,40 @@ const Rule* match_in(const std::string& input, const std::string& target, const 
     return best;
 }
 
-std::string rule_to_json(const Rule* r) {
-    return "{\"found\":true,\"lang\":\"" + json_escape(r->lang) +
-           "\",\"match\":\"" + json_escape(r->match) +
-           "\",\"level\":\"" + json_escape(r->level) +
-           "\",\"explain\":\"" + json_escape(r->explain) + "\"}";
+// 在规则子集里收集所有命中并排序（按关键词最早位置，其次规则顺序），返回前 top_n 个。
+// 空集时与 match_in 的两轮语义一致：第一轮无命中则按第二轮顺序取前 top_n。
+std::vector<const Rule*> rank_matches(const std::string& input, const std::string& target,
+                                      const std::vector<const Rule*>& subset, size_t top_n) {
+    std::vector<std::pair<size_t, const Rule*>> hits;
+    for (const Rule* r : subset) {
+        size_t end = 0;
+        size_t p = rule_hit(*r, target, end);
+        if (p != std::string::npos) hits.push_back({p, r});
+    }
+    std::vector<const Rule*> ranked;
+    if (!hits.empty()) {
+        std::sort(hits.begin(), hits.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
+        for (auto& h : hits) ranked.push_back(h.second);
+    } else {
+        for (const Rule* r : subset) {
+            size_t end = 0;
+            if (rule_hit(*r, input, end) != std::string::npos) ranked.push_back(r);
+        }
+    }
+    if (ranked.size() > top_n) ranked.resize(top_n);
+    return ranked;
 }
 
-std::string translate(const std::string& input, const std::vector<Rule>& rules) {
-    std::string target = extract_keywords(input);
+std::string rule_json_fields(const Rule* r) {
+    return "\"lang\":\"" + json_escape(r->lang) +
+           "\",\"match\":\"" + json_escape(r->match) +
+           "\",\"level\":\"" + json_escape(r->level) +
+           "\",\"explain\":\"" + json_escape(r->explain) + "\"";
+}
 
-    std::vector<const Rule*> all;
-    all.reserve(rules.size());
-    for (const Rule& r : rules) all.push_back(&r);
-
-    // 先按识别出的语言在子集内匹配，命中才用；否则回退全库，行为与旧版一致
+// 取排序后的候选：识别到语言时优先在该语言的规则里排，无命中再全库排
+std::vector<const Rule*> pick_candidates(const std::string& input, const std::string& target,
+                                         const std::vector<const Rule*>& all) {
     std::string lang = detect_language(input);
     if (!lang.empty()) {
         std::vector<const Rule*> subset;
@@ -195,14 +215,33 @@ std::string translate(const std::string& input, const std::vector<Rule>& rules) 
             if (r->lang == lang) subset.push_back(r);
         }
         if (!subset.empty()) {
-            const Rule* scoped = match_in(input, target, subset);
-            if (scoped) return rule_to_json(scoped);
+            std::vector<const Rule*> ranked = rank_matches(input, target, subset, 3);
+            if (!ranked.empty()) return ranked;
         }
     }
+    return rank_matches(input, target, all, 3);
+}
 
-    const Rule* best = match_in(input, target, all);
-    if (!best) return "{\"found\":false}";
-    return rule_to_json(best);
+// 主结果语义与旧版完全一致（候选第一名），另附最多两个 alternatives
+std::string translate(const std::string& input, const std::vector<Rule>& rules) {
+    std::string target = extract_keywords(input);
+    std::vector<const Rule*> all;
+    all.reserve(rules.size());
+    for (const Rule& r : rules) all.push_back(&r);
+
+    std::vector<const Rule*> ranked = pick_candidates(input, target, all);
+    if (ranked.empty()) return "{\"found\":false}";
+
+    std::string out = "{\"found\":true," + rule_json_fields(ranked[0]);
+    if (ranked.size() > 1) {
+        out += ",\"alternatives\":[";
+        for (size_t i = 1; i < ranked.size(); i++) {
+            if (i > 1) out += ",";
+            out += "{" + rule_json_fields(ranked[i]) + "}";
+        }
+        out += "]";
+    }
+    return out + "}";
 }
 
 // 拼 JSON 响应前必须转义，否则解释里带引号/反斜杠时前端会解析失败
