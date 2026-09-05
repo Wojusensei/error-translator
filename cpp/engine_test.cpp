@@ -121,6 +121,11 @@ int main(int argc, char** argv) {
         {"Exception has occurred: heap-buffer-overflow on address 0x60200000eff1", "C++"},
         {"java.lang.IllegalStateException: Invalid bound statement (not found): com.foo.UserMapper.select", "Java"},
         {"System.InvalidOperationException: The JSON value could not be converted to System.Int32", "C#"},
+        {"Unhandled exception. System.IO.FileNotFoundException: Could not load file 'x'.", "C#"},
+        {"error[E0382]: use of moved value", "Rust"},
+        {"e: file.kt:3:1 Unresolved reference: foo", "Kotlin"},
+        {"Traceback (most recent call last):\n  File \"x.py\", line 1, in <module>\nKeyError: 'k'", "Python"},
+        {"panic: runtime error: index out of range [5] with length 3", "Go"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

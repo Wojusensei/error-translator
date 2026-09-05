@@ -94,6 +94,39 @@ bool find_token(const std::string& text, const std::string& token, size_t& start
     return true;
 }
 
+// 语言自动识别：按结构性特征判断报错属于哪种语言，判不出返回空串（回退全库匹配）。
+// 判出的语言名必须与 errors.txt 里的语言字段一致。
+std::string detect_language(const std::string& input) {
+    if (input.find("Traceback (most recent call last)") != std::string::npos) return "Python";
+    if (input.find("error[E") != std::string::npos) return "Rust";
+    if (input.find("error TS") != std::string::npos) return "TypeScript";
+    if (input.find("error CS") != std::string::npos || input.find("System.") != std::string::npos) return "C#";
+    if (input.find(".kt:") != std::string::npos ||
+        input.find("Unresolved reference") != std::string::npos ||
+        input.find("lateinit") != std::string::npos) return "Kotlin";
+    if (input.find("MissingMethodException") != std::string::npos ||
+        input.find("No such property") != std::string::npos ||
+        input.find("Cannot get property") != std::string::npos) return "Groovy";
+    if (input.find("java.lang.") != std::string::npos ||
+        input.find("Exception in thread \"main\"") != std::string::npos ||
+        input.find("Caused by: ") != std::string::npos) return "Java";
+    if (input.find("panic:") != std::string::npos || input.find("goroutine ") != std::string::npos) return "Go";
+    if (input.find("Fatal error: Uncaught") != std::string::npos) return "PHP";
+    if (input.find("Run-time error '") != std::string::npos) return "VBA";
+    if (input.find("SQLSTATE[") != std::string::npos || input.find("ORA-") != std::string::npos) return "SQL";
+    if (input.find("RenderFlex") != std::string::npos ||
+        input.find("Null check operator") != std::string::npos) return "Dart/Flutter";
+    if (input.find("zsh:") != std::string::npos ||
+        input.find("bash: line") != std::string::npos ||
+        input.find("sh: ") != std::string::npos) return "Shell";
+    if (input.find("\n    at ") != std::string::npos) {
+        if (input.find(".ts") != std::string::npos || input.find(".tsx") != std::string::npos) return "TypeScript";
+        if (input.find(".js") != std::string::npos || input.find(".mjs") != std::string::npos ||
+            input.find("node:") != std::string::npos) return "JavaScript";
+    }
+    return "";
+}
+
 // 遍历一条规则的所有别名，返回命中的最早位置，没命中返回 npos
 size_t rule_hit(const Rule& r, const std::string& text, size_t& end_out) {
     const std::string& matches = r.match;
@@ -115,35 +148,61 @@ size_t rule_hit(const Rule& r, const std::string& text, size_t& end_out) {
     return best;
 }
 
-// 两轮匹配：先在提取出的关键词里找（命中位置最早者优先），整段找不到再退回全文匹配
-std::string translate(const std::string& input, const std::vector<Rule>& rules) {
-    std::string target = extract_keywords(input);
-
+// 两轮匹配核心：先在提取出的关键词里找（命中位置最早者优先），整段找不到再退回全文匹配。
+// 输入是规则子集，全量匹配时传全部规则。
+const Rule* match_in(const std::string& input, const std::string& target, const std::vector<const Rule*>& subset) {
     const Rule* best = nullptr;
     size_t bp = std::string::npos;
-    for (const Rule& r : rules) {
+    for (const Rule* r : subset) {
         size_t end = 0;
-        size_t p = rule_hit(r, target, end);
+        size_t p = rule_hit(*r, target, end);
         if (p != std::string::npos && (bp == std::string::npos || p < bp)) {
             bp = p;
-            best = &r;
+            best = r;
         }
     }
     if (!best) {
-        for (const Rule& r : rules) {
+        for (const Rule* r : subset) {
             size_t end = 0;
-            if (rule_hit(r, input, end) != std::string::npos) {
-                best = &r;
+            if (rule_hit(*r, input, end) != std::string::npos) {
+                best = r;
                 break;
             }
         }
     }
+    return best;
+}
 
+std::string rule_to_json(const Rule* r) {
+    return "{\"found\":true,\"lang\":\"" + json_escape(r->lang) +
+           "\",\"match\":\"" + json_escape(r->match) +
+           "\",\"level\":\"" + json_escape(r->level) +
+           "\",\"explain\":\"" + json_escape(r->explain) + "\"}";
+}
+
+std::string translate(const std::string& input, const std::vector<Rule>& rules) {
+    std::string target = extract_keywords(input);
+
+    std::vector<const Rule*> all;
+    all.reserve(rules.size());
+    for (const Rule& r : rules) all.push_back(&r);
+
+    // 先按识别出的语言在子集内匹配，命中才用；否则回退全库，行为与旧版一致
+    std::string lang = detect_language(input);
+    if (!lang.empty()) {
+        std::vector<const Rule*> subset;
+        for (const Rule* r : all) {
+            if (r->lang == lang) subset.push_back(r);
+        }
+        if (!subset.empty()) {
+            const Rule* scoped = match_in(input, target, subset);
+            if (scoped) return rule_to_json(scoped);
+        }
+    }
+
+    const Rule* best = match_in(input, target, all);
     if (!best) return "{\"found\":false}";
-    return "{\"found\":true,\"lang\":\"" + json_escape(best->lang) +
-           "\",\"match\":\"" + json_escape(best->match) +
-           "\",\"level\":\"" + json_escape(best->level) +
-           "\",\"explain\":\"" + json_escape(best->explain) + "\"}";
+    return rule_to_json(best);
 }
 
 // 拼 JSON 响应前必须转义，否则解释里带引号/反斜杠时前端会解析失败
