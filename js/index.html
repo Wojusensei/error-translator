@@ -798,12 +798,32 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     return {start: p, end: p + token.length, token};
   }
 
-  function matchRules(text, rules) {
-    const target = extractKeywords(text);
+  function detectLanguage(text) {
+    if (text.includes("Traceback (most recent call last)")) return "Python";
+    if (text.includes("error[E")) return "Rust";
+    if (text.includes("error TS")) return "TypeScript";
+    if (text.includes("error CS") || /System\./.test(text)) return "C#";
+    if (text.includes(".kt:") || text.includes("Unresolved reference") || text.includes("lateinit")) return "Kotlin";
+    if (text.includes("MissingMethodException") || text.includes("No such property") || text.includes("Cannot get property")) return "Groovy";
+    if (text.includes("java.lang.") || text.includes("Exception in thread \"main\"") || text.includes("Caused by: ")) return "Java";
+    if (text.includes("panic:") || text.includes("goroutine ")) return "Go";
+    if (text.includes("Fatal error: Uncaught")) return "PHP";
+    if (text.includes("Run-time error '")) return "VBA";
+    if (text.includes("SQLSTATE[") || text.includes("ORA-")) return "SQL";
+    if (text.includes("RenderFlex") || text.includes("Null check operator")) return "Dart/Flutter";
+    if (text.includes("zsh:") || text.includes("bash: line") || text.includes("sh: ")) return "Shell";
+    if (/\n    at /.test(text)) {
+      if (text.includes(".ts")) return "TypeScript";
+      if (text.includes(".js") || text.includes(".mjs") || text.includes("node:")) return "JavaScript";
+    }
+    return "";
+  }
+
+  function matchIn(text, target, subset) {
     let best = null;
     let bp = Infinity;
     let hit = null;
-    for (const r of rules) {
+    for (const r of subset) {
       for (const token of r.match.split("||")) {
         const pos = findToken(target, token);
         if (pos && pos.start < bp) {
@@ -816,7 +836,7 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     if (best) {
       return {rule: best, hitToken: hit, fromTarget: true};
     }
-    for (const r of rules) {
+    for (const r of subset) {
       for (const token of r.match.split("||")) {
         const pos = findToken(text, token);
         if (pos) {
@@ -825,6 +845,16 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
       }
     }
     return null;
+  }
+
+  function matchRules(text, rules) {
+    const target = extractKeywords(text);
+    const lang = detectLanguage(text);
+    if (lang) {
+      const scoped = matchIn(text, target, rules.filter(r => r.lang === lang));
+      if (scoped) return scoped;
+    }
+    return matchIn(text, target, rules);
   }
 
   function plainToken(token) {
