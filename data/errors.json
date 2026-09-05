@@ -11665,6 +11665,71 @@
           "explain": "packageManager 字段指定了别的包管理器。用 corepack 按项目要求切换，或改配置。"
         }
       }
+    },
+    "bundlers": {
+      "name": "前端构建",
+      "patterns": {
+        "loader_needed": {
+          "match": "You may need an appropriate loader",
+          "level": "fatal",
+          "explain": "打包器不认识这个文件类型。安装并配置对应 loader（css/图片/TS），或检查 test 匹配规则。"
+        },
+        "module_build_failed": {
+          "match": "Module build failed",
+          "level": "fatal",
+          "explain": "loader 处理文件时失败。看 from 后面的 loader 名和具体报错（常见为 sass/postcss 配置问题）。"
+        },
+        "rollup_unresolved": {
+          "match": "Rollup failed to resolve import||RollupError",
+          "level": "fatal",
+          "explain": "Rollup 解析不了这个导入。检查路径、别名配置和依赖是否安装。"
+        },
+        "rollup_not_exported": {
+          "match": "is not exported by",
+          "level": "fatal",
+          "explain": "从模块导入了一个不存在的导出。检查导出名和 default/named 方式。"
+        },
+        "vite_dev_server_error": {
+          "match": "error when starting dev server",
+          "level": "fatal",
+          "explain": "Vite 启动失败。看 caused by：常见为端口占用、配置错误或插件异常。"
+        },
+        "vite_pretransform": {
+          "match": "Pre-transform error",
+          "level": "error",
+          "explain": "Vite 预转换阶段失败。检查该文件是否存在、路径大小写和插件配置。"
+        },
+        "vue_root_element": {
+          "match": "Component template should contain exactly one root element",
+          "level": "fatal",
+          "explain": "Vue2 模板只能有一个根元素。多个节点包一层 div，或升级 Vue3 使用片段。"
+        },
+        "webpack_error_in": {
+          "match": "ERROR in ./",
+          "level": "fatal",
+          "explain": "webpack 编译报错。看 ERROR 下面指向的模块和具体原因。"
+        },
+        "bundler_public_path": {
+          "match": "Automatic publicPath is not supported",
+          "level": "warning",
+          "explain": "webpack 推不出资源前缀。显式配置 output.publicPath。"
+        },
+        "bundler_postcss_unknown": {
+          "match": "Unknown word",
+          "level": "fatal",
+          "explain": "CSS/PostCSS 解析失败。检查语法、是否漏了对应 loader 或插件。"
+        },
+        "bundler_asset_oversize": {
+          "match": "asset size limit",
+          "level": "warning",
+          "explain": "产物超过体积警告线。做代码分割、按需引入，或确认是否误打包了依赖。"
+        },
+        "bundler_entry_missing": {
+          "match": "Entry module cannot be external",
+          "level": "fatal",
+          "explain": "入口模块不能是外部依赖。检查 rollup/vite 的 input 配置。"
+        }
+      }
     }
   }
 }

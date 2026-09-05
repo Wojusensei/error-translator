@@ -2298,3 +2298,15 @@ CI/CD|jobs config should be a hash of hashes|fatal|.gitlab-ci.yml 的 jobs 段�
 包管理器|Couldn't find package|fatal|yarn 找不到这个包。检查名字拼写，或它是 workspace 内部包（确认 workspaces 配置）。|依赖/环境
 包管理器|Your lockfile needs to be updated|fatal|yarn.lock 与 package.json 不同步。yarn install --update-checksums 或重新安装。|依赖/环境
 包管理器|This project is configured to use|fatal|packageManager 字段指定了别的包管理器。用 corepack 按项目要求切换，或改配置。|依赖/环境
+前端构建|You may need an appropriate loader|fatal|打包器不认识这个文件类型。安装并配置对应 loader（css/图片/TS），或检查 test 匹配规则。|运行时
+前端构建|Module build failed|fatal|loader 处理文件时失败。看 from 后面的 loader 名和具体报错（常见为 sass/postcss 配置问题）。|运行时
+前端构建|Rollup failed to resolve import||RollupError|fatal|Rollup 解析不了这个导入。检查路径、别名配置和依赖是否安装。|运行时
+前端构建|is not exported by|fatal|从模块导入了一个不存在的导出。检查导出名和 default/named 方式。|运行时
+前端构建|error when starting dev server|fatal|Vite 启动失败。看 caused by：常见为端口占用、配置错误或插件异常。|运行时
+前端构建|Pre-transform error|error|Vite 预转换阶段失败。检查该文件是否存在、路径大小写和插件配置。|运行时
+前端构建|Component template should contain exactly one root element|fatal|Vue2 模板只能有一个根元素。多个节点包一层 div，或升级 Vue3 使用片段。|编译/链接
+前端构建|ERROR in ./|fatal|webpack 编译报错。看 ERROR 下面指向的模块和具体原因。|运行时
+前端构建|Automatic publicPath is not supported|warning|webpack 推不出资源前缀。显式配置 output.publicPath。|文件/IO
+前端构建|Unknown word|fatal|CSS/PostCSS 解析失败。检查语法、是否漏了对应 loader 或插件。|运行时
+前端构建|asset size limit|warning|产物超过体积警告线。做代码分割、按需引入，或确认是否误打包了依赖。|运行时
+前端构建|Entry module cannot be external|fatal|入口模块不能是外部依赖。检查 rollup/vite 的 input 配置。|运行时
