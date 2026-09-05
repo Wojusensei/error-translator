@@ -2235,3 +2235,19 @@ Haskell|Multiple declarations|error|同名绑定重复定义。删除多余定�
 Haskell|last statement in a 'do' block must be an expression|fatal|do 块最后一行要是一个表达式（返回值）。检查是不是把绑定写在了最后。|运行时
 Haskell|Expecting one more argument|error|类型还差一个参数才完整。补全类型参数，如 Maybe Int。|运行时
 Haskell|Stack space overflow|fatal|栈溢出，常见于非惰性的大规模 fold。改用严格版本（foldl'）或调整惰性结构。|运行时
+HTTP|400 Bad Request||HTTP/1.1 400||HTTP 400|error|400：请求本身不合法。检查请求体 JSON 格式、必填参数和 Content-Type。|网络
+HTTP|401 Unauthorized||HTTP/1.1 401|error|401：未认证。检查 Authorization 头、令牌是否过期或格式错误（Bearer 前缀）。|网络
+HTTP|403 Forbidden||HTTP/1.1 403|error|403：已认证但无权限。检查账号角色、接口授权范围，或是否触发了风控/IP 封禁。|网络
+HTTP|HTTP/1.1 404||HTTP 404||404 page not found|error|404：资源或路由不存在。检查 URL 拼写、请求方法和路由注册，确认部署版本有这个接口。|网络
+HTTP|405 Method Not Allowed|error|405：该路径不支持这种 HTTP 方法。GET/POST 用错了，对照接口文档。|网络
+HTTP|407 Proxy Authentication Required|error|407：代理需要认证。检查代理服务器的账号密码配置。|网络
+HTTP|408 Request Timeout|error|408：服务器等请求体等超时了。多为网络太慢或客户端提前断开，可重试。|运行时
+HTTP|409 Conflict|error|409：状态冲突。常见为唯一键/版本冲突，先查最新数据再决定覆盖或合并。|运行时
+HTTP|410 Gone|error|410：资源已被永久移除。别再重试这个地址，找新接口。|运行时
+HTTP|412 Precondition Failed|error|412：If-Match/If-None-Match 前置条件不满足。常见于乐观锁版本号过期，刷新数据后重试。|运行时
+HTTP|413 Payload Too Large||413 Request Entity Too Large|error|413：请求体超过大小限制。压缩内容、分片上传，或调大服务端 body 限制。|运行时
+HTTP|415 Unsupported Media Type|error|415：Content-Type 服务端不认。比如发 JSON 却没写 application/json。|运行时
+HTTP|422 Unprocessable Entity|error|422：格式对但语义校验失败。看响应体里的字段级错误信息逐个修。|运行时
+HTTP|428 Precondition Required|error|428：服务器要求带条件头（如 If-Match）防并发覆盖。按接口要求补上。|依赖/环境
+HTTP|429 Too Many Requests|error|429：请求太频繁触发限流。看 Retry-After 头等待重试，或加指数退避。|运行时
+HTTP|431 Request Header Fields Too Large|error|431：请求头过大。常见为 Cookie/Token 堆积，清理后重试。|运行时

@@ -11335,6 +11335,91 @@
           "explain": "栈溢出，常见于非惰性的大规模 fold。改用严格版本（foldl'）或调整惰性结构。"
         }
       }
+    },
+    "http": {
+      "name": "HTTP",
+      "patterns": {
+        "http_400": {
+          "match": "400 Bad Request||HTTP/1.1 400||HTTP 400",
+          "level": "error",
+          "explain": "400：请求本身不合法。检查请求体 JSON 格式、必填参数和 Content-Type。"
+        },
+        "http_401": {
+          "match": "401 Unauthorized||HTTP/1.1 401",
+          "level": "error",
+          "explain": "401：未认证。检查 Authorization 头、令牌是否过期或格式错误（Bearer 前缀）。"
+        },
+        "http_403": {
+          "match": "403 Forbidden||HTTP/1.1 403",
+          "level": "error",
+          "explain": "403：已认证但无权限。检查账号角色、接口授权范围，或是否触发了风控/IP 封禁。"
+        },
+        "http_404": {
+          "match": "HTTP/1.1 404||HTTP 404||404 page not found",
+          "level": "error",
+          "explain": "404：资源或路由不存在。检查 URL 拼写、请求方法和路由注册，确认部署版本有这个接口。"
+        },
+        "http_405": {
+          "match": "405 Method Not Allowed",
+          "level": "error",
+          "explain": "405：该路径不支持这种 HTTP 方法。GET/POST 用错了，对照接口文档。"
+        },
+        "http_407": {
+          "match": "407 Proxy Authentication Required",
+          "level": "error",
+          "explain": "407：代理需要认证。检查代理服务器的账号密码配置。"
+        },
+        "http_408": {
+          "match": "408 Request Timeout",
+          "level": "error",
+          "explain": "408：服务器等请求体等超时了。多为网络太慢或客户端提前断开，可重试。"
+        },
+        "http_409": {
+          "match": "409 Conflict",
+          "level": "error",
+          "explain": "409：状态冲突。常见为唯一键/版本冲突，先查最新数据再决定覆盖或合并。"
+        },
+        "http_410": {
+          "match": "410 Gone",
+          "level": "error",
+          "explain": "410：资源已被永久移除。别再重试这个地址，找新接口。"
+        },
+        "http_412": {
+          "match": "412 Precondition Failed",
+          "level": "error",
+          "explain": "412：If-Match/If-None-Match 前置条件不满足。常见于乐观锁版本号过期，刷新数据后重试。"
+        },
+        "http_413": {
+          "match": "413 Payload Too Large||413 Request Entity Too Large",
+          "level": "error",
+          "explain": "413：请求体超过大小限制。压缩内容、分片上传，或调大服务端 body 限制。"
+        },
+        "http_415": {
+          "match": "415 Unsupported Media Type",
+          "level": "error",
+          "explain": "415：Content-Type 服务端不认。比如发 JSON 却没写 application/json。"
+        },
+        "http_422": {
+          "match": "422 Unprocessable Entity",
+          "level": "error",
+          "explain": "422：格式对但语义校验失败。看响应体里的字段级错误信息逐个修。"
+        },
+        "http_428": {
+          "match": "428 Precondition Required",
+          "level": "error",
+          "explain": "428：服务器要求带条件头（如 If-Match）防并发覆盖。按接口要求补上。"
+        },
+        "http_429": {
+          "match": "429 Too Many Requests",
+          "level": "error",
+          "explain": "429：请求太频繁触发限流。看 Retry-After 头等待重试，或加指数退避。"
+        },
+        "http_431": {
+          "match": "431 Request Header Fields Too Large",
+          "level": "error",
+          "explain": "431：请求头过大。常见为 Cookie/Token 堆积，清理后重试。"
+        }
+      }
     }
   }
 }
