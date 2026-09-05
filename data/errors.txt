@@ -2283,3 +2283,18 @@ CI/CD|This GitLab CI configuration is invalid|fatal|GitLab CI 配置校验失败
 CI/CD|config contains unknown keys|fatal|job 里用错了字段名。对照 GitLab 关键字文档，检查拼写。|运行时
 CI/CD|doesn't have any runners online||no runners online|error|没有可用 runner。检查 runner 是否注册在线、tag 是否与 job 匹配。|运行时
 CI/CD|jobs config should be a hash of hashes|fatal|.gitlab-ci.yml 的 jobs 段结构不对。每个 job 名下必须是对象，不能直接写字符串。|运行时
+包管理器|npm ERR! missing script|error|package.json 里没有这个 script。npm run 查看可用脚本，检查拼写。|依赖/环境
+包管理器|EACCES: permission denied, access|fatal|npm 全局目录无写权限。改用 nvm 管理版本，或 npm config set prefix 到用户目录。|权限
+包管理器|npm ERR! code ENOENT|fatal|npm 找不到文件，通常是当前目录没有 package.json。先 npm init 或 cd 到项目根目录。|依赖/环境
+包管理器|npm ERR! Invalid version|fatal|version 字段不合法。必须是 x.y.z 的语义化版本，不能有空格或范围。|依赖/环境
+包管理器|EINVALIDTAGNAME|fatal|包名不合法。名字要小写、不含空格和特殊字符，发布前先 validate-npm-package-name。|依赖/环境
+包管理器|npm ERR! code EINTEGRITY|fatal|下载内容与 lockfile 里的哈希不符。删除 node_modules 和 lockfile 后重装，或确认镜像可信。|依赖/环境
+包管理器|Unsupported URL Type|error|依赖里用了 npm: 等协议，当前工具不支持。升级包管理器版本，或改用 compatible 的写法。|运行时
+包管理器|ERR_PNPM_UNSUPPORTED_ENGINE|fatal|Node/pnpm 版本不满足 engines 要求。切换到要求的版本（nvm use / corepack use）。|运行时
+包管理器|ERR_PNPM_NO_MATCHING_VERSION|error|registry 上没有这个版本。npm view 包名 versions 查看可用版本。|运行时
+包管理器|ERR_PNPM_PEER_DEP_ISSUES|error|peer 依赖不满足。按 pnpm 列出的冲突补装匹配版本，或用 pnpm.overrides 强制。|运行时
+包管理器|ERR_PNPM_UNEXPECTED_STORE|fatal|pnpm store 与项目不匹配。删掉 node_modules 后 pnpm install 重建。|编译/链接
+包管理器|error An unexpected error occurred|fatal|yarn 通用错误包装。往上看真正的 error 行，常见为网络或依赖解析失败。|编译/链接
+包管理器|Couldn't find package|fatal|yarn 找不到这个包。检查名字拼写，或它是 workspace 内部包（确认 workspaces 配置）。|依赖/环境
+包管理器|Your lockfile needs to be updated|fatal|yarn.lock 与 package.json 不同步。yarn install --update-checksums 或重新安装。|依赖/环境
+包管理器|This project is configured to use|fatal|packageManager 字段指定了别的包管理器。用 corepack 按项目要求切换，或改配置。|依赖/环境

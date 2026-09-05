@@ -11585,6 +11585,86 @@
           "explain": ".gitlab-ci.yml 的 jobs 段结构不对。每个 job 名下必须是对象，不能直接写字符串。"
         }
       }
+    },
+    "pkgmgr": {
+      "name": "包管理器",
+      "patterns": {
+        "npm_missing_script": {
+          "match": "npm ERR! missing script",
+          "level": "error",
+          "explain": "package.json 里没有这个 script。npm run 查看可用脚本，检查拼写。"
+        },
+        "npm_eacces": {
+          "match": "EACCES: permission denied, access",
+          "level": "fatal",
+          "explain": "npm 全局目录无写权限。改用 nvm 管理版本，或 npm config set prefix 到用户目录。"
+        },
+        "npm_enoent_pkgjson": {
+          "match": "npm ERR! code ENOENT",
+          "level": "fatal",
+          "explain": "npm 找不到文件，通常是当前目录没有 package.json。先 npm init 或 cd 到项目根目录。"
+        },
+        "npm_invalid_version": {
+          "match": "npm ERR! Invalid version",
+          "level": "fatal",
+          "explain": "version 字段不合法。必须是 x.y.z 的语义化版本，不能有空格或范围。"
+        },
+        "npm_einvalidtagname": {
+          "match": "EINVALIDTAGNAME",
+          "level": "fatal",
+          "explain": "包名不合法。名字要小写、不含空格和特殊字符，发布前先 validate-npm-package-name。"
+        },
+        "npm_eintegrity": {
+          "match": "npm ERR! code EINTEGRITY",
+          "level": "fatal",
+          "explain": "下载内容与 lockfile 里的哈希不符。删除 node_modules 和 lockfile 后重装，或确认镜像可信。"
+        },
+        "npm_unsupported_url": {
+          "match": "Unsupported URL Type",
+          "level": "error",
+          "explain": "依赖里用了 npm: 等协议，当前工具不支持。升级包管理器版本，或改用 compatible 的写法。"
+        },
+        "pnpm_unsupported_engine": {
+          "match": "ERR_PNPM_UNSUPPORTED_ENGINE",
+          "level": "fatal",
+          "explain": "Node/pnpm 版本不满足 engines 要求。切换到要求的版本（nvm use / corepack use）。"
+        },
+        "pnpm_no_matching_version": {
+          "match": "ERR_PNPM_NO_MATCHING_VERSION",
+          "level": "error",
+          "explain": "registry 上没有这个版本。npm view 包名 versions 查看可用版本。"
+        },
+        "pnpm_peer_dep_issues": {
+          "match": "ERR_PNPM_PEER_DEP_ISSUES",
+          "level": "error",
+          "explain": "peer 依赖不满足。按 pnpm 列出的冲突补装匹配版本，或用 pnpm.overrides 强制。"
+        },
+        "pnpm_unexpected_store": {
+          "match": "ERR_PNPM_UNEXPECTED_STORE",
+          "level": "fatal",
+          "explain": "pnpm store 与项目不匹配。删掉 node_modules 后 pnpm install 重建。"
+        },
+        "yarn_unexpected_error": {
+          "match": "error An unexpected error occurred",
+          "level": "fatal",
+          "explain": "yarn 通用错误包装。往上看真正的 error 行，常见为网络或依赖解析失败。"
+        },
+        "yarn_cant_find_package": {
+          "match": "Couldn't find package",
+          "level": "fatal",
+          "explain": "yarn 找不到这个包。检查名字拼写，或它是 workspace 内部包（确认 workspaces 配置）。"
+        },
+        "yarn_lockfile_update": {
+          "match": "Your lockfile needs to be updated",
+          "level": "fatal",
+          "explain": "yarn.lock 与 package.json 不同步。yarn install --update-checksums 或重新安装。"
+        },
+        "corepack_wrong_pm": {
+          "match": "This project is configured to use",
+          "level": "fatal",
+          "explain": "packageManager 字段指定了别的包管理器。用 corepack 按项目要求切换，或改配置。"
+        }
+      }
     }
   }
 }

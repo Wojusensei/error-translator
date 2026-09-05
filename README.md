@@ -60,6 +60,7 @@
 | Haskell     | 21 | `Variable not in scope`、`Couldn't match type`、`No instance for`、空列表崩溃      |
 | HTTP        | 27 | 4xx/5xx 全系状态码：`401`、`403`、`404`、`429` 限流、`502 Bad Gateway`、CF 52x     |
 | CI/CD       | 21 | GitHub Actions、Jenkins pipeline（沙箱/DSL/仓库连接）、GitLab CI 校验            |
+| 包管理器    | 15 | npm：missing script/EACCES/EINTEGRITY；pnpm/yarn：版本冲突、lockfile、corepack   |
 
 ---
 
