@@ -15,7 +15,7 @@
 #include <vector>
 
 struct Rule {
-    std::string lang, match, level, explain;
+    std::string lang, match, level, explain, category;
 };
 
 std::string json_escape(const std::string& s);
@@ -27,19 +27,22 @@ std::vector<Rule> load_rules_from(const std::string& path) {
     std::string line;
     while (std::getline(f, line)) {
         if (line.empty() || line[0] == '#') continue;
-        // 从右往左取解释和等级，语言和首个 | 之间剩下的全是匹配别名。
-        // 不能只按前三个 | 切分：别名本身用 || 分隔，会把字段切错。
+        // 行格式：语言|别名1||别名2|...||等级|解释|类别（五字段）。
+        // 从右往左依次取类别、解释、等级，语言和首个 | 之间剩下的全是匹配别名。
         size_t p1 = line.find('|');
-        size_t last = line.rfind('|');
-        if (p1 == std::string::npos || last == std::string::npos || last <= p1 + 1) continue;
-        size_t prev = line.rfind('|', last - 1);
-        if (prev == std::string::npos || prev <= p1) continue;
+        size_t b3 = line.rfind('|');            // 解释|类别
+        if (p1 == std::string::npos || b3 == std::string::npos || b3 <= p1 + 1) continue;
+        size_t b2 = line.rfind('|', b3 - 1);    // 等级|解释
+        if (b2 == std::string::npos || b2 <= p1) continue;
+        size_t b1 = line.rfind('|', b2 - 1);    // 别名|等级
+        if (b1 == std::string::npos || b1 <= p1) continue;
         Rule r;
         r.lang = line.substr(0, p1);
-        r.match = line.substr(p1 + 1, prev - p1 - 1);
-        r.level = line.substr(prev + 1, last - prev - 1);
-        r.explain = line.substr(last + 1);
-        if (r.match.empty() || r.explain.empty()) continue;
+        r.match = line.substr(p1 + 1, b1 - p1 - 1);
+        r.level = line.substr(b1 + 1, b2 - b1 - 1);
+        r.explain = line.substr(b2 + 1, b3 - b2 - 1);
+        r.category = line.substr(b3 + 1);
+        if (r.match.empty() || r.explain.empty() || r.category.empty()) continue;
         rules.push_back(r);
     }
     return rules;
@@ -202,7 +205,8 @@ std::string rule_json_fields(const Rule* r) {
     return "\"lang\":\"" + json_escape(r->lang) +
            "\",\"match\":\"" + json_escape(r->match) +
            "\",\"level\":\"" + json_escape(r->level) +
-           "\",\"explain\":\"" + json_escape(r->explain) + "\"";
+           "\",\"explain\":\"" + json_escape(r->explain) +
+           "\",\"category\":\"" + json_escape(r->category) + "\"";
 }
 
 // 取排序后的候选：识别到语言时优先在该语言的规则里排，无命中再全库排
