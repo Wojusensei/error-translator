@@ -2251,3 +2251,14 @@ HTTP|422 Unprocessable Entity|error|422：格式对但语义校验失败。看�
 HTTP|428 Precondition Required|error|428：服务器要求带条件头（如 If-Match）防并发覆盖。按接口要求补上。|依赖/环境
 HTTP|429 Too Many Requests|error|429：请求太频繁触发限流。看 Retry-After 头等待重试，或加指数退避。|运行时
 HTTP|431 Request Header Fields Too Large|error|431：请求头过大。常见为 Cookie/Token 堆积，清理后重试。|运行时
+HTTP|500 Internal Server Error||HTTP/1.1 500||HTTP Status 500|fatal|500：服务端内部错误。看服务端日志的堆栈，客户端能做的只有重试和上报。|网络
+HTTP|501 Not Implemented|error|501：服务器不支持这个功能/方法。确认接口版本是否已实现。|运行时
+HTTP|502 Bad Gateway|fatal|502：网关收到上游无效响应。后端进程挂了或没监听，检查服务状态和容器日志。|运行时
+HTTP|503 Service Unavailable||503 Service Temporarily Unavailable|fatal|503：服务暂不可用。多为部署中、过载或健康检查失败，稍后重试或看扩容。|运行时
+HTTP|504 Gateway Time-out||504 Gateway Timeout|fatal|504：网关等上游超时。后端接口太慢，优化耗时或调大网关超时。|运行时
+HTTP|505 HTTP Version Not Supported|error|505：HTTP 版本不支持。检查客户端协议版本与服务端配置（如 h2c）。|网络
+HTTP|Error 52|fatal|Cloudflare 52x：520 未知错误、521 源站拒绝、522 源站超时、523 不可达、524 缓存后超时。都是源站问题，查源站日志。|运行时
+HTTP|508 Loop Detected|error|508：请求循环检测。多为重定向配置成环，检查跳转规则。|运行时
+HTTP|511 Network Authentication Required|error|511：需要网络认证（如 WiFi 登录页）。先完成网络认证再请求。|网络
+HTTP|525 SSL Handshake Failed|fatal|525：源站与 Cloudflare 的 TLS 握手失败。检查源站证书与 SSL 模式配置。|网络
+HTTP|526 Invalid SSL Certificate|fatal|526：源站证书校验不通过。更新源站证书或调整 Cloudflare 的 SSL 校验级别。|网络

@@ -58,6 +58,7 @@
 | VBA         | 31 | `Run-time error '1004'`、`Object required`、下标越界、类型不匹配、Automation 错误 |
 | MATLAB      | 27 | `Unrecognized function or variable`、下标越界、维度不一致、cell 用法、许可证       |
 | Haskell     | 21 | `Variable not in scope`、`Couldn't match type`、`No instance for`、空列表崩溃      |
+| HTTP        | 27 | 4xx/5xx 全系状态码：`401`、`403`、`404`、`429` 限流、`502 Bad Gateway`、CF 52x     |
 
 ---
 

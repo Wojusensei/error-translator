@@ -207,6 +207,8 @@ std::string detect_language(const std::string& input) {
     if (input.find("SQLSTATE[") != std::string::npos || input.find("ORA-") != std::string::npos) return "SQL";
     if (input.find("RenderFlex") != std::string::npos ||
         input.find("Null check operator") != std::string::npos) return "Dart/Flutter";
+    if (input.find("HTTP/1.") != std::string::npos || input.find("HTTP 4") != std::string::npos ||
+        input.find("HTTP 5") != std::string::npos) return "HTTP";
     if (input.find("zsh:") != std::string::npos ||
         input.find("bash: line") != std::string::npos ||
         input.find("sh: ") != std::string::npos) return "Shell";
