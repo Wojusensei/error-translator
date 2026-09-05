@@ -109,6 +109,18 @@ int main(int argc, char** argv) {
         {"fatal: Please tell me who you are", "Git"},
         {"Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?", "Docker"},
         {"docker: Error response from daemon: driver failed programming external connectivity on endpoint web: Bind for 0.0.0.0:8080 failed", "Docker"},
+        {"Get-ItemPropertyValue : The term 'Get-ItemPropertyValue' is not recognized as the name of a cmdlet", "PowerShell"},
+        {"File C:\\script.ps1 cannot be loaded because running scripts is disabled on this system.", "PowerShell"},
+        {"Run-time error '1004': Application-defined or object-defined error", "VBA"},
+        {"Run-time error '91': Object variable or With block variable not set", "VBA"},
+        {"Index in position 1 exceeds array bounds (must not exceed 5).", "MATLAB"},
+        {"Subscript indices must either be real positive integers or logicals.", "MATLAB"},
+        {"Prelude.head: empty list", "Haskell"},
+        {" Couldn't match expected type `Int' with actual type `String'", "Haskell"},
+        {"TypeError: Object of type datetime is not JSON serializable", "Python"},
+        {"Exception has occurred: heap-buffer-overflow on address 0x60200000eff1", "C++"},
+        {"java.lang.IllegalStateException: Invalid bound statement (not found): com.foo.UserMapper.select", "Java"},
+        {"System.InvalidOperationException: The JSON value could not be converted to System.Int32", "C#"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

@@ -1,5 +1,5 @@
 {
-  "version": "2.1",
+  "version": "2.2",
   "languages": {
     "python": {
       "name": "Python",
@@ -80,7 +80,7 @@
           "explain": "递归太深了。函数一直调用自己没有结束条件，检查递归出口，或者改成循环实现。"
         },
         "permission_error": {
-          "match": "PermissionError||Permission denied||Errno 13",
+          "match": "PermissionError||Permission denied||Errno 13||WinError 5",
           "level": "error",
           "explain": "没有权限访问文件。文件被其他程序占用了，或者需要管理员权限，检查文件是否只读。"
         },
@@ -115,7 +115,7 @@
           "explain": "操作超时。网络请求或某个操作等待太久没响应。检查网络连接或增加超时时间。"
         },
         "connection_error": {
-          "match": "ConnectionError||Connection refused||Max retries exceeded",
+          "match": "ConnectionError||Connection refused||Max retries exceeded||WinError 10061",
           "level": "error",
           "explain": "网络连接失败。目标服务器拒绝了连接或无法访问。检查网址、端口和网络。"
         },
@@ -503,6 +503,136 @@
           "match": "Can't get attribute",
           "level": "error",
           "explain": "反序列化时找不到类定义。类被移动或改名了，保持原路径或自定义 unpickler。"
+        },
+        "future_never_retrieved": {
+          "match": "exception was never retrieved",
+          "level": "warning",
+          "explain": "异步任务里抛了异常但没人取结果。给 future 加异常处理，或 await 它。"
+        },
+        "ssl_wrong_version": {
+          "match": "wrong version number",
+          "level": "error",
+          "explain": "TLS 握手版本不对。常见为用 https 请求了 http 端口，或代理拦截。"
+        },
+        "ssl_hostname_mismatch": {
+          "match": "hostname mismatch||certificate is not valid for",
+          "level": "error",
+          "explain": "证书域名和访问的域名不一致。检查是否访问了错误的域名或 IP。"
+        },
+        "winerror_10060": {
+          "match": "WinError 10060",
+          "level": "error",
+          "explain": "Windows 连接超时。目标不可达或防火墙丢包，检查地址和网络。"
+        },
+        "filename_too_long_py": {
+          "match": "WinError 206",
+          "level": "error",
+          "explain": "文件路径超过 Windows 上限。缩短路径或使用长路径前缀。"
+        },
+        "broken_process_pool": {
+          "match": "BrokenProcessPool",
+          "level": "fatal",
+          "explain": "子进程意外死亡，进程池失效。检查子进程是否 OOM 或被杀。"
+        },
+        "exception_in_thread": {
+          "match": "Exception in thread",
+          "level": "error",
+          "explain": "某个线程抛了未捕获异常。看线程名和栈定位。"
+        },
+        "fstring_unterminated": {
+          "match": "f-string: unterminated string||f-string: expecting '}'",
+          "level": "fatal",
+          "explain": "f-string 语法错误：引号没闭合或表达式括号不配对。"
+        },
+        "bytes_like_required": {
+          "match": "a bytes-like object is required",
+          "level": "error",
+          "explain": "这里需要 bytes 却给了 str。用 encode() 转换，或以文本模式打开文件。"
+        },
+        "not_json_serializable": {
+          "match": "is not JSON serializable",
+          "level": "error",
+          "explain": "json.dumps 不认识这个类型（如 datetime/set）。写 default= 回调或先转换。"
+        },
+        "naive_aware_datetime": {
+          "match": "offset-naive and offset-aware",
+          "level": "error",
+          "explain": "带时区和不带时区的 datetime 不能直接比较。统一补上 tzinfo。"
+        },
+        "numpy_shapes_not_aligned": {
+          "match": "shapes not aligned",
+          "level": "error",
+          "explain": "矩阵乘法/运算的维度对不上。检查 shape，必要时转置。"
+        },
+        "sklearn_feature_mismatch": {
+          "match": "has .* features, but",
+          "level": "error",
+          "explain": "预测时的特征数和训练时不一致。保持列一致，或保存训练时的列顺序。"
+        },
+        "sklearn_not_fitted": {
+          "match": "is not fitted yet",
+          "level": "error",
+          "explain": "模型还没 fit 就调用了 predict。先 fit 再预测。"
+        },
+        "matplotlib_no_display": {
+          "match": "no $DISPLAY environment variable",
+          "level": "error",
+          "explain": "服务器上没有图形界面。改用 Agg 后端：matplotlib.use('Agg')。"
+        },
+        "configparser_no_section": {
+          "match": "No section:",
+          "level": "error",
+          "explain": "ini 配置里没有这个节。检查节名拼写和文件是否读对。"
+        },
+        "pip_invalid_requirement": {
+          "match": "Invalid requirement",
+          "level": "error",
+          "explain": "requirements 行写法不合法。检查版本号、注释和特殊字符。"
+        },
+        "pip_bdist_wheel": {
+          "match": "invalid command 'bdist_wheel'",
+          "level": "error",
+          "explain": "缺少 wheel 包。pip install wheel 后重试。"
+        },
+        "charmap_decode": {
+          "match": "charmap' codec can't decode",
+          "level": "error",
+          "explain": "Windows 默认编码读 UTF-8 文件失败。open 时指定 encoding='utf-8'。"
+        },
+        "remote_end_closed_response": {
+          "match": "Remote end closed connection without response",
+          "level": "error",
+          "explain": "服务端没回响应就断开了。检查服务端日志、请求头和代理。"
+        },
+        "csv_field_limit": {
+          "match": "field larger than field limit",
+          "level": "error",
+          "explain": "单行字段超过 csv 默认上限。csv.field_size_limit 调大。"
+        },
+        "csv_newline_in_field": {
+          "match": "new-line character seen in unquoted field",
+          "level": "error",
+          "explain": "CSV 里有多余换行。用 newline='' 打开文件，检查数据格式。"
+        },
+        "struct_unpack_buffer": {
+          "match": "unpack requires a buffer",
+          "level": "error",
+          "explain": "struct 解包的数据太短。检查数据长度和格式串是否匹配。"
+        },
+        "sqlite_integrity": {
+          "match": "UNIQUE constraint failed",
+          "level": "error",
+          "explain": "唯一约束冲突，记录已存在。先查重或用 INSERT OR REPLACE。"
+        },
+        "sqlalchemy_pool_timeout": {
+          "match": "QueuePool limit of size",
+          "level": "error",
+          "explain": "连接池耗尽。检查连接泄漏（没 close 的会话），或调大 pool_size。"
+        },
+        "dataclass_frozen_assign": {
+          "match": "cannot assign to field",
+          "level": "error",
+          "explain": "frozen dataclass 不可修改。用 dataclasses.replace 生成新对象。"
         }
       }
     },
@@ -685,7 +815,7 @@
           "explain": "ESM 导入路径不对。相对导入必须写全 ./ 或 ../，包名导入则要确认已安装。"
         },
         "err_require_esm": {
-          "match": "ERR_REQUIRE_ESM||require() of ES Module",
+          "match": "ERR_REQUIRE_ESM||require() of ES Module||Must use import to load ES Module",
           "level": "error",
           "explain": "用 require 去加载一个纯 ESM 包。改用 import，或把项目 package.json 调整为支持 ESM。"
         },
@@ -998,6 +1128,26 @@
           "match": "Cannot GET ||Cannot POST ",
           "level": "error",
           "explain": "Express 没有注册这个路由。检查路由定义的路径和 HTTP 方法。"
+        },
+        "module_did_not_self_register": {
+          "match": "Module did not self-register",
+          "level": "error",
+          "explain": "原生模块加载失败。Node 版本不匹配或模块损坏，npm rebuild 或重装。"
+        },
+        "dynamic_require_unsupported": {
+          "match": "Dynamic require of",
+          "level": "error",
+          "explain": "ESM 打包产物里出现动态 require。改用 import，或配置打包器允许。"
+        },
+        "package_path_not_exported": {
+          "match": "ERR_PACKAGE_PATH_NOT_EXPORTED",
+          "level": "error",
+          "explain": "包的 exports 字段没放行这个子路径。用包官方导出的入口，或升级包。"
+        },
+        "node_cert_issues": {
+          "match": "self-signed certificate in certificate chain||unable to verify the first certificate||certificate has expired",
+          "level": "error",
+          "explain": "TLS 证书问题。更新系统证书；内网自签证书加入信任链。"
         }
       }
     },
@@ -1468,6 +1618,116 @@
           "match": "error in opening zip file",
           "level": "error",
           "explain": "jar/zip 文件损坏或不完整。重新下载或构建依赖。"
+        },
+        "jvm_heap_reserve": {
+          "match": "Could not reserve enough space for object heap",
+          "level": "fatal",
+          "explain": "堆内存超过系统可用上限。调小 -Xmx。"
+        },
+        "jvm_unrecognized_option": {
+          "match": "Unrecognized VM option",
+          "level": "fatal",
+          "explain": "JVM 不认识这个参数。检查拼写或当前 JVM 版本是否支持。"
+        },
+        "no_main_manifest": {
+          "match": "no main manifest attribute",
+          "level": "fatal",
+          "explain": "jar 包没指定 Main-Class。在构建配置里设置主类，或 java -cp 主类 运行。"
+        },
+        "http_message_not_readable": {
+          "match": "HttpMessageNotReadableException",
+          "level": "error",
+          "explain": "请求体解析失败。检查 JSON 格式和字段类型是否与 DTO 匹配。"
+        },
+        "request_method_not_supported": {
+          "match": "Request method .* not supported",
+          "level": "error",
+          "explain": "该接口不支持这种 HTTP 方法。检查 @GetMapping/@PostMapping 与请求一致。"
+        },
+        "bean_in_creation": {
+          "match": "currently in creation",
+          "level": "error",
+          "explain": "Bean 循环依赖。检查相互注入的 Bean，用 @Lazy 打破循环。"
+        },
+        "dialect_unable": {
+          "match": "Unable to determine Dialect",
+          "level": "error",
+          "explain": "Hibernate 认不出数据库方言。显式配置 spring.jpa.database-platform。"
+        },
+        "detached_entity_persist": {
+          "match": "detached entity passed to persist",
+          "level": "error",
+          "explain": "把游离状态的实体传给了 persist。用 merge 或重新关联 Session。"
+        },
+        "jdbc_connection_closed": {
+          "match": "Connection is closed",
+          "level": "error",
+          "explain": "连接已关闭还在使用。检查连接池的归还逻辑和连接有效性。"
+        },
+        "bad_sql_grammar": {
+          "match": "BadSqlGrammarException",
+          "level": "error",
+          "explain": "SQL 语法错误。看 caused by 里数据库的原始报错。"
+        },
+        "jpms_module_not_found": {
+          "match": "Module .* not found",
+          "level": "error",
+          "explain": "模块系统找不到这个模块。检查 module-info.java 的 requires 和 module-path。"
+        },
+        "cancellation_exception": {
+          "match": "CancellationException",
+          "level": "error",
+          "explain": "任务被取消了。捕获后按业务处理，注意别把它当异常吞掉。"
+        },
+        "interrupted_io": {
+          "match": "InterruptedIOException",
+          "level": "error",
+          "explain": "IO 操作被中断。检查线程中断逻辑和超时设置。"
+        },
+        "timsort_contract": {
+          "match": "Comparison method violates its general contract",
+          "level": "error",
+          "explain": "排序比较器不满足传递性/反对称。修正 compare 逻辑，避免依赖不稳定值。"
+        },
+        "input_mismatch": {
+          "match": "InputMismatchException",
+          "level": "error",
+          "explain": "Scanner 读到的内容和期望类型不符。检查输入格式。"
+        },
+        "rejected_execution": {
+          "match": "RejectedExecutionException",
+          "level": "error",
+          "explain": "线程池已关闭或队列满拒绝了任务。检查提交时机和拒绝策略。"
+        },
+        "direct_buffer_memory": {
+          "match": "Direct buffer memory",
+          "level": "fatal",
+          "explain": "堆外内存耗尽。调大 -XX:MaxDirectMemorySize，检查 ByteBuffer 是否泄漏。"
+        },
+        "native_thread_oom": {
+          "match": "unable to create new native thread",
+          "level": "fatal",
+          "explain": "线程数达到系统上限。检查线程泄漏，调大系统线程数限制。"
+        },
+        "illegal_format_conversion": {
+          "match": "IllegalFormatConversionException",
+          "level": "error",
+          "explain": "String.format 的占位符和参数类型不匹配。检查 %d/%s 对应关系。"
+        },
+        "non_resolvable_parent_pom": {
+          "match": "Non-resolvable parent POM",
+          "level": "fatal",
+          "explain": "父 POM 拉不到。检查 relativePath、仓库配置和网络。"
+        },
+        "mybatis_bound_statement": {
+          "match": "Invalid bound statement (not found)",
+          "level": "error",
+          "explain": "MyBatis 找不到 SQL 映射。检查 mapper XML 的 namespace、id 与接口是否一致，以及打包是否包含 XML。"
+        },
+        "mybatis_no_getter": {
+          "match": "There is no getter for property",
+          "level": "error",
+          "explain": "SQL 里引用了实体上不存在的属性。检查 #{} 参数名和实体字段。"
         }
       }
     },
@@ -1570,7 +1830,7 @@
           "explain": "访问了私有的成员。检查是不是在类外部调用了 private/protected 方法或变量。"
         },
         "segfault": {
-          "match": "Segmentation fault||segmentation fault||SIGSEGV",
+          "match": "Segmentation fault||segmentation fault||SIGSEGV||SEGV on unknown address",
           "level": "fatal",
           "explain": "段错误。访问了不该访问的内存，常见原因：空指针、数组越界、释放后继续使用。"
         },
@@ -1600,7 +1860,7 @@
           "explain": "栈上数组越界。检查局部数组大小和循环边界，不要往固定大小缓冲区写入过长内容。"
         },
         "memory_leak": {
-          "match": "memory leak||detected memory leaks",
+          "match": "memory leak||detected memory leaks||Direct leak",
           "level": "warning",
           "explain": "检测到内存泄漏。new 出来的内存没有用 delete 释放，改用智能指针管理。"
         },
@@ -1920,7 +2180,7 @@
           "explain": "候选构造/重载函数不可行。看每个候选被拒的原因（参数个数/类型）。"
         },
         "no_viable_conversion": {
-          "match": "no viable conversion",
+          "match": "no viable conversion||no viable overloaded",
           "level": "error",
           "explain": "没有可行的类型转换。检查构造函数是否 explicit、类型是否兼容。"
         },
@@ -1968,6 +2228,101 @@
           "match": "C2079",
           "level": "error",
           "explain": "MSVC：使用了只有前向声明的类型。包含完整定义。"
+        },
+        "template_depth_exceeded": {
+          "match": "template instantiation depth exceeds maximum",
+          "level": "fatal",
+          "explain": "模板递归实例化太深。简化模板，或加 -ftemplate-depth 调大上限。"
+        },
+        "typename_needed": {
+          "match": "need 'typename' before",
+          "level": "error",
+          "explain": "模板依赖名要加 typename。在类型前写 typename 消除歧义。"
+        },
+        "ambiguous_base": {
+          "match": "is an ambiguous base",
+          "level": "error",
+          "explain": "菱形继承导致基类有二义性。用虚继承或显式路径转换。"
+        },
+        "constexpr_call_fail": {
+          "match": "call to non-'constexpr' function",
+          "level": "error",
+          "explain": "constexpr 上下文里调了非 constexpr 函数。检查函数是否满足编译期计算要求。"
+        },
+        "sfinae_no_type": {
+          "match": "no type named 'type'",
+          "level": "error",
+          "explain": "SFINAE/元编程失败： trait 没产出 type 成员。检查 enable_if 条件和类型萃取。"
+        },
+        "asan_stack_use_after_scope": {
+          "match": "stack-use-after-scope",
+          "level": "fatal",
+          "explain": "使用了超出作用域的栈变量。检查引用/指针是否指向了已结束的代码块。"
+        },
+        "asan_stack_use_after_return": {
+          "match": "stack-use-after-return",
+          "level": "fatal",
+          "explain": "返回后还在用局部变量的引用/指针。改为返回值或堆分配。"
+        },
+        "asan_container_overflow": {
+          "match": "container-overflow",
+          "level": "fatal",
+          "explain": "容器容量内的非法区域被访问。常见于对 vector 的 reserve 区越界读写。"
+        },
+        "msan_uninit_value": {
+          "match": "use-of-uninitialized-value",
+          "level": "fatal",
+          "explain": "读取了未初始化的内存。声明时初始化，或检查分支遗漏的赋值。"
+        },
+        "cpp_tsan_race": {
+          "match": "ThreadSanitizer",
+          "level": "fatal",
+          "explain": "ThreadSanitizer 检测到数据竞争。给共享数据加锁或改用原子操作。"
+        },
+        "ubsan_signed_overflow": {
+          "match": "signed integer overflow",
+          "level": "fatal",
+          "explain": "有符号整数溢出（未定义行为）。检查运算范围，换更大类型或用无符号。"
+        },
+        "ubsan_null_member": {
+          "match": "member call on null pointer||load of null pointer",
+          "level": "fatal",
+          "explain": "对空指针调用成员/读取数据。调用前判空。"
+        },
+        "ubsan_shift_exponent": {
+          "match": "shift exponent .* is too large",
+          "level": "fatal",
+          "explain": "移位位数超过类型位宽。检查移位量来源。"
+        },
+        "ubsan_misaligned": {
+          "match": "load of misaligned address",
+          "level": "fatal",
+          "explain": "未对齐的指针访问。用 memcpy 或调整类型对齐。"
+        },
+        "c2672": {
+          "match": "C2672",
+          "level": "error",
+          "explain": "MSVC：找不到匹配的重载函数。检查参数类型是否需要转换。"
+        },
+        "c4717": {
+          "match": "C4717",
+          "level": "warning",
+          "explain": "检测到无限递归，所有控制路径都会递归调用自己。"
+        },
+        "c1083": {
+          "match": "C1083",
+          "level": "fatal",
+          "explain": "MSVC：打不开包含文件。检查 include 路径（附加包含目录）和文件名。"
+        },
+        "lnk1120": {
+          "match": "LNK1120",
+          "level": "fatal",
+          "explain": "有若干无法解析的外部命令。往上看 LNK2019 等具体符号。"
+        },
+        "lnk1104": {
+          "match": "LNK1104",
+          "level": "fatal",
+          "explain": "MSVC：打不开输出/库文件。检查文件被占用、路径和库目录配置。"
         }
       }
     },
@@ -1980,7 +2335,7 @@
           "explain": "使用了没有声明的函数。忘记 #include 对应的头文件了，或者函数名拼写错误。"
         },
         "use_undeclared": {
-          "match": "use of undeclared identifier",
+          "match": "use of undeclared identifier||first use in this function",
           "level": "error",
           "explain": "这个变量或函数没声明过。检查拼写，确认头文件已包含、变量在使用前已定义。"
         },
@@ -2300,7 +2655,7 @@
           "explain": "总线错误，通常是对齐问题或访问了非法内存映射。检查指针类型转换和地址对齐。"
         },
         "double_free": {
-          "match": "double free or corruption||free(): invalid pointer",
+          "match": "double free or corruption||free(): invalid pointer||attempting double-free",
           "level": "fatal",
           "explain": "同一块内存被释放了两次，或释放了非法指针。检查所有权，释放后置空指针。"
         },
@@ -2373,6 +2728,86 @@
           "match": "requires a non-null argument",
           "level": "warning",
           "explain": "给标记了 nonnull 的函数传了空指针。调用前检查参数是否为 NULL。"
+        },
+        "memcpy_param_overlap": {
+          "match": "memcpy-param-overlap",
+          "level": "fatal",
+          "explain": "memcpy 源和目的区间重叠（未定义行为）。用 memmove。"
+        },
+        "ubsan_index_out_of_bounds": {
+          "match": "out of bounds for type",
+          "level": "fatal",
+          "explain": "UBSan 检测到数组越界访问。报错里有类型和索引，检查边界。"
+        },
+        "unknown_escape_sequence": {
+          "match": "unknown escape sequence",
+          "level": "warning",
+          "explain": "字符串里的转义序列不合法。需要字面反斜杠要写 \\\\。"
+        },
+        "redeclared_different_kind": {
+          "match": "redeclared as different kind of symbol",
+          "level": "error",
+          "explain": "同一个名字被声明成了不同类型的东西（变量 vs 函数）。检查名字冲突。"
+        },
+        "fortify_buffer_overflow": {
+          "match": "buffer overflow detected",
+          "level": "fatal",
+          "explain": "glibc FORTIFY 检测到缓冲区溢出并中止。检查 sprintf/strcpy 等的边界。"
+        },
+        "used_never_defined": {
+          "match": "used but never defined",
+          "level": "fatal",
+          "explain": "声明了函数但没有实现。补上定义，或链接对应的源文件/库。"
+        },
+        "collect2_error": {
+          "match": "collect2: error",
+          "level": "fatal",
+          "explain": "链接阶段失败。往上看 ld 的具体报错定位缺的符号或库。"
+        },
+        "file_format_not_recognized": {
+          "match": "file format not recognized",
+          "level": "fatal",
+          "explain": "链接的文件不是有效的目标文件/库。检查文件是否损坏或架构不对。"
+        },
+        "main_undefined": {
+          "match": "entry point .* undefined||undefined reference to `main",
+          "level": "fatal",
+          "explain": "找不到 main 入口。检查是否漏写 main，或链接了错误的编译模式。"
+        },
+        "implicit_constant_overflow": {
+          "match": "overflow in implicit constant conversion",
+          "level": "warning",
+          "explain": "常量隐式转换溢出。检查数值是否超出目标类型范围。"
+        },
+        "unused_parameter": {
+          "match": "unused parameter",
+          "level": "warning",
+          "explain": "函数参数没被使用。删掉，或用 (void)param 标记有意不用。"
+        },
+        "value_computed_not_used": {
+          "match": "value computed is not used",
+          "level": "warning",
+          "explain": "表达式算了结果但没用上。检查是否漏了赋值或该行多余。"
+        },
+        "statement_no_effect": {
+          "match": "statement with no effect",
+          "level": "warning",
+          "explain": "这条语句什么都没做。检查是不是漏了赋值或函数调用。"
+        },
+        "type_punned_pointer": {
+          "match": "type-punned pointer",
+          "level": "warning",
+          "explain": "指针类型强转破坏严格别名规则。改用 memcpy 或 union。"
+        },
+        "missing_braces_initializer": {
+          "match": "missing braces around initializer",
+          "level": "warning",
+          "explain": "嵌套初始化缺内层花括号。按结构补全初始化列表。"
+        },
+        "ptr_int_size": {
+          "match": "cast from pointer to integer of different size",
+          "level": "warning",
+          "explain": "指针和整数宽度不同，强转会截断。用 intptr_t 中转。"
         }
       }
     },
@@ -2843,6 +3278,31 @@
           "match": "panic: test timed out",
           "level": "fatal",
           "explain": "测试超时被杀。看 panic 栈里卡住的 goroutine，检查死锁或过慢的用例。"
+        },
+        "x509_unknown_authority": {
+          "match": "certificate signed by unknown authority",
+          "level": "error",
+          "explain": "TLS 证书不受信任。把 CA 证书加入系统信任库或 tls.Config 的 RootCAs。"
+        },
+        "tls_handshake_timeout": {
+          "match": "TLS handshake timeout",
+          "level": "error",
+          "explain": "TLS 握手超时。检查网络与对端证书配置。"
+        },
+        "sql_scan_args": {
+          "match": "expected .* destination arguments",
+          "level": "error",
+          "explain": "Scan 的目标变量数和查询列数不一致。一一对应。"
+        },
+        "superfluous_writeheader": {
+          "match": "superfluous response.WriteHeader call",
+          "level": "warning",
+          "explain": "响应头写过后又写。检查 handler 是否重复响应，send 后记得 return。"
+        },
+        "go_unexpected_eof": {
+          "match": "unexpected EOF",
+          "level": "error",
+          "explain": "数据流提前结束。检查读取长度和上游是否截断。"
         }
       }
     },
@@ -3303,6 +3763,101 @@
           "match": "CS0123",
           "level": "error",
           "explain": "没有重载与委托签名匹配。对照委托定义检查方法签名。"
+        },
+        "ef_dbupdate_concurrency": {
+          "match": "DbUpdateConcurrencyException",
+          "level": "error",
+          "explain": "并发修改冲突，行数据已被别人改过。用乐观锁 RowVersion 处理或重试。"
+        },
+        "ef_connstring_format": {
+          "match": "Format of the initialization string does not conform",
+          "level": "error",
+          "explain": "连接字符串格式不合法。检查 Key=Value 分隔符和引号。"
+        },
+        "json_value_not_convertible": {
+          "match": "The JSON value could not be converted",
+          "level": "error",
+          "explain": "JSON 字段类型和模型对不上。看路径定位字段，修正类型。"
+        },
+        "httpclient_timeout": {
+          "match": "configured HttpClient.Timeout",
+          "level": "error",
+          "explain": "HttpClient 超时。下游太慢，调大 Timeout 或加 Polly 重试。"
+        },
+        "convert_null_value": {
+          "match": "Error converting value {null}",
+          "level": "error",
+          "explain": "把 null 反序列化成了不可空类型。字段改成可空或数据补值。"
+        },
+        "method_not_found_cs": {
+          "match": "Method not found",
+          "level": "error",
+          "explain": "运行时找不到方法，多为程序集版本不一致。统一依赖版本。"
+        },
+        "enum_value_not_found": {
+          "match": "requested value .* was not found",
+          "level": "error",
+          "explain": "枚举里没有这个值。检查数据，或用 TryParse 容错。"
+        },
+        "invalid_json_primitive": {
+          "match": "Invalid JSON primitive||Unexpected character encountered",
+          "level": "error",
+          "explain": "JSON 格式不合法。响应可能是 HTML 或被截断，打印原文检查。"
+        },
+        "cannot_deserialize_json": {
+          "match": "Cannot deserialize the current JSON object",
+          "level": "error",
+          "explain": "JSON 结构和类型定义不符。对照 RequiresArray/Object 提示修正。"
+        },
+        "uri_format_cs": {
+          "match": "Invalid URI: The",
+          "level": "error",
+          "explain": "URI 格式不合法。检查是否漏了协议头或含非法字符。"
+        },
+        "path_too_long": {
+          "match": "PathTooLongException",
+          "level": "error",
+          "explain": "路径超过 Windows 长度上限。缩短路径，或启用长路径支持。"
+        },
+        "cross_thread_access": {
+          "match": "calling thread cannot access this object",
+          "level": "fatal",
+          "explain": "WPF UI 对象只能由创建它的线程访问。用 Dispatcher.Invoke 切回 UI 线程。"
+        },
+        "xaml_parse_error": {
+          "match": "XamlParseException",
+          "level": "fatal",
+          "explain": "XAML 解析失败。看行号和 inner exception，常见为资源 key 或绑定错误。"
+        },
+        "cs0116": {
+          "match": "CS0116",
+          "level": "fatal",
+          "explain": "命名空间下不能直接放语句。把代码挪进类和方法。"
+        },
+        "cs0128": {
+          "match": "CS0128",
+          "level": "error",
+          "explain": "同一作用域里已有同名局部变量。删除重复声明。"
+        },
+        "cs0201": {
+          "match": "CS0201",
+          "level": "fatal",
+          "explain": "只有赋值/调用/自增自减能当语句。检查是否漏了方法调用括号。"
+        },
+        "msb1009": {
+          "match": "MSB1009",
+          "level": "fatal",
+          "explain": "找不到项目文件。检查 dotnet build/run 的工作目录和 csproj 路径。"
+        },
+        "dotnet_command_missing": {
+          "match": "specified command or file was not found",
+          "level": "fatal",
+          "explain": "找不到该命令。检查 .NET SDK 是否安装、命令拼写。"
+        },
+        "nu1202": {
+          "match": "NU1202",
+          "level": "error",
+          "explain": "包和项目框架不兼容。检查 TargetFramework 和包支持的框架列表。"
         }
       }
     },
@@ -3455,7 +4010,7 @@
           "explain": "JSON 解析失败。内容可能不是合法 JSON 或编码有问题，打印原文确认。"
         },
         "psych_syntax": {
-          "match": "Psych::SyntaxError",
+          "match": "Psych::SyntaxError||Tab characters are not allowed",
           "level": "error",
           "explain": "YAML 格式错误。常见于缩进不对、冒号后缺空格、Tab 字符混入。"
         },
@@ -3743,6 +4298,11 @@
           "match": "Failed to build gem native extension",
           "level": "fatal",
           "explain": "gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。"
+        },
+        "template_error_rails": {
+          "match": "ActionView::Template::Error",
+          "level": "error",
+          "explain": "Rails 模板渲染出错。看 caused by 里的模板行号和变量。"
         }
       }
     },
@@ -4203,6 +4763,21 @@
           "match": "Malformed UTF-8 characters",
           "level": "warning",
           "explain": "json_encode 的内容含非法 UTF-8。检查数据来源编码，必要时转码。"
+        },
+        "no_active_transaction": {
+          "match": "There is no active transaction",
+          "level": "error",
+          "explain": "commit/rollBack 前事务已结束。检查 beginTransaction 的配对逻辑。"
+        },
+        "unset_non_array": {
+          "match": "Cannot unset offset in a non-array variable",
+          "level": "fatal",
+          "explain": "对字符串等非数组用 unset 下标。转成数组再处理。"
+        },
+        "false_to_array_deprecation": {
+          "match": "Automatic conversion of false to array",
+          "level": "warning",
+          "explain": "把 false 当数组自动转换，未来会报错。先判断返回值再使用。"
         }
       }
     },
@@ -4673,6 +5248,26 @@
           "match": "recursion limit reached",
           "level": "error",
           "explain": "宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = \"256\"]。"
+        },
+        "trait_items_missing": {
+          "match": "not all trait items implemented",
+          "level": "error",
+          "explain": "没有实现 trait 要求的全部成员。补上缺失项，或加 default。"
+        },
+        "serde_trailing_chars": {
+          "match": "trailing characters",
+          "level": "error",
+          "explain": "JSON 解析完后还有剩余内容。确认数据里没有多余文本。"
+        },
+        "proc_macro_panicked": {
+          "match": "proc macro panicked",
+          "level": "fatal",
+          "explain": "宏展开时出错。看宏的报错消息，检查输入是否符合宏要求。"
+        },
+        "conflicting_impls": {
+          "match": "conflicting implementations",
+          "level": "error",
+          "explain": "同一类型有多个 trait 实现，冲突了。删除多余 impl 或区分类型。"
         }
       }
     },
@@ -4850,7 +5445,7 @@
           "explain": "联合类型太复杂，编译器表示不了。拆分或简化类型定义。"
         },
         "ts2305": {
-          "match": "TS2305",
+          "match": "TS2305||has no exported member named||has no exported member",
           "level": "error",
           "explain": "模块里没有导出这个成员。检查导出名拼写和导出方式（named/default）。"
         },
@@ -5123,6 +5718,16 @@
           "match": "File '.*' not found",
           "level": "fatal",
           "explain": "tsc 找不到指定的输入文件。检查路径和 include 配置。"
+        },
+        "ts2742_cannot_be_named": {
+          "match": "cannot be named without a reference",
+          "level": "error",
+          "explain": "推断出的类型无法命名。显式导入该类型并标注返回值。"
+        },
+        "ts4111_index_access": {
+          "match": "comes from an index signature, so it must be accessed with",
+          "level": "error",
+          "explain": "索引签名的属性要用 obj['key'] 访问（noPropertyAccessFromIndexSignature）。"
         }
       }
     },
@@ -5240,7 +5845,7 @@
           "explain": "public 的 inline 函数访问了私有 API，内联展开会破坏访问控制。把访问的部分改成 public 或 internal。"
         },
         "suspend_context": {
-          "match": "should be called only from a coroutine",
+          "match": "should be called only from a coroutine||Suspension functions can only be called within coroutine body",
           "level": "error",
           "explain": "挂起函数只能在协程或另一个挂起函数里调用。用 runBlocking/协程作用域包起来。"
         },
@@ -5425,7 +6030,7 @@
           "explain": "重载调用有歧义。显式指定参数类型帮助编译器选择。"
         },
         "cannot_access_private": {
-          "match": "it is 'private' in||it is private in",
+          "match": "it is 'private' in||it is private in||it is invisible",
           "level": "error",
           "explain": "访问了不可见的成员。检查可见性修饰符（private/internal/protected）。"
         },
@@ -5583,6 +6188,11 @@
           "match": "Unable to add window",
           "level": "fatal",
           "explain": "在 Activity 已销毁或 context 不对时弹窗。确认用 Activity context 且页面还存活。"
+        },
+        "receiver_mismatch": {
+          "match": "because of receiver type mismatch",
+          "level": "error",
+          "explain": "候选重载因接收者类型不符被排除。检查调用对象类型与扩展函数定义。"
         }
       }
     },
@@ -5875,7 +6485,7 @@
           "explain": "前置条件不成立导致崩溃。看断言消息，检查为什么数据不符合预期。"
         },
         "exc_bad_access": {
-          "match": "EXC_BAD",
+          "match": "EXC_BAD||EXC_BREAKPOINT||SIGABRT",
           "level": "fatal",
           "explain": "访问了已释放或非法的内存。检查循环引用、已释放对象的使用（可用僵尸对象调试）。"
         },
@@ -6018,6 +6628,11 @@
           "match": "must be initialized before calling super.init",
           "level": "error",
           "explain": "先初始化自己的所有存储属性，再调 super.init。"
+        },
+        "data_couldnt_be_read": {
+          "match": "The data couldn't be read because it is missing",
+          "level": "fatal",
+          "explain": "读 plist/UserDefaults 时数据缺失或格式不对。检查文件是否在 bundle 里、键名是否正确。"
         }
       }
     },
@@ -6448,6 +7063,16 @@
           "match": "UnimplementedError",
           "level": "fatal",
           "explain": "执行到了 throw UnimplementedError() 占位。补上具体实现。"
+        },
+        "dart_connection_closed": {
+          "match": "Connection closed while receiving data",
+          "level": "error",
+          "explain": "服务端中途断开了响应。检查服务端稳定性与代理超时。"
+        },
+        "async_gap_context": {
+          "match": "BuildContext across async gaps",
+          "level": "warning",
+          "explain": "await 之后还在用旧 context，可能已失效。保存 ScaffoldMessenger/Navigator，或加 mounted 判断。"
         }
       }
     },
@@ -6853,6 +7478,26 @@
           "match": "multi-part identifier",
           "level": "error",
           "explain": "多部分标识符无法绑定（SQL Server）。检查表别名和列前缀是否写对。"
+        },
+        "pg_readonly_tx": {
+          "match": "read-only transaction",
+          "level": "error",
+          "explain": "只读连接/副本上执行了写操作。切到主库连接。"
+        },
+        "mssql_divide_zero": {
+          "match": "Divide by zero error encountered",
+          "level": "error",
+          "explain": "SQL Server 除以零。用 NULLIF(除数,0) 包住或先判断。"
+        },
+        "ora_table": {
+          "match": "ORA-00942",
+          "level": "error",
+          "explain": "Oracle：表或视图不存在。检查 schema 前缀、权限和表名大小写。"
+        },
+        "ora_invalid_number": {
+          "match": "ORA-01722",
+          "level": "error",
+          "explain": "Oracle：无效数字。WHERE/VALUES 里混入了非数字字符串。"
         }
       }
     },
@@ -7198,6 +7843,36 @@
           "match": "bind: ",
           "level": "error",
           "explain": "绑定端口失败，已被占用或权限不足。换端口，或结束占用进程。"
+        },
+        "shell_find": {
+          "match": "find: ",
+          "level": "error",
+          "explain": "find 报错。检查路径是否存在、权限是否足够。"
+        },
+        "su_auth_fail": {
+          "match": "Authentication failure",
+          "level": "error",
+          "explain": "su/sudo 密码错误。检查密码和账号状态。"
+        },
+        "sudo_no_tty": {
+          "match": "no tty present and no askpass program specified",
+          "level": "error",
+          "explain": "非交互终端无法输密码。配置 NOPASSWD 或用 SSH 密钥免密。"
+        },
+        "symlink_exists": {
+          "match": "failed to create symbolic link",
+          "level": "error",
+          "explain": "软链接创建失败：目标已存在或权限不足。加 -f 或先删除。"
+        },
+        "sed_unknown_option": {
+          "match": "unknown option to `s'",
+          "level": "error",
+          "explain": "sed 的 s/// 里分隔符与内容冲突。换分隔符如 s|old|new|。"
+        },
+        "heredoc_eof": {
+          "match": "here-document at line .* delimited by end-of-file",
+          "level": "warning",
+          "explain": "heredoc 的结束标记没写对，读到文件尾。检查结束标记拼写与缩进。"
         }
       }
     },
@@ -9480,7 +10155,7 @@
           "explain": "当前目录不是 git 仓库。cd 到项目根目录，或先 git init。"
         },
         "push_rejected_fetch_first": {
-          "match": "! [rejected]||fetch first",
+          "match": "! [rejected]||fetch first||failed to fetch some refs",
           "level": "error",
           "explain": "远端有你没有的提交，直接推送被拒。先 git pull --rebase 解决后再推。"
         },
@@ -9768,6 +10443,16 @@
           "match": "did not match any file(s) known to git",
           "level": "error",
           "explain": "git 找不到这个文件路径。检查拼写，文件可能还没被 git 跟踪。"
+        },
+        "object_file_empty": {
+          "match": "object file .* is empty",
+          "level": "error",
+          "explain": "git 对象文件损坏（多半是断电/崩溃）。从远端重新克隆最稳妥。"
+        },
+        "invalid_upstream": {
+          "match": "invalid upstream",
+          "level": "fatal",
+          "explain": "rebase/pull 指定的上游不存在。git log 检查分支名。"
         }
       }
     },
@@ -9990,7 +10675,7 @@
           "explain": "--user 指定的用户在镜像里不存在。用镜像内存在的 UID/用户名。"
         },
         "unknown_flag": {
-          "match": "unknown flag",
+          "match": "unknown flag||unknown shorthand flag",
           "level": "fatal",
           "explain": "docker 不认识这个参数。检查 CLI 版本或拼写（docker --help）。"
         },
@@ -10070,7 +10755,7 @@
           "explain": "当前日志驱动不支持 docker logs。查看对应的外部日志存储。"
         },
         "docker_not_in_path": {
-          "match": "is not recognized",
+          "match": "is not a docker command",
           "level": "fatal",
           "explain": "系统找不到 docker 命令。安装 Docker Desktop 或把 docker 加入 PATH。"
         },
@@ -10078,6 +10763,576 @@
           "match": "Encountered errors while bringing up the project",
           "level": "fatal",
           "explain": "compose 启动时有服务失败。往上看每个服务的具体报错。"
+        },
+        "endpoint_exists": {
+          "match": "endpoint with name .* already exists",
+          "level": "fatal",
+          "explain": "同名网络端点残留。docker network disconnect 或重启 docker 清理。"
+        }
+      }
+    },
+    "powershell": {
+      "name": "PowerShell",
+      "patterns": {
+        "cmdlet_not_recognized": {
+          "match": "is not recognized as the name of a cmdlet||is not recognized as an internal or external command",
+          "level": "error",
+          "explain": "找不到这个命令。检查拼写，确认模块已导入、程序在 PATH 里。"
+        },
+        "execution_policy_disabled": {
+          "match": "running scripts is disabled on this system||is not digitally signed",
+          "level": "fatal",
+          "explain": "执行策略禁止运行脚本。Set-ExecutionPolicy RemoteSigned -Scope CurrentUser，或对该文件 Unblock-File。"
+        },
+        "bind_null_argument": {
+          "match": "Cannot bind argument to parameter",
+          "level": "error",
+          "explain": "传给参数的值是 null。上游命令没返回数据，先判空再传。"
+        },
+        "parameter_not_found": {
+          "match": "A parameter cannot be found that matches parameter name",
+          "level": "error",
+          "explain": "这个 cmdlet 没有该参数。Get-Help 命令名 看支持的参数。"
+        },
+        "validate_argument_failed": {
+          "match": "Cannot validate argument on parameter",
+          "level": "error",
+          "explain": "参数值没通过校验。看提示的 Validate 校验条件，修正取值。"
+        },
+        "missing_terminator": {
+          "match": "missing the terminator",
+          "level": "fatal",
+          "explain": "字符串/引号没有闭合。检查单双引号和 here-string 的结尾标记。"
+        },
+        "unexpected_token_ps": {
+          "match": "Unexpected token",
+          "level": "fatal",
+          "explain": "语法错误，出现了不该出现的符号。检查管道符、括号和引号配对。"
+        },
+        "missing_closing_brace": {
+          "match": "Missing closing '}'||Missing ')' in method call||Missing expression after",
+          "level": "fatal",
+          "explain": "缺少闭合括号或表达式不完整。配对检查代码块。"
+        },
+        "cannot_convert_type": {
+          "match": "Cannot convert the",
+          "level": "error",
+          "explain": "类型转换失败。看期望类型和实际值，必要时用 [类型] 强转。"
+        },
+        "null_array_index": {
+          "match": "Cannot index into a null array||array index evaluated to null",
+          "level": "error",
+          "explain": "对 null 数组取下标。先确认数组已创建、有元素。"
+        },
+        "null_method_call": {
+          "match": "cannot call a method on a null-valued expression",
+          "level": "error",
+          "explain": "对 null 调方法。上游返回了空，先判空再调用。"
+        },
+        "property_not_found_ps": {
+          "match": "cannot be found on this object",
+          "level": "error",
+          "explain": "对象上没有该属性。检查属性名和对象的实际类型（Get-Member）。"
+        },
+        "module_not_loaded": {
+          "match": "was not loaded||could not be loaded",
+          "level": "error",
+          "explain": "模块加载失败。检查模块路径、版本和执行策略，Import-Module 重试。"
+        },
+        "winrm_failed": {
+          "match": "WinRM cannot process the request||Connecting to remote server",
+          "level": "error",
+          "explain": "远程 PowerShell 连接失败。检查 WinRM 服务、TrustedHosts 和防火墙。"
+        },
+        "cannot_find_drive": {
+          "match": "Cannot find drive||does not exist for this drive",
+          "level": "error",
+          "explain": "盘符/驱动器不存在。检查路径盘符和 PSDrive。"
+        },
+        "method_invocation_failed": {
+          "match": "Method invocation failed because",
+          "level": "error",
+          "explain": ".NET 方法调用失败。看 caused by 的底层异常定位。"
+        },
+        "exception_calling": {
+          "match": "Exception calling",
+          "level": "error",
+          "explain": "调用 .NET 方法时抛了异常。看括号里的异常消息定位。"
+        },
+        "cannot_find_path_ps": {
+          "match": "Cannot find path",
+          "level": "error",
+          "explain": "路径不存在。检查拼写和工作目录（Get-Location）。"
+        },
+        "parameter_set_unresolved": {
+          "match": "Parameter set cannot be resolved",
+          "level": "error",
+          "explain": "传入的参数组合匹配不到任何参数集。Get-Help 查看各参数集的要求。"
+        },
+        "positional_parameter": {
+          "match": "A positional parameter cannot be found that accepts argument",
+          "level": "error",
+          "explain": "多出来的位置参数没地方放。检查参数顺序，或该参数需要命名传递。"
+        },
+        "parameter_specified_twice": {
+          "match": "is specified more than once",
+          "level": "error",
+          "explain": "同一个参数传了两次。检查是否有脚本拼接重复了参数。"
+        },
+        "missing_mandatory_parameters": {
+          "match": "missing mandatory parameters",
+          "level": "error",
+          "explain": "必填参数没给。看提示的参数名补上。"
+        },
+        "cannot_overwrite_variable": {
+          "match": "Cannot overwrite variable",
+          "level": "error",
+          "explain": "该变量受保护或只读。换变量名，或用 Remove-Variable 后重建。"
+        },
+        "exception_setting": {
+          "match": "Exception setting",
+          "level": "error",
+          "explain": "设置属性失败。检查属性类型和对象状态。"
+        },
+        "system_cannot_find_file": {
+          "match": "The system cannot find the file specified||The system cannot find the path specified",
+          "level": "error",
+          "explain": "系统找不到文件/路径。检查外部命令路径和环境变量。"
+        },
+        "network_path_not_found": {
+          "match": "The network path was not found",
+          "level": "error",
+          "explain": "网络路径不通。检查 UNC 路径、共享权限和目标主机。"
+        },
+        "assembly_not_loaded": {
+          "match": "Unable to find type||Make sure that the assembly containing this type is loaded",
+          "level": "error",
+          "explain": "找不到 .NET 类型。Add-Type -AssemblyName 加载程序集，或检查类型全名。"
+        },
+        "argument_transformation_failed": {
+          "match": "Cannot process argument transformation",
+          "level": "error",
+          "explain": "参数转换器处理失败。检查传入值的类型和转换逻辑。"
+        },
+        "no_overload_found": {
+          "match": "Cannot find an overload",
+          "level": "error",
+          "explain": "没有匹配参数个数/类型的重载。检查传参类型。"
+        },
+        "iwr_server_error": {
+          "match": "The remote server returned an error||The operation has timed out",
+          "level": "error",
+          "explain": "远程请求失败或超时。看状态码：404 地址错、401 认证、500 服务端问题。"
+        }
+      }
+    },
+    "vba": {
+      "name": "VBA",
+      "patterns": {
+        "object_required": {
+          "match": "Run-time error '424'||Object required",
+          "level": "fatal",
+          "explain": "需要对象却拿到了别的值。检查 Set 是否漏写，或对象变量是否初始化。"
+        },
+        "application_defined_error": {
+          "match": "Run-time error '1004'||Application-defined or object-defined error||of object '_Global' failed||Unable to get the",
+          "level": "fatal",
+          "explain": "Excel/Office 内部操作失败。常见为区域引用错误、工作表不存在或宏安全限制，检查 Range 地址和表名。"
+        },
+        "subscript_out_of_range": {
+          "match": "Run-time error '9'||Subscript out of range",
+          "level": "fatal",
+          "explain": "下标越界：工作表名/数组下标/集合键不存在。检查 Sheets(\"名字\") 拼写和数组边界。"
+        },
+        "type_mismatch_vba": {
+          "match": "Run-time error '13'||Type mismatch",
+          "level": "fatal",
+          "explain": "类型不匹配。检查变量声明和赋值，注意 Variant 与具体类型的转换。"
+        },
+        "object_variable_not_set": {
+          "match": "Run-time error '91'||Object variable or With block variable not set",
+          "level": "fatal",
+          "explain": "对象变量没有 Set 初始化。声明后要用 Set obj = ... 赋值。"
+        },
+        "no_property_or_method": {
+          "match": "Run-time error '438'||Object doesn't support this property or method",
+          "level": "fatal",
+          "explain": "对象没有这个属性/方法。检查拼写和对象的实际类型，或引用库版本。"
+        },
+        "vba_overflow": {
+          "match": "Run-time error '6'||Overflow",
+          "level": "fatal",
+          "explain": "数值超出类型范围。Integer 上限 32767，改用 Long 或 Double。"
+        },
+        "invalid_procedure_call": {
+          "match": "Run-time error '5'||Invalid procedure call or argument",
+          "level": "fatal",
+          "explain": "过程调用或参数非法。检查函数参数范围和拼写。"
+        },
+        "vba_out_of_memory": {
+          "match": "Run-time error '7'||Out of memory",
+          "level": "fatal",
+          "explain": "内存不足。检查是否有超大数组、对象循环创建未释放。"
+        },
+        "vba_permission_denied": {
+          "match": "Run-time error '70'||Permission denied",
+          "level": "fatal",
+          "explain": "权限不足。文件被占用或需要管理员权限，检查文件属性。"
+        },
+        "path_file_access_error": {
+          "match": "Run-time error '75'||Path/File access error",
+          "level": "fatal",
+          "explain": "路径/文件访问失败。检查路径拼写、文件是否只读或被占用。"
+        },
+        "vba_path_not_found": {
+          "match": "Run-time error '76'||Path not found",
+          "level": "fatal",
+          "explain": "路径不存在。检查目录拼写，需要先 MkDir 创建。"
+        },
+        "vba_file_not_found": {
+          "match": "Run-time error '53'||File not found",
+          "level": "fatal",
+          "explain": "文件找不到。检查路径和当前目录，用 Dir() 先判断存在。"
+        },
+        "input_past_eof": {
+          "match": "Run-time error '62'||Input past end of file",
+          "level": "fatal",
+          "explain": "读到文件末尾还在读。用 EOF() 判断，或检查循环边界。"
+        },
+        "compile_error_vba": {
+          "match": "Compile error",
+          "level": "fatal",
+          "explain": "编译错误。看提示：变量未定义、缺 End If/Sub、语法错误等，逐个修复。"
+        },
+        "byref_mismatch": {
+          "match": "ByRef argument type mismatch",
+          "level": "fatal",
+          "explain": "按引用传参的类型和声明不一致。参数声明成 Variant，或传匹配类型的变量。"
+        },
+        "argument_not_optional": {
+          "match": "Argument not optional",
+          "level": "fatal",
+          "explain": "必填参数没传。对照过程签名补全参数。"
+        },
+        "sub_not_defined": {
+          "match": "Sub or Function not defined",
+          "level": "fatal",
+          "explain": "调用的过程不存在。检查名字拼写，或所在模块没有被引用。"
+        },
+        "invalid_outside_procedure": {
+          "match": "Invalid outside procedure",
+          "level": "fatal",
+          "explain": "语句写在了过程外面。可执行语句要放到 Sub/Function 里。"
+        },
+        "project_or_library_missing": {
+          "match": "Can't find project or library",
+          "level": "fatal",
+          "explain": "引用的库缺失。工具-引用里取消丢失项（MISSING）并重新勾选正确版本。"
+        },
+        "macro_not_found": {
+          "match": "The macro cannot be found||Cannot run the macro",
+          "level": "fatal",
+          "explain": "找不到要运行的宏。检查宏名、所在工作簿和安全设置。"
+        },
+        "file_corrupted_vba": {
+          "match": "cannot be accessed. The file may be corrupted",
+          "level": "fatal",
+          "explain": "文件损坏或被锁定。用 Excel 打开修复，或关闭占用它的进程。"
+        },
+        "ole_waiting": {
+          "match": "waiting for another application to complete an OLE action",
+          "level": "warning",
+          "explain": "OLE 调用等待对方响应。对方（如 Word）可能弹了对话框，切过去处理。"
+        },
+        "out_of_stack_space": {
+          "match": "Out of stack space",
+          "level": "fatal",
+          "explain": "栈溢出，通常是无限递归。检查递归终止条件。"
+        },
+        "automation_error": {
+          "match": "Automation error||The object invoked has disconnected from its clients",
+          "level": "fatal",
+          "explain": "COM 自动化失败。对象连接断开，常见于早期关闭了 Office 应用或权限不足。"
+        },
+        "format_extension_mismatch": {
+          "match": "format and extension of",
+          "level": "warning",
+          "explain": "文件内容与扩展名不符。另存为正确格式，或调整打开方式。"
+        },
+        "external_table_format": {
+          "match": "External table is not in the expected format",
+          "level": "fatal",
+          "explain": "导入的外部表格式不对。检查文件真实格式，xlsx 要用不同的连接串。"
+        },
+        "activex_cannot_create": {
+          "match": "ActiveX component can't create object||File name or class name not found during Automation",
+          "level": "fatal",
+          "explain": "无法创建 COM 对象。组件未注册（regsvr32）或 32/64 位不匹配。"
+        },
+        "vba_division_by_zero": {
+          "match": "Run-time error '11'||Division by zero",
+          "level": "fatal",
+          "explain": "除以零。除法前检查除数。"
+        },
+        "invalid_use_of_null": {
+          "match": "Run-time error '94'||Invalid use of Null",
+          "level": "fatal",
+          "explain": "把 Null 赋给了不接受它的类型。先 IsNull 判断，或用 Nz()/默认值。"
+        },
+        "invalid_property_array_index": {
+          "match": "Run-time error '381'||Invalid property array index",
+          "level": "fatal",
+          "explain": "属性数组下标越界。检查索引范围。"
+        }
+      }
+    },
+    "matlab": {
+      "name": "MATLAB",
+      "patterns": {
+        "unrecognized_variable": {
+          "match": "Unrecognized function or variable||Undefined function or variable||Undefined variable",
+          "level": "error",
+          "explain": "这个名字没定义。检查拼写、大小写（MATLAB 区分大小写），确认脚本/函数在路径上。"
+        },
+        "index_exceeds_bounds": {
+          "match": "Index in position .* exceeds array bounds||Index exceeds the number of array elements||Index exceeds matrix dimensions",
+          "level": "error",
+          "explain": "下标超出数组大小。MATLAB 索引从 1 开始，用 size 检查边界。"
+        },
+        "subscript_not_integer": {
+          "match": "Subscript indices must either be real positive integers or logicals||Array indices must be positive integers or logical values",
+          "level": "error",
+          "explain": "下标必须是正整数或逻辑值。检查索引计算是否产生了 0、负数或小数。"
+        },
+        "assignment_not_convertible": {
+          "match": "is not convertible to",
+          "level": "error",
+          "explain": "赋值类型无法转换。检查左右两边的类型和尺寸。"
+        },
+        "unable_resolve_name": {
+          "match": "Unable to resolve the name",
+          "level": "error",
+          "explain": "解析不了这个名字。检查是否在路径上、是否被变量遮蔽了函数名。"
+        },
+        "undefined_operator": {
+          "match": "Undefined operator||for input arguments of type",
+          "level": "error",
+          "explain": "该类型不支持这个运算/函数。检查参数类型，可能需要转换或换函数。"
+        },
+        "too_many_input_args": {
+          "match": "Too many input arguments",
+          "level": "error",
+          "explain": "传入参数过多。对照函数定义减少参数。"
+        },
+        "not_enough_input_args": {
+          "match": "Not enough input arguments",
+          "level": "error",
+          "explain": "必填参数没给够。对照函数定义补全。"
+        },
+        "matlab_oom": {
+          "match": "Out of memory",
+          "level": "fatal",
+          "explain": "内存不足。数组太大，用 single/tiled 分块处理，或 clear 不用的大变量。"
+        },
+        "concat_dims": {
+          "match": "Dimensions of arrays being concatenated",
+          "level": "error",
+          "explain": "拼接的数组维度不匹配。horzcat 要求行数一致，vertcat 要求列数一致。"
+        },
+        "matrix_dims_must_agree": {
+          "match": "dimensions must agree",
+          "level": "error",
+          "explain": "矩阵运算维度不一致。检查矩阵形状，必要时转置或 reshape。"
+        },
+        "assignment_size_mismatch": {
+          "match": "sizes of the left and right sides do not match||Subscripted assignment dimension mismatch",
+          "level": "error",
+          "explain": "赋值两边尺寸不一致。检查下标个数和右侧元素个数。"
+        },
+        "invalid_target": {
+          "match": "not a valid target for assignment",
+          "level": "error",
+          "explain": "等号左边不能被赋值。检查是表达式还是变量。"
+        },
+        "invalid_expression_parens": {
+          "match": "use parentheses",
+          "level": "fatal",
+          "explain": "函数调用/索引要用圆括号，而不是空格或方括号。检查写法。"
+        },
+        "unexpected_expression": {
+          "match": "Unexpected MATLAB expression",
+          "level": "fatal",
+          "explain": "表达式不完整或位置不对。检查是否漏了运算符或括号。"
+        },
+        "invalid_use_of_operator": {
+          "match": "Invalid use of operator",
+          "level": "fatal",
+          "explain": "运算符用法不对。检查运算符两侧的操作数。"
+        },
+        "unbalanced_bracket": {
+          "match": "Unbalanced or unexpected parenthesis or bracket",
+          "level": "fatal",
+          "explain": "括号不配对。检查 [ ( { 的闭合。"
+        },
+        "script_as_function": {
+          "match": "Attempt to execute SCRIPT as a function",
+          "level": "error",
+          "explain": "把脚本当函数调用了。脚本不能带参数调用，改写成函数文件。"
+        },
+        "static_workspace": {
+          "match": "to a static workspace",
+          "level": "error",
+          "explain": "嵌套函数里动态创建了变量。变量必须在代码里显式定义，不能 eval 动态生成。"
+        },
+        "case_sensitive_match": {
+          "match": "case-sensitive",
+          "level": "error",
+          "explain": "大小写不完全匹配。MATLAB 区分大小写，按提示修正。"
+        },
+        "conversion_not_possible": {
+          "match": "is not possible",
+          "level": "error",
+          "explain": "类型转换不可行。检查源数据的类型和内容。"
+        },
+        "cell_contents_ref": {
+          "match": "Cell contents reference from a non-cell array||Cell contents assignment to a non-cell array",
+          "level": "error",
+          "explain": "对非 cell 数组用了 {}。普通数组用 ()，cell 才用 {}。"
+        },
+        "curly_dot_indexing": {
+          "match": "Expected one output from a curly brace or dot indexing",
+          "level": "error",
+          "explain": "花括号/点索引只能取一个输出。逐个取值或循环处理。"
+        },
+        "dot_indexing_unsupported": {
+          "match": "Dot indexing is not supported for variables of this type",
+          "level": "error",
+          "explain": "该类型不支持点访问字段。检查变量是不是结构体或对象。"
+        },
+        "end_operator_invalid": {
+          "match": "The end operator must be used within an array indexing",
+          "level": "error",
+          "explain": "end 只能用在数组下标里。检查是否写错了位置。"
+        },
+        "vectors_same_length": {
+          "match": "Vectors must be the same length",
+          "level": "error",
+          "explain": "两组向量长度不一致。检查绘图/运算的数据长度。"
+        },
+        "license_checkout_failed": {
+          "match": "License checkout failed||License Manager Error",
+          "level": "fatal",
+          "explain": "许可证校验失败。检查 license 文件、服务器连接和工具箱授权。"
+        }
+      }
+    },
+    "haskell": {
+      "name": "Haskell",
+      "patterns": {
+        "not_in_scope": {
+          "match": "Variable not in scope||Data constructor not in scope||Not in scope:",
+          "level": "error",
+          "explain": "这个绑定不在作用域内。检查拼写、import 是否写了，或是否漏了模块前缀。"
+        },
+        "expected_actual_type": {
+          "match": "Couldn't match expected type",
+          "level": "error",
+          "explain": "类型对不上。报错给出期望类型和实际类型，顺着定位到表达式修正。"
+        },
+        "ambiguous_type_variable": {
+          "match": "Ambiguous type variable",
+          "level": "error",
+          "explain": "推不出这个类型变量的具体类型。加类型标注，或用 type annotation 消歧。"
+        },
+        "no_instance_for": {
+          "match": "No instance for",
+          "level": "error",
+          "explain": "缺少类型类实例。补 deriving/implement，或确认类型确实满足该约束。"
+        },
+        "could_not_deduce": {
+          "match": "Could not deduce",
+          "level": "error",
+          "explain": "类型推断需要这个约束但推不出来。加显式签名或补约束。"
+        },
+        "infinite_type": {
+          "match": "infinite type",
+          "level": "error",
+          "explain": "类型无穷递归（如 a = [a]）。通常是函数应用写反了参数顺序。"
+        },
+        "parse_error_haskell": {
+          "match": "parse error",
+          "level": "fatal",
+          "explain": "语法错误，常见为缩进不对或括号不配对。Haskell 依赖缩进划分代码块。"
+        },
+        "prelude_empty": {
+          "match": "empty list||empty structure",
+          "level": "fatal",
+          "explain": "对空结构调用了 head/tail/maximum 等部分函数。用模式匹配或 safe 版本处理空值。"
+        },
+        "index_too_large": {
+          "match": "index too large",
+          "level": "fatal",
+          "explain": "!! 的下标超出列表长度。先检查长度或用安全取值。"
+        },
+        "fromjust_nothing": {
+          "match": "fromJust: Nothing",
+          "level": "fatal",
+          "explain": "对 Nothing 调了 fromJust。用 maybe/模式匹配处理 Nothing。"
+        },
+        "haskell_div_zero": {
+          "match": "divide by zero",
+          "level": "fatal",
+          "explain": "除以零。除法前检查除数，或用 Ratio/Maybe 包装。"
+        },
+        "non_exhaustive_patterns": {
+          "match": "Non-exhaustive patterns",
+          "level": "fatal",
+          "explain": "模式匹配没有覆盖所有情况，运行时崩了。补全分支或加通配兜底。"
+        },
+        "irrefutable_failed": {
+          "match": "Irrefutable pattern failed",
+          "level": "fatal",
+          "explain": "~ 惰性模式在真正取值时失败了。别用 ~ 掩盖匹配失败。"
+        },
+        "signature_without_binding": {
+          "match": "lacks an accompanying binding",
+          "level": "error",
+          "explain": "写了类型签名但没有对应定义。补上实现，或检查名字拼写。"
+        },
+        "module_filename_mismatch": {
+          "match": "File name does not match module name",
+          "level": "error",
+          "explain": "模块名和文件名不一致。Haskell 要求 Module.Foo 在 Module/Foo.hs。"
+        },
+        "could_not_find_module": {
+          "match": "Could not find module",
+          "level": "error",
+          "explain": "找不到模块。检查依赖是否安装、package.yaml/cabal 是否声明。"
+        },
+        "ambiguous_occurrence": {
+          "match": "Ambiguous occurrence",
+          "level": "error",
+          "explain": "多个导入有同名绑定。用限定名 Module.name 或 import 限定导入。"
+        },
+        "multiple_declarations": {
+          "match": "Multiple declarations",
+          "level": "error",
+          "explain": "同名绑定重复定义。删除多余定义或重命名。"
+        },
+        "last_statement_do": {
+          "match": "last statement in a 'do' block must be an expression",
+          "level": "fatal",
+          "explain": "do 块最后一行要是一个表达式（返回值）。检查是不是把绑定写在了最后。"
+        },
+        "expecting_more_args": {
+          "match": "Expecting one more argument",
+          "level": "error",
+          "explain": "类型还差一个参数才完整。补全类型参数，如 Maybe Int。"
+        },
+        "stack_overflow_haskell": {
+          "match": "Stack space overflow",
+          "level": "fatal",
+          "explain": "栈溢出，常见于非惰性的大规模 fold。改用严格版本（foldl'）或调整惰性结构。"
         }
       }
     }
