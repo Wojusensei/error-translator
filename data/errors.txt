@@ -2262,3 +2262,15 @@ HTTP|508 Loop Detected|error|508：请求循环检测。多为重定向配置成
 HTTP|511 Network Authentication Required|error|511：需要网络认证（如 WiFi 登录页）。先完成网络认证再请求。|网络
 HTTP|525 SSL Handshake Failed|fatal|525：源站与 Cloudflare 的 TLS 握手失败。检查源站证书与 SSL 模式配置。|网络
 HTTP|526 Invalid SSL Certificate|fatal|526：源站证书校验不通过。更新源站证书或调整 Cloudflare 的 SSL 校验级别。|网络
+CI/CD|Process completed with exit code|fatal|步骤以非零码退出：1 常规失败、127 命令不存在、137 被 OOM/kill、143 被 SIGTERM。看步骤日志定位。|内存/资源
+CI/CD|The runner has received a shutdown signal||runner service is stopped|warning|runner 收到停机信号被中断，多为组织维护或任务超时。重新运行 Job。|运行时
+CI/CD|Unable to resolve action|fatal|找不到引用的 action 或版本。检查 uses 的仓库/tag 拼写，确认仓库存在且可访问。|运行时
+CI/CD|Resource not accessible by integration|fatal|GITHUB_TOKEN 权限不足。在 workflow 里加 permissions 块，或检查仓库 Actions 设置。|权限
+CI/CD|The workflow is not valid|fatal|workflow 文件校验失败。看后面的具体行号和原因，通常是 YAML 结构或字段错误。|配置
+CI/CD|Unrecognized named-value|fatal|用了不存在的上下文/表达式名。检查 secrets/vars/env 等上下文拼写和可用范围。|运行时
+CI/CD|exceeded the maximum execution time|fatal|Job 超过最大执行时长被终止。优化任务耗时，或拆分 Job / 自建 runner。|运行时
+CI/CD|Input required and not supplied|fatal|action 的必填 input 没传。对照 action 文档补全 with 参数。|依赖/环境
+CI/CD|must contain at least one job with no 'needs' dependency|fatal|所有 job 都在等别的 job，形成了没有入口的依赖链。至少留一个不带 needs 的 job。|依赖/环境
+CI/CD|Invalid cron expression|fatal|定时触发的 cron 写法不对。注意 GHA 用的是标准五段 cron，且以 UTC 计时。|运行时
+CI/CD|No event triggers defined in|warning|workflow 没有定义 on 触发器，永远不会运行。补上 push/pull_request/schedule 等。|运行时
+CI/CD|Every step must have a `uses` or `run` key|fatal|每个 step 必须有 uses 或 run。检查漏写的步骤。|运行时

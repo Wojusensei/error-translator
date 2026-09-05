@@ -59,6 +59,7 @@
 | MATLAB      | 27 | `Unrecognized function or variable`、下标越界、维度不一致、cell 用法、许可证       |
 | Haskell     | 21 | `Variable not in scope`、`Couldn't match type`、`No instance for`、空列表崩溃      |
 | HTTP        | 27 | 4xx/5xx 全系状态码：`401`、`403`、`404`、`429` 限流、`502 Bad Gateway`、CF 52x     |
+| CI/CD       | 12 | GitHub Actions：退出码含义、runner 停机、action 解析失败、GITHUB_TOKEN 权限       |
 
 ---
 

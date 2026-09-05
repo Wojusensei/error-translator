@@ -11475,6 +11475,71 @@
           "explain": "526：源站证书校验不通过。更新源站证书或调整 Cloudflare 的 SSL 校验级别。"
         }
       }
+    },
+    "cicd": {
+      "name": "CI/CD",
+      "patterns": {
+        "gha_exit_code": {
+          "match": "Process completed with exit code",
+          "level": "fatal",
+          "explain": "步骤以非零码退出：1 常规失败、127 命令不存在、137 被 OOM/kill、143 被 SIGTERM。看步骤日志定位。"
+        },
+        "gha_runner_shutdown": {
+          "match": "The runner has received a shutdown signal||runner service is stopped",
+          "level": "warning",
+          "explain": "runner 收到停机信号被中断，多为组织维护或任务超时。重新运行 Job。"
+        },
+        "gha_unable_resolve_action": {
+          "match": "Unable to resolve action",
+          "level": "fatal",
+          "explain": "找不到引用的 action 或版本。检查 uses 的仓库/tag 拼写，确认仓库存在且可访问。"
+        },
+        "gha_integration_permission": {
+          "match": "Resource not accessible by integration",
+          "level": "fatal",
+          "explain": "GITHUB_TOKEN 权限不足。在 workflow 里加 permissions 块，或检查仓库 Actions 设置。"
+        },
+        "gha_workflow_invalid": {
+          "match": "The workflow is not valid",
+          "level": "fatal",
+          "explain": "workflow 文件校验失败。看后面的具体行号和原因，通常是 YAML 结构或字段错误。"
+        },
+        "gha_unrecognized_named_value": {
+          "match": "Unrecognized named-value",
+          "level": "fatal",
+          "explain": "用了不存在的上下文/表达式名。检查 secrets/vars/env 等上下文拼写和可用范围。"
+        },
+        "gha_max_exec_time": {
+          "match": "exceeded the maximum execution time",
+          "level": "fatal",
+          "explain": "Job 超过最大执行时长被终止。优化任务耗时，或拆分 Job / 自建 runner。"
+        },
+        "gha_input_required": {
+          "match": "Input required and not supplied",
+          "level": "fatal",
+          "explain": "action 的必填 input 没传。对照 action 文档补全 with 参数。"
+        },
+        "gha_needs_root_job": {
+          "match": "must contain at least one job with no 'needs' dependency",
+          "level": "fatal",
+          "explain": "所有 job 都在等别的 job，形成了没有入口的依赖链。至少留一个不带 needs 的 job。"
+        },
+        "gha_invalid_cron": {
+          "match": "Invalid cron expression",
+          "level": "fatal",
+          "explain": "定时触发的 cron 写法不对。注意 GHA 用的是标准五段 cron，且以 UTC 计时。"
+        },
+        "gha_no_event_trigger": {
+          "match": "No event triggers defined in",
+          "level": "warning",
+          "explain": "workflow 没有定义 on 触发器，永远不会运行。补上 push/pull_request/schedule 等。"
+        },
+        "gha_step_missing_key": {
+          "match": "Every step must have a `uses` or `run` key",
+          "level": "fatal",
+          "explain": "每个 step 必须有 uses 或 run。检查漏写的步骤。"
+        }
+      }
     }
   }
 }
