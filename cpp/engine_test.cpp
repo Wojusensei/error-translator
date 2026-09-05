@@ -145,6 +145,17 @@ int main(int argc, char** argv) {
                "traceback source file/line extracted");
     }
 
+    // JS 堆栈感知：源定位取最后一个 at 帧
+    {
+        std::string json = translate(
+            "TypeError: Cannot read properties of undefined (reading 'map')\n"
+            "    at render (app.js:42:17)\n"
+            "    at commitHook (bundle.mjs:8:1)", rules);
+        expect(lang_is(json, "JavaScript"), "js stack matches JavaScript");
+        expect(json.find("\"source\":{\"file\":\"bundle.mjs\",\"line\":8}") != std::string::npos,
+               "js stack source extracted (last frame)");
+    }
+
     // top-3 候选：alternatives 按位置排序给出，主结果不变
     {
         std::string json = translate("undefined reference to `foo'", rules);

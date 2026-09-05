@@ -673,6 +673,7 @@ html[data-theme="light"] .kbd{box-shadow:0 1px 0 rgba(0,0,0,.06)}
           <div class="found-side">
             <span class="level-badge" id="resLevel"></span>
             <span class="source-tag" id="resCategory"></span>
+            <span class="source-tag" id="resSrcFile" hidden></span>
             <span class="source-tag" id="resSource"></span>
           </div>
         </div>
@@ -858,6 +859,21 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     return null;
   }
 
+  function findPythonSource(text) {
+    if (!text.includes("Traceback (most recent call last)")) return null;
+    const re = /File "([^"]+)", line (\d+)/g;
+    let m, last = null;
+    while ((m = re.exec(text)) !== null) last = m;
+    return last ? {file: last[1], line: parseInt(last[2], 10)} : null;
+  }
+
+  function findJsSource(text) {
+    const re = /\n\s+at [^\n]+?\(?([\w./\\@-]+\.(?:js|mjs|cjs|ts|tsx|jsx)):(\d+):\d+\)?/g;
+    let m, last = null;
+    while ((m = re.exec(text)) !== null) last = m;
+    return last ? {file: last[1], line: parseInt(last[2], 10)} : null;
+  }
+
   function rankMatches(text, target, subset, n) {
     const hits = [];
     for (const r of subset) {
@@ -897,7 +913,8 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     for (const token of primary.match.split("||")) {
       if (findToken(target, token) || findToken(text, token)) { hitToken = token; break; }
     }
-    return {rule: primary, hitToken, alternatives: ranked.slice(1)};
+    const source = findPythonSource(text) || findJsSource(text);
+    return {rule: primary, hitToken, alternatives: ranked.slice(1), source};
   }
 
   function plainToken(token) {
@@ -989,7 +1006,8 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
       match: data.match || "",
       level: data.level || "error",
       explain: data.explain || "",
-      alternatives: (data.alternatives || []).map(a => ({rule: a}))
+      alternatives: (data.alternatives || []).map(a => ({rule: a})),
+      source: data.source || null
     };
   }
 
@@ -1018,7 +1036,7 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     if (!result) {
       const m = matchRules(text, RULES);
       if (m) {
-        result = {rule: m.rule, hitToken: m.hitToken, alternatives: m.alternatives};
+        result = {rule: m.rule, hitToken: m.hitToken, alternatives: m.alternatives, source: m.source};
         source = "LOCAL";
       }
     }
@@ -1028,16 +1046,16 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     if (elapsed < minWait) await sleep(minWait - elapsed);
 
     if (result && result.rule) {
-      renderFound(result.rule, result.hitToken, text, source, elapsed, result.alternatives || []);
+      renderFound(result.rule, result.hitToken, text, source, elapsed, result.alternatives || [], result.source || null);
     } else if (result) {
-      renderFound(result, "", text, source, elapsed, result.alternatives || []);
+      renderFound(result, "", text, source, elapsed, result.alternatives || [], result.source || null);
     } else {
       renderNotFound(text, elapsed);
     }
     addHistory(text, result ? result.rule || result : null);
   }
 
-  function renderFound(rule, hitToken, text, source, elapsed, alternatives) {
+  function renderFound(rule, hitToken, text, source, elapsed, alternatives, srcRef) {
     $("resLang").textContent = rule.lang;
     const chips = $("resChips");
     chips.textContent = "";
@@ -1055,6 +1073,16 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
     $("resExplain").textContent = rule.explain;
     $("resSource").textContent = source;
     $("resCategory").textContent = rule.category || "";
+    const srcTag = $("resSrcFile");
+    if (srcRef) {
+      srcTag.hidden = false;
+      srcTag.textContent = "出错位置 " + srcRef.file + ":" + srcRef.line;
+      srcTag.title = "点击复制";
+      srcTag.onclick = () => navigator.clipboard.writeText(srcRef.file + ":" + srcRef.line).catch(() => {});
+    } else {
+      srcTag.hidden = true;
+      srcTag.onclick = null;
+    }
 
     const hit = hitToken ? hitLineInfo(text, hitToken) : null;
     $("hitBlock").hidden = !hit;
@@ -1101,7 +1129,7 @@ const SAMPLES = /*SAMPLES_START*/{"Python": "NameError: name 'data' is not defin
       b.textContent = (alt.lang || "?") + " · " + (label.length > 30 ? label.slice(0, 30) + "…" : label);
       b.title = alt.explain || "";
       b.addEventListener("click", () => {
-        renderFound(alt, null, text, source, elapsed, alts.filter(x => (x.rule || x) !== alt));
+        renderFound(alt, null, text, source, elapsed, alts.filter(x => (x.rule || x) !== alt), srcRef);
       });
       altBox.appendChild(b);
     });

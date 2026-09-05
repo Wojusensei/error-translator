@@ -9,6 +9,7 @@
 #define ERROR_TRANSLATOR_ENGINE_H
 
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -86,6 +87,44 @@ SourceRef find_python_source(const std::string& input) {
             from = digits;
         } else {
             from = name_end;
+        }
+    }
+    return s;
+}
+
+// JS/V8 堆栈里的出错位置（最后一个 at 框架，形如 app.js:42:17）
+SourceRef find_js_source(const std::string& input) {
+    SourceRef s;
+    static const char* exts[] = {".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx"};
+    size_t from = 0;
+    while (true) {
+        size_t at = input.find("\n    at ", from);
+        if (at == std::string::npos) break;
+        from = at + 8;
+        size_t line_end = input.find('\n', from);
+        if (line_end == std::string::npos) line_end = input.size();
+        std::string frame = input.substr(from, line_end - from);
+        // "fn (app.js:42:17)" 或 "app.js:42:17"
+        size_t open = frame.rfind('(');
+        size_t close = frame.find(')', open == std::string::npos ? 0 : open);
+        std::string loc = (open != std::string::npos && close != std::string::npos)
+            ? frame.substr(open + 1, close - open - 1) : frame;
+        size_t colon2 = loc.rfind(':');
+        if (colon2 == std::string::npos || colon2 == 0) continue;
+        size_t colon1 = loc.rfind(':', colon2 - 1);
+        if (colon1 == std::string::npos) continue;
+        std::string line_str = loc.substr(colon1 + 1, colon2 - colon1 - 1);
+        if (line_str.empty() || line_str.find_first_not_of("0123456789") != std::string::npos) continue;
+        std::string file = loc.substr(0, colon1);
+        bool has_ext = false;
+        for (const char* e : exts) {
+            size_t n = strlen(e);
+            if (file.size() >= n && file.compare(file.size() - n, n, e) == 0) { has_ext = true; break; }
+        }
+        if (has_ext) {
+            s.ok = true;
+            s.file = file;
+            s.line = std::atoi(line_str.c_str());
         }
     }
     return s;
@@ -286,6 +325,7 @@ std::string translate(const std::string& input, const std::vector<Rule>& rules) 
 
     std::string out = "{\"found\":true," + rule_json_fields(ranked[0]);
     SourceRef src = find_python_source(input);
+    if (!src.ok) src = find_js_source(input);
     if (src.ok) {
         out += ",\"source\":{\"file\":\"" + json_escape(src.file) +
                "\",\"line\":" + std::to_string(src.line) + "}";
