@@ -54,8 +54,56 @@ std::vector<Rule> load_rules() {
     return rules;
 }
 
+// Python Traceback 里的出错位置（最后一个 File "x", line N）
+struct SourceRef {
+    bool ok = false;
+    std::string file;
+    int line = 0;
+};
+
+SourceRef find_python_source(const std::string& input) {
+    SourceRef s;
+    if (input.find("Traceback (most recent call last)") == std::string::npos) return s;
+    size_t from = 0;
+    while (true) {
+        size_t f = input.find("File \"", from);
+        if (f == std::string::npos) break;
+        size_t name_start = f + 6;
+        size_t name_end = input.find('"', name_start);
+        if (name_end == std::string::npos) break;
+        if (input.compare(name_end, 8, "\", line ") == 0) {
+            size_t digits = name_end + 8;
+            int line = 0;
+            while (digits < input.size() && input[digits] >= '0' && input[digits] <= '9') {
+                line = line * 10 + (input[digits] - '0');
+                digits++;
+            }
+            if (line > 0) {
+                s.ok = true;
+                s.file = input.substr(name_start, name_end - name_start);
+                s.line = line;
+            }
+            from = digits;
+        } else {
+            from = name_end;
+        }
+    }
+    return s;
+}
+
 // 从一大段报错里提取第一行关键词：优先取 ": " 之后的正文、去掉 "[xx]" 后缀
 std::string extract_keywords(const std::string& input) {
+    // Python Traceback：真正要解释的异常在最后一行，拿它当匹配目标
+    if (input.find("Traceback (most recent call last)") != std::string::npos) {
+        size_t last_char = input.find_last_not_of(" \t\r\n");
+        if (last_char != std::string::npos) {
+            size_t begin = input.rfind('\n', last_char);
+            std::string last_line = (begin == std::string::npos)
+                ? input.substr(0, last_char + 1)
+                : input.substr(begin + 1, last_char - begin);
+            if (!last_line.empty()) return last_line;
+        }
+    }
     std::string result = input;
 
     size_t colon = result.find(": ");
@@ -237,6 +285,11 @@ std::string translate(const std::string& input, const std::vector<Rule>& rules) 
     if (ranked.empty()) return "{\"found\":false}";
 
     std::string out = "{\"found\":true," + rule_json_fields(ranked[0]);
+    SourceRef src = find_python_source(input);
+    if (src.ok) {
+        out += ",\"source\":{\"file\":\"" + json_escape(src.file) +
+               "\",\"line\":" + std::to_string(src.line) + "}";
+    }
     if (ranked.size() > 1) {
         out += ",\"alternatives\":[";
         for (size_t i = 1; i < ranked.size(); i++) {

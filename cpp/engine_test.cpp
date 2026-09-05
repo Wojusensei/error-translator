@@ -133,6 +133,18 @@ int main(int argc, char** argv) {
                std::string("input [") + t[0] + "] expected lang " + t[1] + " got: " + json.substr(0, 80));
     }
 
+    // Traceback 感知：匹配目标取最后一行异常，并给出 File/line
+    {
+        std::string json = translate(
+            "Traceback (most recent call last):\n"
+            "  File \"app.py\", line 12, in <module>\n"
+            "    print(user.name)\n"
+            "NameError: name 'user' is not defined", rules);
+        expect(lang_is(json, "Python"), "traceback matches Python");
+        expect(json.find("\"source\":{\"file\":\"app.py\",\"line\":12}") != std::string::npos,
+               "traceback source file/line extracted");
+    }
+
     // top-3 候选：alternatives 按位置排序给出，主结果不变
     {
         std::string json = translate("undefined reference to `foo'", rules);
