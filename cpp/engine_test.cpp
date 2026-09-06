@@ -121,11 +121,50 @@ int main(int argc, char** argv) {
         {"Exception has occurred: heap-buffer-overflow on address 0x60200000eff1", "C++"},
         {"java.lang.IllegalStateException: Invalid bound statement (not found): com.foo.UserMapper.select", "Java"},
         {"System.InvalidOperationException: The JSON value could not be converted to System.Int32", "C#"},
+        {"Unhandled exception. System.IO.FileNotFoundException: Could not load file 'x'.", "C#"},
+        {"error[E0382]: use of moved value", "Rust"},
+        {"e: file.kt:3:1 Unresolved reference: foo", "Kotlin"},
+        {"Traceback (most recent call last):\n  File \"x.py\", line 1, in <module>\nKeyError: 'k'", "Python"},
+        {"panic: runtime error: index out of range [5] with length 3", "Go"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);
         expect(lang_is(json, t[1]),
                std::string("input [") + t[0] + "] expected lang " + t[1] + " got: " + json.substr(0, 80));
+    }
+
+    // Traceback 感知：匹配目标取最后一行异常，并给出 File/line
+    {
+        std::string json = translate(
+            "Traceback (most recent call last):\n"
+            "  File \"app.py\", line 12, in <module>\n"
+            "    print(user.name)\n"
+            "NameError: name 'user' is not defined", rules);
+        expect(lang_is(json, "Python"), "traceback matches Python");
+        expect(json.find("\"source\":{\"file\":\"app.py\",\"line\":12}") != std::string::npos,
+               "traceback source file/line extracted");
+    }
+
+    // JS 堆栈感知：源定位取最后一个 at 帧
+    {
+        std::string json = translate(
+            "TypeError: Cannot read properties of undefined (reading 'map')\n"
+            "    at render (app.js:42:17)\n"
+            "    at commitHook (bundle.mjs:8:1)", rules);
+        expect(lang_is(json, "JavaScript"), "js stack matches JavaScript");
+        expect(json.find("\"source\":{\"file\":\"bundle.mjs\",\"line\":8}") != std::string::npos,
+               "js stack source extracted (last frame)");
+    }
+
+    // top-3 候选：alternatives 按位置排序给出，主结果不变
+    {
+        std::string json = translate("undefined reference to `foo'", rules);
+        expect(json.find("\"alternatives\"") != std::string::npos, "alternatives present for multi-lang hit");
+        expect(lang_is(json, "C++"), "primary unchanged with alternatives");
+    }
+    {
+        std::string json = translate("ImproperlyConfigured: The SECRET_KEY setting must not be empty.", rules);
+        expect(json.find("\"alternatives\"") == std::string::npos, "no alternatives when single hit");
     }
 
     // 没有匹配时要返回 found:false，而不是崩溃或乱给结果

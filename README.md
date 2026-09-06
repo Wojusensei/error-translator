@@ -2,9 +2,11 @@
 
 一款玩具式多语言程序报错翻译工具，可以**粘贴报错信息，返回解释和修复建议**
 
-目前支持 24 种编程语言，共收录 1434 条报错类型，加上多个匹配别名能识别 1784+ 种真实报错变体，当然过于复杂的没做匹配
+目前支持 24 种编程语言，共收录 2312 条报错类型，加上多个匹配别名能识别 2838+ 种真实报错变体，当然过于复杂的没做匹配
 
 这是个很烂的模版化小项目，甚至只支持了 Windows ，后端代码都是写着玩的，做复习用，有大部分报错并未收录，请谅解
+
+引擎支持：粘贴报错自动识别语言（限定匹配范围）→ 返回主结果与最多两个候选（其他可能）→ Python Traceback / JS 堆栈自动提取出错文件行号，规则带类别可筛选。
 
 ---
 
@@ -58,6 +60,10 @@
 | VBA         | 31 | `Run-time error '1004'`、`Object required`、下标越界、类型不匹配、Automation 错误 |
 | MATLAB      | 27 | `Unrecognized function or variable`、下标越界、维度不一致、cell 用法、许可证       |
 | Haskell     | 21 | `Variable not in scope`、`Couldn't match type`、`No instance for`、空列表崩溃      |
+| HTTP        | 27 | 4xx/5xx 全系状态码：`401`、`403`、`404`、`429` 限流、`502 Bad Gateway`、CF 52x     |
+| CI/CD       | 21 | GitHub Actions、Jenkins pipeline（沙箱/DSL/仓库连接）、GitLab CI 校验            |
+| 包管理器    | 15 | npm：missing script/EACCES/EINTEGRITY；pnpm/yarn：版本冲突、lockfile、corepack   |
+| 前端构建    | 12 | webpack/vite/rollup：loader 缺失、模块解析失败、dev server 启动错误、体积告警     |
 
 ---
 

@@ -11335,6 +11335,401 @@
           "explain": "栈溢出，常见于非惰性的大规模 fold。改用严格版本（foldl'）或调整惰性结构。"
         }
       }
+    },
+    "http": {
+      "name": "HTTP",
+      "patterns": {
+        "http_400": {
+          "match": "400 Bad Request||HTTP/1.1 400||HTTP 400",
+          "level": "error",
+          "explain": "400：请求本身不合法。检查请求体 JSON 格式、必填参数和 Content-Type。"
+        },
+        "http_401": {
+          "match": "401 Unauthorized||HTTP/1.1 401",
+          "level": "error",
+          "explain": "401：未认证。检查 Authorization 头、令牌是否过期或格式错误（Bearer 前缀）。"
+        },
+        "http_403": {
+          "match": "403 Forbidden||HTTP/1.1 403",
+          "level": "error",
+          "explain": "403：已认证但无权限。检查账号角色、接口授权范围，或是否触发了风控/IP 封禁。"
+        },
+        "http_404": {
+          "match": "HTTP/1.1 404||HTTP 404||404 page not found",
+          "level": "error",
+          "explain": "404：资源或路由不存在。检查 URL 拼写、请求方法和路由注册，确认部署版本有这个接口。"
+        },
+        "http_405": {
+          "match": "405 Method Not Allowed",
+          "level": "error",
+          "explain": "405：该路径不支持这种 HTTP 方法。GET/POST 用错了，对照接口文档。"
+        },
+        "http_407": {
+          "match": "407 Proxy Authentication Required",
+          "level": "error",
+          "explain": "407：代理需要认证。检查代理服务器的账号密码配置。"
+        },
+        "http_408": {
+          "match": "408 Request Timeout",
+          "level": "error",
+          "explain": "408：服务器等请求体等超时了。多为网络太慢或客户端提前断开，可重试。"
+        },
+        "http_409": {
+          "match": "409 Conflict",
+          "level": "error",
+          "explain": "409：状态冲突。常见为唯一键/版本冲突，先查最新数据再决定覆盖或合并。"
+        },
+        "http_410": {
+          "match": "410 Gone",
+          "level": "error",
+          "explain": "410：资源已被永久移除。别再重试这个地址，找新接口。"
+        },
+        "http_412": {
+          "match": "412 Precondition Failed",
+          "level": "error",
+          "explain": "412：If-Match/If-None-Match 前置条件不满足。常见于乐观锁版本号过期，刷新数据后重试。"
+        },
+        "http_413": {
+          "match": "413 Payload Too Large||413 Request Entity Too Large",
+          "level": "error",
+          "explain": "413：请求体超过大小限制。压缩内容、分片上传，或调大服务端 body 限制。"
+        },
+        "http_415": {
+          "match": "415 Unsupported Media Type",
+          "level": "error",
+          "explain": "415：Content-Type 服务端不认。比如发 JSON 却没写 application/json。"
+        },
+        "http_422": {
+          "match": "422 Unprocessable Entity",
+          "level": "error",
+          "explain": "422：格式对但语义校验失败。看响应体里的字段级错误信息逐个修。"
+        },
+        "http_428": {
+          "match": "428 Precondition Required",
+          "level": "error",
+          "explain": "428：服务器要求带条件头（如 If-Match）防并发覆盖。按接口要求补上。"
+        },
+        "http_429": {
+          "match": "429 Too Many Requests",
+          "level": "error",
+          "explain": "429：请求太频繁触发限流。看 Retry-After 头等待重试，或加指数退避。"
+        },
+        "http_431": {
+          "match": "431 Request Header Fields Too Large",
+          "level": "error",
+          "explain": "431：请求头过大。常见为 Cookie/Token 堆积，清理后重试。"
+        },
+        "http_500": {
+          "match": "500 Internal Server Error||HTTP/1.1 500||HTTP Status 500",
+          "level": "fatal",
+          "explain": "500：服务端内部错误。看服务端日志的堆栈，客户端能做的只有重试和上报。"
+        },
+        "http_501": {
+          "match": "501 Not Implemented",
+          "level": "error",
+          "explain": "501：服务器不支持这个功能/方法。确认接口版本是否已实现。"
+        },
+        "http_502": {
+          "match": "502 Bad Gateway",
+          "level": "fatal",
+          "explain": "502：网关收到上游无效响应。后端进程挂了或没监听，检查服务状态和容器日志。"
+        },
+        "http_503": {
+          "match": "503 Service Unavailable||503 Service Temporarily Unavailable",
+          "level": "fatal",
+          "explain": "503：服务暂不可用。多为部署中、过载或健康检查失败，稍后重试或看扩容。"
+        },
+        "http_504": {
+          "match": "504 Gateway Time-out||504 Gateway Timeout",
+          "level": "fatal",
+          "explain": "504：网关等上游超时。后端接口太慢，优化耗时或调大网关超时。"
+        },
+        "http_505": {
+          "match": "505 HTTP Version Not Supported",
+          "level": "error",
+          "explain": "505：HTTP 版本不支持。检查客户端协议版本与服务端配置（如 h2c）。"
+        },
+        "http_cloudflare_52x": {
+          "match": "Error 52",
+          "level": "fatal",
+          "explain": "Cloudflare 52x：520 未知错误、521 源站拒绝、522 源站超时、523 不可达、524 缓存后超时。都是源站问题，查源站日志。"
+        },
+        "http_508": {
+          "match": "508 Loop Detected",
+          "level": "error",
+          "explain": "508：请求循环检测。多为重定向配置成环，检查跳转规则。"
+        },
+        "http_511": {
+          "match": "511 Network Authentication Required",
+          "level": "error",
+          "explain": "511：需要网络认证（如 WiFi 登录页）。先完成网络认证再请求。"
+        },
+        "http_525": {
+          "match": "525 SSL Handshake Failed",
+          "level": "fatal",
+          "explain": "525：源站与 Cloudflare 的 TLS 握手失败。检查源站证书与 SSL 模式配置。"
+        },
+        "http_526": {
+          "match": "526 Invalid SSL Certificate",
+          "level": "fatal",
+          "explain": "526：源站证书校验不通过。更新源站证书或调整 Cloudflare 的 SSL 校验级别。"
+        }
+      }
+    },
+    "cicd": {
+      "name": "CI/CD",
+      "patterns": {
+        "gha_exit_code": {
+          "match": "Process completed with exit code",
+          "level": "fatal",
+          "explain": "步骤以非零码退出：1 常规失败、127 命令不存在、137 被 OOM/kill、143 被 SIGTERM。看步骤日志定位。"
+        },
+        "gha_runner_shutdown": {
+          "match": "The runner has received a shutdown signal||runner service is stopped",
+          "level": "warning",
+          "explain": "runner 收到停机信号被中断，多为组织维护或任务超时。重新运行 Job。"
+        },
+        "gha_unable_resolve_action": {
+          "match": "Unable to resolve action",
+          "level": "fatal",
+          "explain": "找不到引用的 action 或版本。检查 uses 的仓库/tag 拼写，确认仓库存在且可访问。"
+        },
+        "gha_integration_permission": {
+          "match": "Resource not accessible by integration",
+          "level": "fatal",
+          "explain": "GITHUB_TOKEN 权限不足。在 workflow 里加 permissions 块，或检查仓库 Actions 设置。"
+        },
+        "gha_workflow_invalid": {
+          "match": "The workflow is not valid",
+          "level": "fatal",
+          "explain": "workflow 文件校验失败。看后面的具体行号和原因，通常是 YAML 结构或字段错误。"
+        },
+        "gha_unrecognized_named_value": {
+          "match": "Unrecognized named-value",
+          "level": "fatal",
+          "explain": "用了不存在的上下文/表达式名。检查 secrets/vars/env 等上下文拼写和可用范围。"
+        },
+        "gha_max_exec_time": {
+          "match": "exceeded the maximum execution time",
+          "level": "fatal",
+          "explain": "Job 超过最大执行时长被终止。优化任务耗时，或拆分 Job / 自建 runner。"
+        },
+        "gha_input_required": {
+          "match": "Input required and not supplied",
+          "level": "fatal",
+          "explain": "action 的必填 input 没传。对照 action 文档补全 with 参数。"
+        },
+        "gha_needs_root_job": {
+          "match": "must contain at least one job with no 'needs' dependency",
+          "level": "fatal",
+          "explain": "所有 job 都在等别的 job，形成了没有入口的依赖链。至少留一个不带 needs 的 job。"
+        },
+        "gha_invalid_cron": {
+          "match": "Invalid cron expression",
+          "level": "fatal",
+          "explain": "定时触发的 cron 写法不对。注意 GHA 用的是标准五段 cron，且以 UTC 计时。"
+        },
+        "gha_no_event_trigger": {
+          "match": "No event triggers defined in",
+          "level": "warning",
+          "explain": "workflow 没有定义 on 触发器，永远不会运行。补上 push/pull_request/schedule 等。"
+        },
+        "gha_step_missing_key": {
+          "match": "Every step must have a `uses` or `run` key",
+          "level": "fatal",
+          "explain": "每个 step 必须有 uses 或 run。检查漏写的步骤。"
+        },
+        "jenkins_no_dsl_method": {
+          "match": "No such DSL method",
+          "level": "fatal",
+          "explain": "Jenkinsfile 里没有这个 DSL 方法。检查插件是否安装、是否漏了封装步骤（如 withCredentials）。"
+        },
+        "jenkins_required_context": {
+          "match": "Required context class",
+          "level": "fatal",
+          "explain": "声明的上下文类型不对。检查 currentBuild/node 等对象在当前作用域是否可用。"
+        },
+        "jenkins_repo_connect": {
+          "match": "Failed to connect to repository",
+          "level": "fatal",
+          "explain": "Jenkins 连不上代码仓库。检查凭据、SSH key 和仓库地址（Jenkins 系统配置里测试连接）。"
+        },
+        "jenkins_script_sandbox": {
+          "match": "Scripts not permitted to use method",
+          "level": "fatal",
+          "explain": "被沙箱拦截的方法。在 In-process Script Approval 里批准，或改用受支持的写法。"
+        },
+        "jenkins_abort_exception": {
+          "match": "hudson.AbortException",
+          "level": "fatal",
+          "explain": "流水线主动中止。看上面一行：常见为 sh 步骤返回非零或 archive 找不到文件。"
+        },
+        "gitlab_ci_invalid": {
+          "match": "This GitLab CI configuration is invalid",
+          "level": "fatal",
+          "explain": "GitLab CI 配置校验失败。看冒号后的具体原因，或用 CI Lint 工具检查 .gitlab-ci.yml。"
+        },
+        "gitlab_unknown_keys": {
+          "match": "config contains unknown keys",
+          "level": "fatal",
+          "explain": "job 里用错了字段名。对照 GitLab 关键字文档，检查拼写。"
+        },
+        "gitlab_no_runner": {
+          "match": "doesn't have any runners online||no runners online",
+          "level": "error",
+          "explain": "没有可用 runner。检查 runner 是否注册在线、tag 是否与 job 匹配。"
+        },
+        "gitlab_needs_script": {
+          "match": "jobs config should be a hash of hashes",
+          "level": "fatal",
+          "explain": ".gitlab-ci.yml 的 jobs 段结构不对。每个 job 名下必须是对象，不能直接写字符串。"
+        }
+      }
+    },
+    "pkgmgr": {
+      "name": "包管理器",
+      "patterns": {
+        "npm_missing_script": {
+          "match": "npm ERR! missing script",
+          "level": "error",
+          "explain": "package.json 里没有这个 script。npm run 查看可用脚本，检查拼写。"
+        },
+        "npm_eacces": {
+          "match": "EACCES: permission denied, access",
+          "level": "fatal",
+          "explain": "npm 全局目录无写权限。改用 nvm 管理版本，或 npm config set prefix 到用户目录。"
+        },
+        "npm_enoent_pkgjson": {
+          "match": "npm ERR! code ENOENT",
+          "level": "fatal",
+          "explain": "npm 找不到文件，通常是当前目录没有 package.json。先 npm init 或 cd 到项目根目录。"
+        },
+        "npm_invalid_version": {
+          "match": "npm ERR! Invalid version",
+          "level": "fatal",
+          "explain": "version 字段不合法。必须是 x.y.z 的语义化版本，不能有空格或范围。"
+        },
+        "npm_einvalidtagname": {
+          "match": "EINVALIDTAGNAME",
+          "level": "fatal",
+          "explain": "包名不合法。名字要小写、不含空格和特殊字符，发布前先 validate-npm-package-name。"
+        },
+        "npm_eintegrity": {
+          "match": "npm ERR! code EINTEGRITY",
+          "level": "fatal",
+          "explain": "下载内容与 lockfile 里的哈希不符。删除 node_modules 和 lockfile 后重装，或确认镜像可信。"
+        },
+        "npm_unsupported_url": {
+          "match": "Unsupported URL Type",
+          "level": "error",
+          "explain": "依赖里用了 npm: 等协议，当前工具不支持。升级包管理器版本，或改用 compatible 的写法。"
+        },
+        "pnpm_unsupported_engine": {
+          "match": "ERR_PNPM_UNSUPPORTED_ENGINE",
+          "level": "fatal",
+          "explain": "Node/pnpm 版本不满足 engines 要求。切换到要求的版本（nvm use / corepack use）。"
+        },
+        "pnpm_no_matching_version": {
+          "match": "ERR_PNPM_NO_MATCHING_VERSION",
+          "level": "error",
+          "explain": "registry 上没有这个版本。npm view 包名 versions 查看可用版本。"
+        },
+        "pnpm_peer_dep_issues": {
+          "match": "ERR_PNPM_PEER_DEP_ISSUES",
+          "level": "error",
+          "explain": "peer 依赖不满足。按 pnpm 列出的冲突补装匹配版本，或用 pnpm.overrides 强制。"
+        },
+        "pnpm_unexpected_store": {
+          "match": "ERR_PNPM_UNEXPECTED_STORE",
+          "level": "fatal",
+          "explain": "pnpm store 与项目不匹配。删掉 node_modules 后 pnpm install 重建。"
+        },
+        "yarn_unexpected_error": {
+          "match": "error An unexpected error occurred",
+          "level": "fatal",
+          "explain": "yarn 通用错误包装。往上看真正的 error 行，常见为网络或依赖解析失败。"
+        },
+        "yarn_cant_find_package": {
+          "match": "Couldn't find package",
+          "level": "fatal",
+          "explain": "yarn 找不到这个包。检查名字拼写，或它是 workspace 内部包（确认 workspaces 配置）。"
+        },
+        "yarn_lockfile_update": {
+          "match": "Your lockfile needs to be updated",
+          "level": "fatal",
+          "explain": "yarn.lock 与 package.json 不同步。yarn install --update-checksums 或重新安装。"
+        },
+        "corepack_wrong_pm": {
+          "match": "This project is configured to use",
+          "level": "fatal",
+          "explain": "packageManager 字段指定了别的包管理器。用 corepack 按项目要求切换，或改配置。"
+        }
+      }
+    },
+    "bundlers": {
+      "name": "前端构建",
+      "patterns": {
+        "loader_needed": {
+          "match": "You may need an appropriate loader",
+          "level": "fatal",
+          "explain": "打包器不认识这个文件类型。安装并配置对应 loader（css/图片/TS），或检查 test 匹配规则。"
+        },
+        "module_build_failed": {
+          "match": "Module build failed",
+          "level": "fatal",
+          "explain": "loader 处理文件时失败。看 from 后面的 loader 名和具体报错（常见为 sass/postcss 配置问题）。"
+        },
+        "rollup_unresolved": {
+          "match": "Rollup failed to resolve import||RollupError",
+          "level": "fatal",
+          "explain": "Rollup 解析不了这个导入。检查路径、别名配置和依赖是否安装。"
+        },
+        "rollup_not_exported": {
+          "match": "is not exported by",
+          "level": "fatal",
+          "explain": "从模块导入了一个不存在的导出。检查导出名和 default/named 方式。"
+        },
+        "vite_dev_server_error": {
+          "match": "error when starting dev server",
+          "level": "fatal",
+          "explain": "Vite 启动失败。看 caused by：常见为端口占用、配置错误或插件异常。"
+        },
+        "vite_pretransform": {
+          "match": "Pre-transform error",
+          "level": "error",
+          "explain": "Vite 预转换阶段失败。检查该文件是否存在、路径大小写和插件配置。"
+        },
+        "vue_root_element": {
+          "match": "Component template should contain exactly one root element",
+          "level": "fatal",
+          "explain": "Vue2 模板只能有一个根元素。多个节点包一层 div，或升级 Vue3 使用片段。"
+        },
+        "webpack_error_in": {
+          "match": "ERROR in ./",
+          "level": "fatal",
+          "explain": "webpack 编译报错。看 ERROR 下面指向的模块和具体原因。"
+        },
+        "bundler_public_path": {
+          "match": "Automatic publicPath is not supported",
+          "level": "warning",
+          "explain": "webpack 推不出资源前缀。显式配置 output.publicPath。"
+        },
+        "bundler_postcss_unknown": {
+          "match": "Unknown word",
+          "level": "fatal",
+          "explain": "CSS/PostCSS 解析失败。检查语法、是否漏了对应 loader 或插件。"
+        },
+        "bundler_asset_oversize": {
+          "match": "asset size limit",
+          "level": "warning",
+          "explain": "产物超过体积警告线。做代码分割、按需引入，或确认是否误打包了依赖。"
+        },
+        "bundler_entry_missing": {
+          "match": "Entry module cannot be external",
+          "level": "fatal",
+          "explain": "入口模块不能是外部依赖。检查 rollup/vite 的 input 配置。"
+        }
+      }
     }
   }
 }
