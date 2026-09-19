@@ -170,6 +170,67 @@ int main(int argc, char** argv) {
     // 没有匹配时要返回 found:false，而不是崩溃或乱给结果
     expect(translate("hello world this is not an error", rules) == "{\"found\":false}", "no-match returns found:false");
 
+    // ---------- 边界输入：不能崩溃、不能误报 ----------
+    {
+        // 空输入与纯空白
+        expect(translate("", rules) == "{\"found\":false}", "empty input");
+        expect(translate("   \n\t  \r\n", rules) == "{\"found\":false}", "whitespace-only input");
+        // 只有标点和符号
+        expect(translate("::: !!! ??? [ ] { } ||||", rules) == "{\"found\":false}", "punctuation-only input");
+        // unicode 与 emoji 不崩溃
+        std::string uni = "错误：東方Projectは最高 DA☆ZE 🎉";
+        std::string uj = translate(uni, rules);
+        expect(uj == "{\"found\":false}" || uj.rfind("{\"found\":true", 0) == 0, "unicode input handled");
+        // 换行符为 CRLF 的 Traceback：同样按最后异常行匹配并提取源位置
+        std::string crlf = "Traceback (most recent call last):\r\n"
+                           "  File \"app.py\", line 7, in run\r\n"
+                           "ZeroDivisionError: division by zero\r\n";
+        std::string cj = translate(crlf, rules);
+        expect(lang_is(cj, "Python"), "CRLF traceback matches Python");
+        expect(cj.find("\"file\":\"app.py\",\"line\":7") != std::string::npos, "CRLF source extracted");
+        // 超长输入（100KB+）不崩溃且正常匹配
+        std::string big;
+        big.reserve(120 * 1024);
+        for (int i = 0; i < 2000; i++) big += "some harmless log line with padding text\n";
+        big += "NameError: name 'x' is not defined\n";
+        expect(lang_is(translate(big, rules), "Python"), "huge input still matches");
+    }
+
+    // ---------- 语言识别优先级：结构性特征优先于泛化别名 ----------
+    {
+        expect(detect_language("error TS2339: Property 'x' does not exist.\n    at bundle.js:1:1") == "TypeScript",
+               "TS signature beats js stack");
+        expect(detect_language("Unhandled exception. System.IO.FileNotFoundException: nope.") == "C#",
+               "System. prefix -> C#");
+        expect(detect_language("java.lang.IllegalStateException: lateinit property adapter has not been initialized") == "Kotlin",
+               "kotlin lateinit beats java.lang");
+        expect(detect_language("panic: runtime error: index out of range") == "Go", "go panic detected");
+        expect(detect_language("Run-time error '1004': Application-defined") == "VBA", "vba code detected");
+        expect(detect_language("TypeError: cannot read property") == "", "weak signal returns empty");
+    }
+
+    // ---------- 排序稳定性：命中位置相同时按规则文件顺序 ----------
+    {
+        std::vector<Rule> two;
+        two.push_back({"AA", "boom", "error", "first registered", ""});
+        two.push_back({"BB", "boom", "error", "second registered", ""});
+        expect(translate("boom", two).find("\"lang\":\"AA\"") != std::string::npos,
+               "position tie keeps file order");
+    }
+
+    // ---------- 通配符与空别名边界 ----------
+    {
+        std::vector<Rule> wild;
+        wild.push_back({"W", "mid.*le", "error", "one wildcard per token", ""});
+        expect(lang_is(translate("xx middleyy", wild), "W"), "wildcard prefix+suffix");
+        // 空别名必须被跳过：find("") 恒命中会让它抢下所有输入
+        std::vector<Rule> empties;
+        empties.push_back({"E", "real-token||", "error", "trailing empty alias", ""});
+        empties.push_back({"F", "||another", "error", "leading empty alias", ""});
+        expect(lang_is(translate("real-token", empties), "E"), "trailing empty alias skipped");
+        expect(translate("nothing here", empties) == "{\"found\":false}", "empty aliases never false-positive");
+    }
+
     // JSON 转义：解释里的引号不能破坏 JSON
     std::vector<Rule> fake;
     fake.push_back({"Test", "boom||crash", "error", "he said \"hi\" \\ ok"});
