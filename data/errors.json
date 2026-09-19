@@ -1,5 +1,5 @@
 {
-  "version": "2.2",
+  "version": "3.0",
   "languages": {
     "python": {
       "name": "Python",
@@ -65,7 +65,7 @@
           "explain": "Tab 和空格混用导致缩进无法对齐。建议编辑器统一设置为 4 个空格缩进。"
         },
         "zero_division": {
-          "match": "ZeroDivisionError||division by zero||integer division or modulo by zero",
+          "match": "ZeroDivisionError||integer division or modulo by zero",
           "level": "error",
           "explain": "不能除以0。在做除法或取模之前检查除数是否可能为0。"
         },
@@ -80,7 +80,7 @@
           "explain": "递归太深了。函数一直调用自己没有结束条件，检查递归出口，或者改成循环实现。"
         },
         "permission_error": {
-          "match": "PermissionError||Permission denied||Errno 13||WinError 5",
+          "match": "PermissionError||Errno 13||WinError 5",
           "level": "error",
           "explain": "没有权限访问文件。文件被其他程序占用了，或者需要管理员权限，检查文件是否只读。"
         },
@@ -112,12 +112,12 @@
         "timeout_error": {
           "match": "TimeoutError||timed out",
           "level": "error",
-          "explain": "操作超时。网络请求或某个操作等待太久没响应。检查网络连接或增加超时时间。"
+          "explain": "操作超时。目标响应太慢，调大超时时间或加自动重试。"
         },
         "connection_error": {
           "match": "ConnectionError||Connection refused||Max retries exceeded||WinError 10061",
           "level": "error",
-          "explain": "网络连接失败。目标服务器拒绝了连接或无法访问。检查网址、端口和网络。"
+          "explain": "连接被拒绝。目标端口没有服务在监听，确认服务已启动、地址和端口正确。"
         },
         "connection_reset": {
           "match": "ConnectionResetError||Connection reset by peer||Errno 104",
@@ -257,12 +257,12 @@
         "invalid_url": {
           "match": "InvalidURL||Invalid URL",
           "level": "error",
-          "explain": "URL 格式不合法。检查是否有空格、中文等未编码字符，必要时用 quote() 转义。"
+          "explain": "URL 格式不合法。检查是否漏了协议头 http://，或地址里有空格、中文等非法字符。"
         },
         "ssl_cert": {
           "match": "SSLError||certificate verify failed",
           "level": "error",
-          "explain": "SSL 证书校验失败。常见于公司内网代理或系统时间不对，不要轻易关闭验证，先更新证书库。"
+          "explain": "SSL 证书校验失败。常见于公司内网代理或自签证书，先更新系统证书库，不要轻易关闭校验。"
         },
         "gaierror": {
           "match": "gaierror||Name or service not known||getaddrinfo failed",
@@ -272,12 +272,12 @@
         "socket_timeout": {
           "match": "socket.timeout||Read timed out",
           "level": "error",
-          "explain": "Socket 读取超时。对端响应太慢或网络不稳，调大 timeout 或加自动重试。"
+          "explain": "读取响应超时。对端响应太慢或网络不稳，调大超时时间或加重试。"
         },
         "addr_in_use": {
           "match": "Address already in use||WinError 10048",
           "level": "error",
-          "explain": "端口已经被别的程序占了。换一个端口，或者先找到并结束占用端口的旧进程。"
+          "explain": "端口已被占用。换端口，或找到并结束占用端口的旧进程。"
         },
         "broken_pipe": {
           "match": "BrokenPipeError||Errno 32",
@@ -622,7 +622,7 @@
         "sqlite_integrity": {
           "match": "UNIQUE constraint failed",
           "level": "error",
-          "explain": "唯一约束冲突，记录已存在。先查重或用 INSERT OR REPLACE。"
+          "explain": "唯一约束冲突（SQLite）。这条记录已存在，先查重或用 INSERT OR REPLACE。"
         },
         "sqlalchemy_pool_timeout": {
           "match": "QueuePool limit of size",
@@ -670,14 +670,14 @@
           "explain": "你在对 undefined 或 null 取属性。先判断对象是否存在，或用 ?. 可选链安全取值。"
         },
         "cannot_set": {
-          "match": "Cannot set properties of undefined||Cannot set properties of null||Cannot set property",
+          "match": "Cannot set properties of undefined||Cannot set properties of null",
           "level": "error",
           "explain": "你在给 undefined/null 赋属性。检查对象是否已声明并初始化，DOM 是否还没渲染出来。"
         },
         "not_a_function": {
           "match": "is not a function",
           "level": "error",
-          "explain": "你当成函数调用的东西不是一个函数。检查变量是否被覆盖、方法名是否拼错、对象上是否有该方法。"
+          "explain": "你当成函数调用的东西不是一个函数。检查变量是否被覆盖，或名字拼错了。"
         },
         "undefined_is_not_object": {
           "match": "undefined is not an object",
@@ -722,7 +722,7 @@
         "import_outside_module": {
           "match": "Cannot use import statement outside a module",
           "level": "fatal",
-          "explain": "当前文件被当成普通脚本。给 script 标签加 type module，或改用 require / 打包工具。"
+          "explain": "当前文件被当成普通脚本。给 script 标签加 type module、配置 ESM，或改用 require / 打包工具。"
         },
         "unexpected_lt": {
           "match": "Unexpected token '<'",
@@ -835,7 +835,7 @@
           "explain": "连接被对端强制断开。服务可能崩溃或主动关闭，加重试逻辑并查看服务端日志。"
         },
         "enotfound": {
-          "match": "ENOTFOUND||getaddrinfo",
+          "match": "ENOTFOUND||getaddrinfo ENOTFOUND",
           "level": "error",
           "explain": "域名解析失败。检查主机名拼写和 DNS 配置，确认不是把 URL 前缀或端口写错。"
         },
@@ -977,7 +977,7 @@
         "invalid_url": {
           "match": "Invalid URL",
           "level": "error",
-          "explain": "URL 格式不合法。检查是否漏了协议头 http://，或者地址里有空格等非法字符。"
+          "explain": "URL 格式不合法。检查是否漏了协议头 http://，或地址里有空格、中文等非法字符。"
         },
         "null_to_object": {
           "match": "Cannot convert undefined or null to object",
@@ -1102,7 +1102,7 @@
         "node_wrong_version_number": {
           "match": "wrong version number",
           "level": "error",
-          "explain": "TLS 握手失败，常见于用 https 请求了 http 端口。检查协议和端口。"
+          "explain": "TLS 握手版本不对。常见为用 https 请求了 http 端口，或代理拦截。"
         },
         "node_write_epipe": {
           "match": "write EPIPE",
@@ -1277,17 +1277,17 @@
         "socket_exc": {
           "match": "SocketException||Socket is closed||Broken pipe",
           "level": "error",
-          "explain": "Socket 连接异常断开。对端关闭了连接或网络中断，加重连机制并检查读写时机。"
+          "explain": "对端已经关闭连接，还在往管道里写数据。检查接收方的生命周期。"
         },
         "socket_timeout": {
           "match": "SocketTimeoutException||Read timed out||connect timed out",
           "level": "error",
-          "explain": "Socket 读写超时。对端响应慢或网络不稳，调大 timeout 或加重试。"
+          "explain": "读取响应超时。对端响应太慢或网络不稳，调大超时时间或加重试。"
         },
         "connect_refused": {
           "match": "ConnectException||Connection refused",
           "level": "error",
-          "explain": "连接被拒绝。目标地址没有服务监听，确认服务启动、IP 和端口正确。"
+          "explain": "连接被拒绝。目标端口没有服务在监听，确认服务已启动、地址和端口正确。"
         },
         "unknown_host": {
           "match": "UnknownHostException",
@@ -1317,7 +1317,7 @@
         "access_denied_db": {
           "match": "Access denied for user",
           "level": "error",
-          "explain": "数据库用户名或密码错误。检查连接配置，或该用户没有对应主机的访问权限。"
+          "explain": "数据库用户名或密码错误。检查连接配置，或该账号没有对应主机的访问权限。"
         },
         "no_suitable_driver": {
           "match": "no suitable driver",
@@ -1542,7 +1542,7 @@
         "bind_addr": {
           "match": "BindException||Address already in use",
           "level": "error",
-          "explain": "端口绑定失败，已被占用。换端口或结束占用端口的旧进程。"
+          "explain": "端口已被占用。换端口，或找到并结束占用端口的旧进程。"
         },
         "missing_format": {
           "match": "MissingFormatArgumentException",
@@ -1622,7 +1622,7 @@
         "jvm_heap_reserve": {
           "match": "Could not reserve enough space for object heap",
           "level": "fatal",
-          "explain": "堆内存超过系统可用上限。调小 -Xmx。"
+          "explain": "给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。"
         },
         "jvm_unrecognized_option": {
           "match": "Unrecognized VM option",
@@ -1757,17 +1757,17 @@
         "no_member": {
           "match": "no member named||is not a member of",
           "level": "error",
-          "explain": "这个类或名字空间里没有该成员。检查拼写、头文件是否包含正确版本的类。"
+          "explain": "这个对象/类型上没有该成员。检查拼写、import，或访问的类型搞错了。"
         },
         "cannot_convert": {
-          "match": "cannot convert||invalid conversion from",
+          "match": "invalid conversion from||cannot convert.*to '",
           "level": "error",
           "explain": "类型无法隐式转换。检查两边的类型，必要时显式转换或修改函数签名。"
         },
         "ambiguous_overload": {
           "match": "is ambiguous",
           "level": "error",
-          "explain": "调用有歧义，多个重载都能匹配。显式转换参数类型，或加模板/限定名消除歧义。"
+          "explain": "引用有歧义，多个候选都能匹配。用限定名或显式类型消除歧义。"
         },
         "redefinition": {
           "match": "redefinition of||previous definition",
@@ -2017,7 +2017,7 @@
         "unused_variable": {
           "match": "unused variable||unused-but-set variable",
           "level": "warning",
-          "explain": "声明了变量但没使用。删掉或者暂时加 (void)var 压掉警告。"
+          "explain": "声明了变量但没使用。删掉，或用 (void)/下划线前缀标记有意不用。"
         },
         "div_zero": {
           "match": "division by zero",
@@ -2442,7 +2442,7 @@
         "is_deprecated": {
           "match": "is deprecated",
           "level": "warning",
-          "explain": "使用了废弃的函数。按提示换成新的替代函数。"
+          "explain": "这个函数已被弃用。按提示改用新函数，未来版本会移除。"
         },
         "c99_for_loop": {
           "match": "only allowed in C99",
@@ -2742,7 +2742,7 @@
         "unknown_escape_sequence": {
           "match": "unknown escape sequence",
           "level": "warning",
-          "explain": "字符串里的转义序列不合法。需要字面反斜杠要写 \\\\。"
+          "explain": "字符串里的转义序列不合法。想输出字面反斜杠就连写两个。"
         },
         "redeclared_different_kind": {
           "match": "redeclared as different kind of symbol",
@@ -2885,7 +2885,7 @@
           "explain": "代码里出现了非法字符，常见于中文标点、BOM 或复制粘贴带来的特殊字符。"
         },
         "expected_semicolon_go": {
-          "match": "expected ';', found||expected ';'",
+          "match": "expected ';', found",
           "level": "fatal",
           "explain": "缺少分号或语句没写完。检查上一行末尾，复合字面量里是否有换行问题。"
         },
@@ -2937,7 +2937,7 @@
         "index_out_of_range": {
           "match": "index out of range",
           "level": "fatal",
-          "explain": "下标越界 panic。访问了超出 len 的索引，取值前检查长度。"
+          "explain": "下标越界。访问了超出长度的索引，报错里有长度和索引值，检查下标计算。"
         },
         "slice_bounds": {
           "match": "slice bounds out of range",
@@ -2992,12 +2992,12 @@
         "panic_runtime": {
           "match": "panic: runtime error",
           "level": "fatal",
-          "explain": "运行时 panic。往上看第一行 goroutine 堆栈，定位出错的那一行代码。"
+          "explain": "程序 panic 崩溃。看 panic 消息和堆栈第一行定位代码；运行时内部 panic 通常是扩展或解释器的 bug。"
         },
         "panic_generic": {
           "match": "panic:",
           "level": "fatal",
-          "explain": "程序 panic 崩溃了。看 panic 后面的堆栈第一行定位代码，关键路径用 recover 兜底。"
+          "explain": "程序 panic 崩溃。看 panic 消息和堆栈第一行定位代码；运行时内部 panic 通常是扩展或解释器的 bug。"
         },
         "go_mod_not_found": {
           "match": "go.mod file not found",
@@ -3022,7 +3022,7 @@
         "unknown_revision": {
           "match": "unknown revision",
           "level": "error",
-          "explain": "依赖的版本号不存在。检查 tag 是否拼写正确，或换用已有的版本。"
+          "explain": "引用的版本/提交不存在。检查 tag 或分支名拼写，确认远端存在。"
         },
         "relative_import": {
           "match": "relative import",
@@ -3562,7 +3562,7 @@
         "sql_syntax": {
           "match": "Incorrect syntax near",
           "level": "error",
-          "explain": "SQL 语法错误。检查关键字拼写、逗号括号和 T-SQL 写法。"
+          "explain": "SQL 语法错误（SQL Server）。检查 T-SQL 关键字、标点和 GO 分隔符。"
         },
         "sql_invalid_column": {
           "match": "Invalid column name",
@@ -3877,7 +3877,7 @@
         "syntax_error": {
           "match": "syntax error, unexpected",
           "level": "fatal",
-          "explain": "语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了，看指向的行号。"
+          "explain": "语法错误。检查关键字拼写、括号配对和引号闭合，看报错指向的位置。"
         },
         "unexpected_eof": {
           "match": "unexpected end-of-input",
@@ -3887,7 +3887,7 @@
         "argument_error": {
           "match": "ArgumentError||wrong number of arguments||unknown keyword||missing keyword",
           "level": "error",
-          "explain": "传给方法的参数数量或关键字不对。对照方法签名检查参数个数与命名。"
+          "explain": "函数参数个数不匹配。对照定义检查传入的参数个数。"
         },
         "load_error": {
           "match": "LoadError||cannot load such file",
@@ -3940,7 +3940,7 @@
           "explain": "IO 流状态不对，比如流已关闭或没按读模式打开。检查文件的打开方式。"
         },
         "socket_error": {
-          "match": "SocketError||getaddrinfo||Failed to open TCP connection",
+          "match": "SocketError||getaddrinfo:||Failed to open TCP connection",
           "level": "error",
           "explain": "网络连接失败。域名解析不了或 TCP 连不上，检查地址、端口和网络。"
         },
@@ -3962,7 +3962,7 @@
         "errno_eaddr": {
           "match": "Errno::EADDRINUSE||Address already in use",
           "level": "error",
-          "explain": "端口已被占用。换端口或结束占用端口的旧进程。"
+          "explain": "端口已被占用。换端口，或找到并结束占用端口的旧进程。"
         },
         "errno_eperm": {
           "match": "Errno::EPERM",
@@ -3972,12 +3972,12 @@
         "errno_enospc": {
           "match": "Errno::ENOSPC||No space left on device",
           "level": "error",
-          "explain": "磁盘空间满了。清理磁盘或换存储位置。"
+          "explain": "磁盘满了。清理大文件或日志，必要时扩容。"
         },
         "errno_emfile": {
           "match": "Errno::EMFILE||Too many open files",
           "level": "error",
-          "explain": "打开的文件数超过系统限制。检查是否有文件句柄泄漏，或调大 ulimit。"
+          "explain": "打开的文件数超过系统限制。检查句柄泄漏，或调大 ulimit -n。"
         },
         "errno_epipe": {
           "match": "Errno::EPIPE",
@@ -3995,14 +3995,14 @@
           "explain": "文件或目录已经存在。先判断 File.exist? 再创建。"
         },
         "http_error": {
-          "match": "OpenURI::HTTPError||404 Not Found||401 Unauthorized",
+          "match": "OpenURI::HTTPError||404 Not Found",
           "level": "error",
           "explain": "HTTP 请求返回了错误状态码。403/404 检查权限和地址，401 补认证信息。"
         },
         "ssl_error": {
           "match": "OpenSSL::SSL::SSLError||certificate verify failed",
           "level": "error",
-          "explain": "SSL 证书校验失败。更新系统证书库，内网自签证书需导入信任。"
+          "explain": "SSL 证书校验失败。常见于公司内网代理或自签证书，先更新系统证书库，不要轻易关闭校验。"
         },
         "json_parser": {
           "match": "JSON::ParserError||unexpected token at",
@@ -4097,7 +4097,7 @@
         "pg_connection": {
           "match": "PG::ConnectionBad||could not connect to server",
           "level": "error",
-          "explain": "连不上 PostgreSQL。检查服务是否启动、host/port/密码配置和网络。"
+          "explain": "连不上 PostgreSQL。服务可能没启动或端口/主机不对，检查连接配置和防火墙。"
         },
         "pg_constraint": {
           "match": "PG::UniqueViolation||PG::NotNullViolation||PG::ForeignKeyViolation",
@@ -4105,7 +4105,7 @@
           "explain": "数据库约束被违反。唯一键重复、非空字段为 null 或外键不满足，检查数据。"
         },
         "pg_syntax": {
-          "match": "PG::SyntaxError||syntax error at or near",
+          "match": "PG::SyntaxError",
           "level": "error",
           "explain": "SQL 语法错误。检查 SQL 写法和关键字拼写。"
         },
@@ -4312,7 +4312,7 @@
         "parse_error": {
           "match": "Parse error||syntax error, unexpected",
           "level": "fatal",
-          "explain": "语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合，看指向的行号。"
+          "explain": "语法错误。检查关键字拼写、括号配对和引号闭合，看报错指向的位置。"
         },
         "unexpected_eof_php": {
           "match": "unexpected end of file",
@@ -4425,7 +4425,7 @@
           "explain": "参数类型不匹配。看报错里期望的类型和实际传入的类型，转换后再传。"
         },
         "div_zero_php": {
-          "match": "DivisionByZeroError||Division by zero||Modulo by zero",
+          "match": "DivisionByZeroError||Modulo by zero",
           "level": "fatal",
           "explain": "除以零。PHP 8 里这是致命错误，除法或取模前检查除数。"
         },
@@ -4462,7 +4462,7 @@
         "access_denied_php": {
           "match": "Access denied for user",
           "level": "fatal",
-          "explain": "数据库用户名或密码错误。检查连接配置和账号权限。"
+          "explain": "数据库用户名或密码错误。检查连接配置，或该账号没有对应主机的访问权限。"
         },
         "sql_syntax_php": {
           "match": "syntax error or access violation",
@@ -4495,7 +4495,7 @@
           "explain": "session_start 必须在任何输出前调用。检查前面是否有 echo 或 HTML。"
         },
         "deprecated": {
-          "match": "Deprecated:||is deprecated",
+          "match": "Deprecated:",
           "level": "warning",
           "explain": "用到了废弃的特性。目前还能运行，但应按提示迁移到新写法。"
         },
@@ -4942,7 +4942,7 @@
         "unexpected_token_rs": {
           "match": "unexpected token",
           "level": "fatal",
-          "explain": "出现了不该出现的符号。检查是否漏了分号、逗号或括号配对错了。"
+          "explain": "出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。"
         },
         "expected_item": {
           "match": "expected item",
@@ -4967,7 +4967,7 @@
         "unused_variable_rs": {
           "match": "unused variable",
           "level": "warning",
-          "explain": "变量声明了没用。删掉，或改名成 _x 表示有意不用。"
+          "explain": "声明了变量但没使用。删掉，或用 (void)/下划线前缀标记有意不用。"
         },
         "unused_import_rs": {
           "match": "unused import",
@@ -4992,7 +4992,7 @@
         "dead_code": {
           "match": "never used||never read||is never used",
           "level": "warning",
-          "explain": "这个函数/字段从未被使用。删除，或用 #[allow(dead_code)] 标记保留。"
+          "explain": "声明了但从未使用。删除，或用下划线前缀命名表示有意忽略。"
         },
         "use_of_deprecated": {
           "match": "use of deprecated",
@@ -5122,7 +5122,7 @@
         "timed_out_rs": {
           "match": "timed out",
           "level": "error",
-          "explain": "请求超时。目标响应太慢，调大超时时间或加重试。"
+          "explain": "操作超时。目标响应太慢，调大超时时间或加自动重试。"
         },
         "cargo_compile": {
           "match": "could not compile",
@@ -5145,7 +5145,7 @@
           "explain": "Cargo.toml 解析失败。检查语法、字段名和版本号格式。"
         },
         "linking_with": {
-          "match": "linking with||undefined reference to",
+          "match": "linking with",
           "level": "fatal",
           "explain": "链接失败。检查系统链接器、依赖的 C 库是否安装、目标环境配置。"
         },
@@ -5247,7 +5247,7 @@
         "macro_recursion_limit": {
           "match": "recursion limit reached",
           "level": "error",
-          "explain": "宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = \"256\"]。"
+          "explain": "宏或类型展开超过递归上限。简化宏调用，或在 crate 顶层调大 recursion_limit 属性。"
         },
         "trait_items_missing": {
           "match": "not all trait items implemented",
@@ -5542,7 +5542,7 @@
         "ts_import_outside": {
           "match": "Cannot use import statement outside a module",
           "level": "fatal",
-          "explain": "Node 把文件当 CommonJS 跑了。配置 ESM（package.json type: module）或改用 require。"
+          "explain": "当前文件被当成普通脚本。给 script 标签加 type module、配置 ESM，或改用 require / 打包工具。"
         },
         "ts_unknown_ext": {
           "match": "Unknown file extension",
@@ -5792,7 +5792,7 @@
         "too_many_args_kt": {
           "match": "too many arguments for",
           "level": "error",
-          "explain": "传了过多的参数。检查函数签名和调用处的参数个数。"
+          "explain": "参数传多了。对照方法签名减少参数。"
         },
         "none_applicable": {
           "match": "none of the following functions can be called with the arguments supplied",
@@ -5887,7 +5887,7 @@
         "div_by_zero_kt": {
           "match": "ArithmeticException||divide by zero",
           "level": "error",
-          "explain": "除以零。整数除法会抛异常，运算前检查除数。"
+          "explain": "除以零。除法前检查除数。"
         },
         "concurrent_mod_kt": {
           "match": "ConcurrentModificationException",
@@ -6042,7 +6042,7 @@
         "param_never_used": {
           "match": "is never used",
           "level": "warning",
-          "explain": "参数或变量从未被使用。删除，或用下划线命名表示有意忽略。"
+          "explain": "声明了但从未使用。删除，或用下划线前缀命名表示有意忽略。"
         },
         "inline_bytecode": {
           "match": "Cannot inline bytecode built with",
@@ -6277,7 +6277,7 @@
         "index_out_of_range_swift": {
           "match": "Index out of range||index out of range",
           "level": "fatal",
-          "explain": "数组下标越界。检查索引计算和数组是否为空。"
+          "explain": "下标越界。访问了超出长度的索引，报错里有长度和索引值，检查下标计算。"
         },
         "range_requires": {
           "match": "lowerBound",
@@ -7312,7 +7312,7 @@
         "pg_ambiguous": {
           "match": "is ambiguous",
           "level": "error",
-          "explain": "列名有歧义（PostgreSQL），多个表都有这个列。用 表名.列名 限定。"
+          "explain": "引用有歧义，多个候选都能匹配。用限定名或显式类型消除歧义。"
         },
         "pg_aggregate_where": {
           "match": "aggregate functions are not allowed in WHERE",
@@ -7392,7 +7392,7 @@
         "pg_conn_refused": {
           "match": "could not connect to server",
           "level": "error",
-          "explain": "连不上 PostgreSQL。服务可能没启动或端口/主机不对，检查 postgresql.conf 和防火墙。"
+          "explain": "连不上 PostgreSQL。服务可能没启动或端口/主机不对，检查连接配置和防火墙。"
         },
         "pg_database": {
           "match": "database \".*\" does not exist",
@@ -7432,7 +7432,7 @@
         "mssql_syntax": {
           "match": "Incorrect syntax near",
           "level": "error",
-          "explain": "SQL 语法错误（SQL Server）。检查 T-SQL 关键字、GO 分隔符和标点。"
+          "explain": "SQL 语法错误（SQL Server）。检查 T-SQL 关键字、标点和 GO 分隔符。"
         },
         "mssql_invalid_object": {
           "match": "Invalid object name",
@@ -7652,7 +7652,7 @@
         "no_space_left": {
           "match": "No space left on device",
           "level": "error",
-          "explain": "磁盘满了。du 找大文件清理，或扩容磁盘、清理日志。"
+          "explain": "磁盘满了。清理大文件或日志，必要时扩容。"
         },
         "read_only_fs": {
           "match": "Read-only file system",
@@ -7677,7 +7677,7 @@
         "too_many_open_files": {
           "match": "Too many open files",
           "level": "error",
-          "explain": "打开的文件数超限。ulimit -n 调大上限，检查是否有句柄泄漏。"
+          "explain": "打开的文件数超过系统限制。检查句柄泄漏，或调大 ulimit -n。"
         },
         "fork_alloc": {
           "match": "Cannot allocate memory||Resource temporarily unavailable",
@@ -7795,7 +7795,7 @@
           "explain": "sed 找不到要处理的文件。检查路径，或用 -i 处理文件而不是管道。"
         },
         "awk_syntax": {
-          "match": "syntax error at or near||bailing out",
+          "match": "bailing out||cmd. line",
           "level": "error",
           "explain": "awk 语法错误。检查引号嵌套、花括号配对和 $ 字段的写法。"
         },
@@ -7867,7 +7867,7 @@
         "sed_unknown_option": {
           "match": "unknown option to `s'",
           "level": "error",
-          "explain": "sed 的 s/// 里分隔符与内容冲突。换分隔符如 s|old|new|。"
+          "explain": "sed 的 s 命令分隔符与内容冲突。换一个别的分隔符。"
         },
         "heredoc_eof": {
           "match": "here-document at line .* delimited by end-of-file",
@@ -8352,7 +8352,7 @@
         "not_a_member": {
           "match": "is not a member of",
           "level": "error",
-          "explain": "这个对象上没有该成员。检查拼写、import，或是不是访问了别的类型。"
+          "explain": "这个对象/类型上没有该成员。检查拼写、import，或访问的类型搞错了。"
         },
         "object_creation_impossible": {
           "match": "object creation impossible||needs to be abstract",
@@ -8462,12 +8462,12 @@
         "unexpected_token_scala": {
           "match": "unexpected token",
           "level": "fatal",
-          "explain": "出现了不该出现的符号。检查括号配对和关键字拼写。"
+          "explain": "出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。"
         },
         "unexpected_char_scala": {
           "match": "unexpected char",
           "level": "fatal",
-          "explain": "代码里混入了非法字符，常见于中文标点或看不见的特殊符号。"
+          "explain": "出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。"
         },
         "modifier_not_allowed_scala": {
           "match": "not allowed here",
@@ -8547,27 +8547,27 @@
         "build_failed_gradle": {
           "match": "BUILD FAILED",
           "level": "error",
-          "explain": "构建失败。往上看 * What went wrong 部分，定位具体任务和原因。"
+          "explain": "构建失败。往上看 * What went wrong 部分定位任务和原因。"
         },
         "gradle_task_not_found": {
           "match": "not found in root project",
           "level": "error",
-          "explain": "这个 task 不存在。gradlew tasks 查看可用任务，检查拼写和插件。"
+          "explain": "这个 task 不存在。查看可用任务列表，检查拼写和插件。"
         },
         "gradle_lock_timeout": {
           "match": "Timeout waiting to lock",
           "level": "error",
-          "explain": "Gradle 的锁被别的进程占着。结束其他 gradle 进程，或删除 .gradle 里的锁文件。"
+          "explain": "构建工具的锁被别的进程占着。结束其他进程，或删除锁文件。"
         },
         "daemon_disappeared": {
           "match": "daemon disappeared unexpectedly",
           "level": "error",
-          "explain": "Gradle 守护进程被杀了，常见为内存不足。调大 org.gradle.jvmargs 或清理系统内存。"
+          "explain": "构建守护进程被杀了，常见为内存不足。调大 JVM 内存参数。"
         },
         "could_not_create_jvm": {
           "match": "Could not create the Java Virtual Machine",
           "level": "fatal",
-          "explain": "JVM 启动失败。检查 -Xmx 等内存参数是否超出机器可用内存，JAVA_HOME 是否正确。"
+          "explain": "JVM 启动失败。检查内存参数是否超出机器可用内存和 JAVA_HOME。"
         },
         "heap_space_reserve": {
           "match": "Could not reserve enough space for object heap",
@@ -8582,7 +8582,7 @@
         "task_not_serializable": {
           "match": "Task not serializable",
           "level": "fatal",
-          "explain": "闭包引用了不可序列化的对象（常见是 outer class 或连接对象）。在算子内部创建连接，或把依赖提取为局部变量。"
+          "explain": "闭包引用了不可序列化的对象。在算子内部创建连接，或把依赖提取为局部变量。"
         },
         "spark_job_aborted": {
           "match": "Job aborted due to stage failure",
@@ -8597,7 +8597,7 @@
         "config_missing": {
           "match": "No configuration setting found for key",
           "level": "error",
-          "explain": "Typesafe Config 里没有这个配置项。检查 application.conf 的路径和键名。"
+          "explain": "配置文件里没有这个配置项。检查 application.conf 的路径和键名。"
         },
         "broker_not_available": {
           "match": "Broker may not be available",
@@ -8607,7 +8607,7 @@
         "was_not_equal": {
           "match": "was not equal to",
           "level": "error",
-          "explain": "ScalaTest 断言失败。报错直接展示了期望值和实际值，对照排查。"
+          "explain": "断言失败，期望值与实际值不符。对照输出排查。"
         },
         "does_not_take_type_params": {
           "match": "does not take type parameters",
@@ -8692,7 +8692,7 @@
         "wrong_args_lua": {
           "match": "wrong number of arguments",
           "level": "fatal",
-          "explain": "标准库函数的参数个数不对，比如 table.insert。对照文档检查参数。"
+          "explain": "函数参数个数不匹配。对照定义检查传入的参数个数。"
         },
         "table_index_nil": {
           "match": "table index is nil",
@@ -9177,7 +9177,7 @@
         "panic_sv": {
           "match": "panic:",
           "level": "fatal",
-          "explain": "Perl 内部错误。通常是 XS 模块或核心 bug，尝试复现最小用例并上报。"
+          "explain": "程序 panic 崩溃。看 panic 消息和堆栈第一行定位代码；运行时内部 panic 通常是扩展或解释器的 bug。"
         },
         "illegal_seek": {
           "match": "Illegal seek",
@@ -9222,7 +9222,7 @@
         "broken_pipe_perl": {
           "match": "Broken pipe",
           "level": "warning",
-          "explain": "下游已经关闭还在往管道写。检查接收方的生命周期。"
+          "explain": "对端已经关闭连接，还在往管道里写数据。检查接收方的生命周期。"
         },
         "alarm_timeout": {
           "match": "Alarm clock",
@@ -9687,7 +9687,7 @@
         "erlang_error": {
           "match": "Erlang error:",
           "level": "error",
-          "explain": "底层 C/Erlang 库抛出的错误。看消息定位到具体库调用。"
+          "explain": "底层 Erlang/OTP 抛出的错误。看具体消息定位到调用。"
         },
         "test_failed_julia": {
           "match": "Test Failed",
@@ -9787,7 +9787,7 @@
         "unexpected_token_groovy": {
           "match": "unexpected token||unexpected char",
           "level": "fatal",
-          "explain": "出现了不该出现的符号。常见于中文标点、缺逗号或关键字误用。"
+          "explain": "出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。"
         },
         "multiple_compilation_errors": {
           "match": "MultipleCompilationErrorsException||during semantic analysis||during conversion",
@@ -9797,7 +9797,7 @@
         "illegal_dollar": {
           "match": "illegal string body character after dollar sign",
           "level": "fatal",
-          "explain": "GString 里的 $ 后面要跟表达式或 { }。想输出字面 $ 用 \\\\ 转义。"
+          "explain": "GString 里的 $ 后面要跟表达式或花括号。想输出字面 $ 就连写两个。"
         },
         "a_problem_occurred_groovy": {
           "match": "A problem occurred",
@@ -9812,37 +9812,37 @@
         "gradle_task_not_found": {
           "match": "not found in root project",
           "level": "error",
-          "explain": "这个 task 不存在。gradlew tasks 查看可用任务列表。"
+          "explain": "这个 task 不存在。查看可用任务列表，检查拼写和插件。"
         },
         "gradle_lock_timeout": {
           "match": "Timeout waiting to lock",
           "level": "error",
-          "explain": "Gradle 锁被占用。结束其他 gradle 进程或删除锁文件。"
+          "explain": "构建工具的锁被别的进程占着。结束其他进程，或删除锁文件。"
         },
         "daemon_disappeared_groovy": {
           "match": "daemon disappeared unexpectedly",
           "level": "error",
-          "explain": "Gradle 守护进程被杀，常见为内存不足。调大 org.gradle.jvmargs。"
+          "explain": "构建守护进程被杀了，常见为内存不足。调大 JVM 内存参数。"
         },
         "could_not_create_jvm_groovy": {
           "match": "Could not create the Java Virtual Machine",
           "level": "fatal",
-          "explain": "JVM 启动失败。检查内存参数和 JAVA_HOME。"
+          "explain": "JVM 启动失败。检查内存参数是否超出机器可用内存和 JAVA_HOME。"
         },
         "heap_reserve_groovy": {
           "match": "Could not reserve enough space for object heap",
           "level": "fatal",
-          "explain": "堆内存超过系统可用上限，调小 -Xmx。"
+          "explain": "给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。"
         },
         "not_serializable_groovy": {
           "match": "NotSerializableException||Task not serializable",
           "level": "fatal",
-          "explain": "对象不可序列化。实现 Serializable，或把不可序列化依赖移出闭包。"
+          "explain": "闭包引用了不可序列化的对象。在算子内部创建连接，或把依赖提取为局部变量。"
         },
         "cannot_run_program_groovy": {
           "match": "Cannot run program",
           "level": "error",
-          "explain": "启动外部进程失败。检查命令是否在 PATH 里。"
+          "explain": "启动外部进程失败。检查命令是否在 PATH 里、路径是否写对。"
         },
         "analysis_exception_groovy": {
           "match": "AnalysisException",
@@ -9852,17 +9852,17 @@
         "broker_not_available_groovy": {
           "match": "Broker may not be available",
           "level": "error",
-          "explain": "Kafka 连不上 broker。检查 bootstrap.servers 和网络。"
+          "explain": "Kafka 连不上 broker。检查 bootstrap.servers、网络和安全协议配置。"
         },
         "config_missing_groovy": {
           "match": "No configuration setting found for key",
           "level": "error",
-          "explain": "Typesafe Config 缺少配置项。检查 application.conf 路径和键名。"
+          "explain": "配置文件里没有这个配置项。检查 application.conf 的路径和键名。"
         },
         "was_not_equal_groovy": {
           "match": "was not equal to",
           "level": "error",
-          "explain": "Spock/断言失败，期望值与实际值不符。对照输出排查。"
+          "explain": "断言失败，期望值与实际值不符。对照输出排查。"
         },
         "groovy_null_invoke": {
           "match": "Cannot invoke method",
@@ -9962,7 +9962,7 @@
         "bad_arg_given": {
           "match": "errors were found at the given arguments||ArgumentError",
           "level": "fatal",
-          "explain": "参数不合法。报错列出了每个参数的期望类型和实际值，对照修正。"
+          "explain": "参数校验失败，报错列出了每个不符的参数。对照修正类型或取值。"
         },
         "protocol_not_implemented": {
           "match": "protocol.*not implemented",
@@ -9987,7 +9987,7 @@
         "immutable_field_elixir": {
           "match": "immutable struct||cannot be modified after creation",
           "level": "fatal",
-          "explain": "Elixir 的结构体不可变。用 %{struct | field: 新值} 的更新语法创建新结构体。"
+          "explain": "Elixir 的结构体不可变。用结构体更新语法基于原值生成新结构体。"
         },
         "undefined_module": {
           "match": "is not available (module||module .* is not available",
@@ -10082,7 +10082,7 @@
         "not_callable_elixir": {
           "match": "is not a function",
           "level": "fatal",
-          "explain": "把非函数的值当函数调用了。检查变量绑定和捕获语法 &。"
+          "explain": "你当成函数调用的东西不是一个函数。检查变量是否被覆盖，或名字拼错了。"
         },
         "bad_map_update": {
           "match": "expected a map, got",
@@ -10302,7 +10302,7 @@
         "unknown_revision": {
           "match": "unknown revision",
           "level": "fatal",
-          "explain": "引用的提交/分支不存在。检查名字拼写，git log 确认存在。"
+          "explain": "引用的版本/提交不存在。检查 tag 或分支名拼写，确认远端存在。"
         },
         "could_not_apply": {
           "match": "could not apply",
@@ -10805,7 +10805,7 @@
           "explain": "字符串/引号没有闭合。检查单双引号和 here-string 的结尾标记。"
         },
         "unexpected_token_ps": {
-          "match": "Unexpected token",
+          "match": "in expression or statement",
           "level": "fatal",
           "explain": "语法错误，出现了不该出现的符号。检查管道符、括号和引号配对。"
         },
@@ -10942,7 +10942,7 @@
         "subscript_out_of_range": {
           "match": "Run-time error '9'||Subscript out of range",
           "level": "fatal",
-          "explain": "下标越界：工作表名/数组下标/集合键不存在。检查 Sheets(\"名字\") 拼写和数组边界。"
+          "explain": "下标越界：工作表名、数组下标或集合键不存在。检查工作表名拼写和数组边界。"
         },
         "type_mismatch_vba": {
           "match": "Run-time error '13'||Type mismatch",
@@ -10972,10 +10972,10 @@
         "vba_out_of_memory": {
           "match": "Run-time error '7'||Out of memory",
           "level": "fatal",
-          "explain": "内存不足。检查是否有超大数组、对象循环创建未释放。"
+          "explain": "内存不足。检查是否有超大对象或对象循环创建未释放，必要时分块处理。"
         },
         "vba_permission_denied": {
-          "match": "Run-time error '70'||Permission denied",
+          "match": "Run-time error '70'",
           "level": "fatal",
           "explain": "权限不足。文件被占用或需要管理员权限，检查文件属性。"
         },
@@ -11090,7 +11090,7 @@
       "name": "MATLAB",
       "patterns": {
         "unrecognized_variable": {
-          "match": "Unrecognized function or variable||Undefined function or variable||Undefined variable",
+          "match": "Unrecognized function or variable||Undefined function or variable",
           "level": "error",
           "explain": "这个名字没定义。检查拼写、大小写（MATLAB 区分大小写），确认脚本/函数在路径上。"
         },
@@ -11132,7 +11132,7 @@
         "matlab_oom": {
           "match": "Out of memory",
           "level": "fatal",
-          "explain": "内存不足。数组太大，用 single/tiled 分块处理，或 clear 不用的大变量。"
+          "explain": "内存不足。检查是否有超大对象或对象循环创建未释放，必要时分块处理。"
         },
         "concat_dims": {
           "match": "Dimensions of arrays being concatenated",
@@ -11282,7 +11282,7 @@
         "haskell_div_zero": {
           "match": "divide by zero",
           "level": "fatal",
-          "explain": "除以零。除法前检查除数，或用 Ratio/Maybe 包装。"
+          "explain": "除以零。除法前检查除数。"
         },
         "non_exhaustive_patterns": {
           "match": "Non-exhaustive patterns",
@@ -11728,6 +11728,371 @@
           "match": "Entry module cannot be external",
           "level": "fatal",
           "explain": "入口模块不能是外部依赖。检查 rollup/vite 的 input 配置。"
+        }
+      }
+    },
+    "kubernetes": {
+      "name": "Kubernetes",
+      "patterns": {
+        "crash_loop_backoff": {
+          "match": "CrashLoopBackOff||Back-off restarting failed container",
+          "level": "fatal",
+          "explain": "容器反复崩溃重启。kubectl logs 看容器日志（加 --previous 看上一次崩溃），常见为启动即报错或缺配置。"
+        },
+        "image_pull_backoff": {
+          "match": "ImagePullBackOff||ErrImagePull",
+          "level": "fatal",
+          "explain": "镜像拉不下来。检查镜像名和 tag 拼写、仓库是否私有（需 imagePullSecrets）、网络是否可达。"
+        },
+        "create_container_config_error": {
+          "match": "CreateContainerConfigError",
+          "level": "error",
+          "explain": "容器配置组装失败，常见为引用的 ConfigMap/Secret 不存在。检查引用的名字和命名空间。"
+        },
+        "create_container_error": {
+          "match": "CreateContainerError",
+          "level": "error",
+          "explain": "容器创建失败。看 Events 里的具体原因，常见为命令/参数非法或镜像问题。"
+        },
+        "run_container_error": {
+          "match": "RunContainerError",
+          "level": "fatal",
+          "explain": "容器启动执行失败。常见为挂载路径冲突、权限不足或可执行文件不存在。"
+        },
+        "oom_killed_k8s": {
+          "match": "OOMKilled",
+          "level": "fatal",
+          "explain": "容器内存超过 limits 被杀。调大 memory limit，或排查应用内存泄漏。"
+        },
+        "evicted": {
+          "match": "Evicted||The node was low on resource",
+          "level": "error",
+          "explain": "Pod 被驱逐：节点磁盘/内存压力过大。清理节点资源或给 Pod 设置合理的 requests/limits。"
+        },
+        "pod_pending": {
+          "match": "Pending",
+          "level": "warning",
+          "explain": "Pod 调度不下去。kubectl describe 看 Events：常见为资源不足、节点选择器不匹配或 PVC 未绑定。"
+        },
+        "insufficient_cpu": {
+          "match": "Insufficient cpu||Insufficient memory",
+          "level": "error",
+          "explain": "集群没有节点能满足 requests。调低 requests 或扩容节点。"
+        },
+        "node_selector_no_nodes": {
+          "match": "didn't match Pod's node affinity||node(s) had untolerated taint",
+          "level": "error",
+          "explain": "没有节点满足亲和性/容忍污点。检查 nodeSelector、affinity 和 taints 配置。"
+        },
+        "pvc_pending": {
+          "match": "pvc.*pending",
+          "level": "warning",
+          "explain": "存储卷一直 Pending。检查 StorageClass 是否存在、供应器是否正常、配额是否用尽。"
+        },
+        "pvc_not_mount": {
+          "match": "Multi-Attach error||volume is already exclusively attached",
+          "level": "error",
+          "explain": "块存储卷已被别的节点占用。RWO 卷不能跨节点双挂，等旧 Pod 释放或改用可共享存储。"
+        },
+        "readiness_probe_failed": {
+          "match": "Readiness probe failed||Liveness probe failed",
+          "level": "error",
+          "explain": "健康检查失败。容器要么没监听配置的端口路径，要么启动太慢，调大 initialDelaySeconds/periodSeconds。"
+        },
+        "deployment_progress_deadline": {
+          "match": "exceeded its progress deadline",
+          "level": "fatal",
+          "explain": "滚动发布超时卡住。新版本 Pod 起不来（多为镜像/配置/探针问题），kubectl rollout undo 回滚。"
+        },
+        "rollout_no_status": {
+          "match": "rollout status",
+          "level": "warning",
+          "explain": "等待发布状态时出错。kubectl describe deployment 和 pods 看新副本的事件。"
+        },
+        "forbidden_rbac": {
+          "match": "forbidden: User cannot",
+          "level": "fatal",
+          "explain": "RBAC 权限不足。当前用户/ServiceAccount 没有该资源的操作权限，需要绑定 Role/ClusterRole。"
+        },
+        "unauthorized_k8s": {
+          "match": "Unauthorized||the server has asked for the credentials",
+          "level": "fatal",
+          "explain": "认证失败。kubeconfig 的用户凭据过期或不对，重新配置 token/证书。"
+        },
+        "context_not_found": {
+          "match": "context was not found||no context exists||current-context is not set",
+          "level": "fatal",
+          "explain": "kubeconfig 里没有这个 context。kubectl config get-contexts 查看，或重新合并配置。"
+        },
+        "connection_refused_k8s": {
+          "match": "connection to the server .* was refused",
+          "level": "fatal",
+          "explain": "连不上 API Server。检查 server 地址、代理设置和集群网络（VPN/防火墙）。"
+        },
+        "x509_cert_k8s": {
+          "match": "x509: certificate",
+          "level": "fatal",
+          "explain": "API Server 证书校验失败。集群证书过期或 IP/域名不在证书 SAN 里，重新签发或更新 kubeconfig。"
+        },
+        "namespace_not_found": {
+          "match": "namespaces \".*\" not found",
+          "level": "error",
+          "explain": "命名空间不存在。kubectl get ns 确认名字，或先 kubectl create namespace。"
+        },
+        "no_matches_kind": {
+          "match": "no matches for kind",
+          "level": "fatal",
+          "explain": "集群不认识这个资源类型。CRD 没安装或版本不对，先部署对应的 CRD。"
+        },
+        "unable_to_recognize": {
+          "match": "unable to recognize",
+          "level": "fatal",
+          "explain": "无法解析这个清单。YAML 语法错误或 apiVersion/kind 写错，先 kubectl apply --dry-run=client 检查。"
+        },
+        "validation_error_apply": {
+          "match": "error validating data",
+          "level": "fatal",
+          "explain": "清单字段校验失败。看提示的字段名，多为拼写错误或 apiVersion 与字段不匹配。"
+        },
+        "svc_no_endpoints": {
+          "match": "no endpoints available||has no endpoints",
+          "level": "error",
+          "explain": "Service 后面没有可用端点。selector 与 Pod 标签不匹配，或后端 Pod 没就绪。"
+        },
+        "ingress_default_backend": {
+          "match": "default backend - 404",
+          "level": "error",
+          "explain": "Ingress 没匹配到规则。检查 host/path 配置、ingressClass 和证书注解。"
+        },
+        "dns_resolve_fail": {
+          "match": "cannot resolve.*svc\\.cluster\\.local||no such host.*cluster\\.local",
+          "level": "error",
+          "explain": "集群内 DNS 解析失败。检查 CoreDNS 是否正常、Service 名和命名空间是否写对。"
+        },
+        "quota_exceeded_k8s": {
+          "match": "exceeded quota",
+          "level": "error",
+          "explain": "命名空间资源配额用尽。清理不用的资源或让管理员调大 ResourceQuota。"
+        },
+        "image_pull_secret": {
+          "match": "not found:.*pull secret||No pull secret",
+          "level": "error",
+          "explain": "私有仓库缺拉取凭据。创建 docker-registry 类型的 Secret 并在 ServiceAccount/Pod 里引用。"
+        },
+        "node_not_ready": {
+          "match": "node .* NotReady||NodeNotReady",
+          "level": "fatal",
+          "explain": "节点失联。多为 kubelet 挂了或网络断开，ssh 上去看 kubelet 状态和系统日志。"
+        }
+      }
+    },
+    "nginx": {
+      "name": "Nginx",
+      "patterns": {
+        "unknown_directive": {
+          "match": "unknown directive",
+          "level": "fatal",
+          "explain": "nginx 不认识这个指令。检查拼写，或该指令需要加载对应模块（如 gzip_static 需要 http_gzip_static_module）。"
+        },
+        "unexpected_eof_nginx": {
+          "match": "unexpected end of file, expecting",
+          "level": "fatal",
+          "explain": "配置文件读到结尾还差内容，缺右花括号或分号。nginx -t 会给出文件和行号。"
+        },
+        "unexpected_token_nginx": {
+          "match": "invalid parameter||unexpected .* in .*nginx.conf",
+          "level": "fatal",
+          "explain": "配置里出现了不合法的参数。检查该指令的参数格式和引号。"
+        },
+        "bind_failed_nginx": {
+          "match": "bind\\(\\) to .* failed.*Address already in use||98: Address already in use",
+          "level": "fatal",
+          "explain": "监听端口被占用。netstat/lsof 找到占用进程，或改 listen 端口。"
+        },
+        "bind_permission": {
+          "match": "bind\\(\\) to .* failed.*Permission denied",
+          "level": "fatal",
+          "explain": "绑定 80/443 等特权端口需要 root。用 root 启动 master（worker 用 user 指令降权）或改端口。"
+        },
+        "open_failed_nginx": {
+          "match": "open\\(\\) .* failed.*Permission denied",
+          "level": "fatal",
+          "explain": "worker 进程没权限读文件/目录。检查文件权限，worker 进程以 user 指令的用户运行。"
+        },
+        "no_such_file_nginx": {
+          "match": "open\\(\\) .* failed.*No such file",
+          "level": "error",
+          "explain": "文件或目录不存在。root/alias 路径拼接是否正确，注意 root 是全路径而 alias 是替换 location 部分。"
+        },
+        "ssl_cert_missing": {
+          "match": "no ssl_certificate is defined",
+          "level": "fatal",
+          "explain": "listen ssl 但没配证书。补 ssl_certificate 和 ssl_certificate_key。"
+        },
+        "ssl_key_mismatch": {
+          "match": "key values mismatch",
+          "level": "fatal",
+          "explain": "证书与私钥不配对。确认 .crt 和 .key 是同一套（可用 openssl x509/modulus 对比）。"
+        },
+        "upstream_no_live": {
+          "match": "no live upstreams",
+          "level": "fatal",
+          "explain": "上游组里所有后端都被标记失败。检查后端进程和 max_fails/fail_timeout 配置。"
+        },
+        "upstream_connect_failed": {
+          "match": "connect\\(\\) failed.*Connection refused",
+          "level": "fatal",
+          "explain": "nginx 连不上上游。后端服务没起来或端口不对，检查 proxy_pass/fastcgi_pass 的地址。"
+        },
+        "upstream_timeout": {
+          "match": "upstream timed out",
+          "level": "fatal",
+          "explain": "上游响应超时。后端太慢，调大 proxy_read_timeout/proxy_connect_timeout 或优化后端。"
+        },
+        "upstream_sent_header": {
+          "match": "upstream sent too big header",
+          "level": "error",
+          "explain": "上游响应头太大。调大 proxy_buffer_size 和 proxy_buffers。"
+        },
+        "client_body_too_large": {
+          "match": "client intended to send too large body",
+          "level": "error",
+          "explain": "请求体超过 client_max_body_size。调大该配置（默认 1m）。"
+        },
+        "rewrite_cycle": {
+          "match": "rewrite or internal redirection cycle",
+          "level": "fatal",
+          "explain": "重写规则成环。检查 rewrite/try_files 是否会反复匹配到自己。"
+        },
+        "no_resolver": {
+          "match": "no resolver defined to resolve",
+          "level": "fatal",
+          "explain": "变量形式的域名需要 resolver。在配置里加 resolver 8.8.8.8 之类的 DNS 服务器。"
+        },
+        "host_not_found_in_upstream": {
+          "match": "host not found in upstream",
+          "level": "fatal",
+          "explain": "upstream 里的域名解析不了。nginx 启动时就要解析静态域名，检查 DNS 或改用变量+resolver。"
+        },
+        "worker_rlimit": {
+          "match": "worker_connections are not enough",
+          "level": "error",
+          "explain": "连接数超过 worker_connections。调大该值和 worker_rlimit_nofile，并同步系统 ulimit。"
+        },
+        "too_many_open_files_nginx": {
+          "match": "accept\\(\\) failed.*Too many open files",
+          "level": "error",
+          "explain": "文件描述符耗尽。调大 worker_rlimit_nofile 和系统限制。"
+        },
+        "pid_exists": {
+          "match": "open\\(\\) .*nginx.pid failed||stale pid file",
+          "level": "fatal",
+          "explain": "PID 文件异常，可能有残留 nginx 进程。ps 确认后清理旧进程或删除陈旧 pid 文件。"
+        },
+        "emerg_generic": {
+          "match": "nginx: \\[emerg\\]",
+          "level": "fatal",
+          "explain": "nginx 配置错误无法启动。看这一行后面的具体原因，用 nginx -t 先验证。"
+        },
+        "worker_process_exited": {
+          "match": "worker process .* exited on signal",
+          "level": "fatal",
+          "explain": "worker 异常崩溃。常见为段错误，看 error.log 的堆栈或 core dump，检查第三方模块。"
+        }
+      }
+    },
+    "makecmake": {
+      "name": "Make/CMake",
+      "patterns": {
+        "missing_separator": {
+          "match": "missing separator",
+          "level": "fatal",
+          "explain": "Makefile 语法错误：命令行必须用 Tab 开头（不能是空格），或变量赋值少了等号。报错指出了行号。"
+        },
+        "no_rule_to_make": {
+          "match": "No rule to make target",
+          "level": "fatal",
+          "explain": "找不到生成目标的规则。目标名拼错、依赖文件不存在，或没写对应的 target 规则。"
+        },
+        "nothing_to_be_done": {
+          "match": "Nothing to be done for||nothing to be done",
+          "level": "warning",
+          "explain": "目标已是最新，没有要做的。想强制重跑可以 make clean 后再 make，或删目标文件。"
+        },
+        "no_targets": {
+          "match": "No targets specified and no makefile found||*** No targets",
+          "level": "fatal",
+          "explain": "找不到 Makefile 或没有可构建的目标。确认在正确目录、文件名是 Makefile 或用 -f 指定。"
+        },
+        "makefile_not_found": {
+          "match": "make: .*: No such file or directory||make: .* Stop.",
+          "level": "fatal",
+          "explain": "make 没找到 Makefile 或包含的文件。检查目录和 -f 参数。"
+        },
+        "overriding_recipe": {
+          "match": "overriding recipe for target",
+          "level": "warning",
+          "explain": "同一个目标定义了两次，后面的规则覆盖前面的。检查是否重复包含或目标重名。"
+        },
+        "unterminated_variable_ref": {
+          "match": "unterminated variable reference",
+          "level": "fatal",
+          "explain": "变量引用的括号没闭合。检查 $() 或 ${} 是否配对。"
+        },
+        "commands_commence_before": {
+          "match": "commands commence before first target",
+          "level": "fatal",
+          "explain": "命令行出现在任何 target 之前。检查是不是 Tab 缩进用错了位置，或少了目标行。"
+        },
+        "recursive_variable": {
+          "match": "Recursive variable",
+          "level": "fatal",
+          "explain": "变量递归引用了自己（A = $(A) x）。改用 := 简单展开或理顺依赖。"
+        },
+        "make_command_not_found": {
+          "match": "make: .*: Command not found",
+          "level": "fatal",
+          "explain": "规则里的命令不存在。检查工具是否安装、PATH 是否正确。"
+        },
+        "cmake_error_at": {
+          "match": "CMake Error at",
+          "level": "fatal",
+          "explain": "CMake 配置/生成失败。看文件和行号，往 caused by 找根本原因。"
+        },
+        "cmake_no_compiler": {
+          "match": "No CMAKE_C_COMPILER could be found||No CMAKE_CXX_COMPILER could be found",
+          "level": "fatal",
+          "explain": "找不到 C/C++ 编译器。安装 gcc/clang/MSVC，或清掉 build 目录重新指定生成器。"
+        },
+        "cmake_generator_mismatch": {
+          "match": "does not match the generator used",
+          "level": "fatal",
+          "explain": "CMake 缓存里的生成器和现在指定的不一致。删除 build 目录（CMakeCache.txt）重新 cmake。"
+        },
+        "cmake_find_package": {
+          "match": "Could NOT find",
+          "level": "fatal",
+          "explain": "找不到依赖库。安装库和开发头文件，或用 -DCMAKE_PREFIX_PATH 指明位置。"
+        },
+        "cmake_missing_source": {
+          "match": "Cannot find source file",
+          "level": "fatal",
+          "explain": "CMakeLists 引用的源文件不存在。检查文件名大小写和路径，或文件是否被删了。"
+        },
+        "cmake_target_sources_mismatch": {
+          "match": "contains mismatched sources",
+          "level": "error",
+          "explain": "目标源文件列表在不同配置分支下不一致。统一各平台的 sources 列表。"
+        },
+        "cmake_configuring_incomplete": {
+          "match": "Configuring incomplete",
+          "level": "fatal",
+          "explain": "配置阶段失败。往上看第一个 CMake Error 才是根因。"
+        },
+        "cmake_policy_cmp": {
+          "match": "Policy CMP",
+          "level": "error",
+          "explain": "CMake 策略行为变更警告/错误。按提示用 cmake_policy(SET CMPxxxx NEW) 显式声明。"
         }
       }
     }
