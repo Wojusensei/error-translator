@@ -49,7 +49,9 @@ std::string url_decode(const std::string& s){
 // 静态文件路由：URL 是写死的常量表，不接受用户传入的路径，不存在目录穿越问题
 struct FileRoute { const char* url; const char* file; const char* type; };
 static const FileRoute kFileRoutes[] = {
-    {"/", "js/index.html", "text/html; charset=utf-8"},
+    {"/",        "js/index.html", "text/html; charset=utf-8"},
+    {"/app.js",  "js/app.js",     "text/javascript; charset=utf-8"},
+    {"/app.css", "js/app.css",    "text/css; charset=utf-8"},
 };
 
 // 取请求行里的目标（路径+查询串），解析失败返回空串
