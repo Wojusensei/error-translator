@@ -126,6 +126,8 @@ int main(int argc, char** argv) {
         {"e: file.kt:3:1 Unresolved reference: foo", "Kotlin"},
         {"Traceback (most recent call last):\n  File \"x.py\", line 1, in <module>\nKeyError: 'k'", "Python"},
         {"panic: runtime error: index out of range [5] with length 3", "Go"},
+        {"Warning: FailedScheduling: 0/3 nodes are available:Insufficient cpu", "Kubernetes"},
+        {"kubelet Logs for pod/app: Back-off restarting failed container", "Kubernetes"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

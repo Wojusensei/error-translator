@@ -64,6 +64,7 @@
 | CI/CD       | 21 | GitHub Actions、Jenkins pipeline（沙箱/DSL/仓库连接）、GitLab CI 校验            |
 | 包管理器    | 15 | npm：missing script/EACCES/EINTEGRITY；pnpm/yarn：版本冲突、lockfile、corepack   |
 | 前端构建    | 12 | webpack/vite/rollup：loader 缺失、模块解析失败、dev server 启动错误、体积告警     |
+| Kubernetes  | 30 | `CrashLoopBackOff`、`ImagePullBackOff`、`OOMKilled`、驱逐、RBAC、探针失败、调度失败 |
 
 ---
 

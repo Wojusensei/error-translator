@@ -2310,3 +2310,33 @@ CI/CD|jobs config should be a hash of hashes|fatal|.gitlab-ci.yml 的 jobs 段�
 前端构建|Unknown word|fatal|CSS/PostCSS 解析失败。检查语法、是否漏了对应 loader 或插件。|运行时
 前端构建|asset size limit|warning|产物超过体积警告线。做代码分割、按需引入，或确认是否误打包了依赖。|运行时
 前端构建|Entry module cannot be external|fatal|入口模块不能是外部依赖。检查 rollup/vite 的 input 配置。|运行时
+Kubernetes|CrashLoopBackOff||Back-off restarting failed container|fatal|容器反复崩溃重启。kubectl logs 看容器日志（加 --previous 看上一次崩溃），常见为启动即报错或缺配置。|运行时
+Kubernetes|ImagePullBackOff||ErrImagePull|fatal|镜像拉不下来。检查镜像名和 tag 拼写、仓库是否私有（需 imagePullSecrets）、网络是否可达。|运行时
+Kubernetes|CreateContainerConfigError|error|容器配置组装失败，常见为引用的 ConfigMap/Secret 不存在。检查引用的名字和命名空间。|运行时
+Kubernetes|CreateContainerError|error|容器创建失败。看 Events 里的具体原因，常见为命令/参数非法或镜像问题。|运行时
+Kubernetes|RunContainerError|fatal|容器启动执行失败。常见为挂载路径冲突、权限不足或可执行文件不存在。|运行时
+Kubernetes|OOMKilled|fatal|容器内存超过 limits 被杀。调大 memory limit，或排查应用内存泄漏。|内存/资源
+Kubernetes|Evicted||The node was low on resource|error|Pod 被驱逐：节点磁盘/内存压力过大。清理节点资源或给 Pod 设置合理的 requests/limits。|运行时
+Kubernetes|Pending|warning|Pod 调度不下去。kubectl describe 看 Events：常见为资源不足、节点选择器不匹配或 PVC 未绑定。|运行时
+Kubernetes|Insufficient cpu||Insufficient memory|error|集群没有节点能满足 requests。调低 requests 或扩容节点。|运行时
+Kubernetes|didn't match Pod's node affinity||node(s) had untolerated taint|error|没有节点满足亲和性/容忍污点。检查 nodeSelector、affinity 和 taints 配置。|数据库
+Kubernetes|pvc.*pending|warning|存储卷一直 Pending。检查 StorageClass 是否存在、供应器是否正常、配额是否用尽。|运行时
+Kubernetes|Multi-Attach error||volume is already exclusively attached|error|块存储卷已被别的节点占用。RWO 卷不能跨节点双挂，等旧 Pod 释放或改用可共享存储。|运行时
+Kubernetes|Readiness probe failed||Liveness probe failed|error|健康检查失败。容器要么没监听配置的端口路径，要么启动太慢，调大 initialDelaySeconds/periodSeconds。|运行时
+Kubernetes|exceeded its progress deadline|fatal|滚动发布超时卡住。新版本 Pod 起不来（多为镜像/配置/探针问题），kubectl rollout undo 回滚。|运行时
+Kubernetes|rollout status|warning|等待发布状态时出错。kubectl describe deployment 和 pods 看新副本的事件。|运行时
+Kubernetes|forbidden: User cannot|fatal|RBAC 权限不足。当前用户/ServiceAccount 没有该资源的操作权限，需要绑定 Role/ClusterRole。|权限
+Kubernetes|Unauthorized||the server has asked for the credentials|fatal|认证失败。kubeconfig 的用户凭据过期或不对，重新配置 token/证书。|权限
+Kubernetes|context was not found||no context exists||current-context is not set|fatal|kubeconfig 里没有这个 context。kubectl config get-contexts 查看，或重新合并配置。|运行时
+Kubernetes|connection to the server .* was refused|fatal|连不上 API Server。检查 server 地址、代理设置和集群网络（VPN/防火墙）。|网络
+Kubernetes|x509: certificate|fatal|API Server 证书校验失败。集群证书过期或 IP/域名不在证书 SAN 里，重新签发或更新 kubeconfig。|网络
+Kubernetes|namespaces ".*" not found|error|命名空间不存在。kubectl get ns 确认名字，或先 kubectl create namespace。|运行时
+Kubernetes|no matches for kind|fatal|集群不认识这个资源类型。CRD 没安装或版本不对，先部署对应的 CRD。|运行时
+Kubernetes|unable to recognize|fatal|无法解析这个清单。YAML 语法错误或 apiVersion/kind 写错，先 kubectl apply --dry-run=client 检查。|配置
+Kubernetes|error validating data|fatal|清单字段校验失败。看提示的字段名，多为拼写错误或 apiVersion 与字段不匹配。|运行时
+Kubernetes|no endpoints available||has no endpoints|error|Service 后面没有可用端点。selector 与 Pod 标签不匹配，或后端 Pod 没就绪。|数据库
+Kubernetes|default backend - 404|error|Ingress 没匹配到规则。检查 host/path 配置、ingressClass 和证书注解。|文件/IO
+Kubernetes|cannot resolve.*svc\.cluster\.local||no such host.*cluster\.local|error|集群内 DNS 解析失败。检查 CoreDNS 是否正常、Service 名和命名空间是否写对。|网络
+Kubernetes|exceeded quota|error|命名空间资源配额用尽。清理不用的资源或让管理员调大 ResourceQuota。|运行时
+Kubernetes|not found:.*pull secret||No pull secret|error|私有仓库缺拉取凭据。创建 docker-registry 类型的 Secret 并在 ServiceAccount/Pod 里引用。|运行时
+Kubernetes|node .* NotReady||NodeNotReady|fatal|节点失联。多为 kubelet 挂了或网络断开，ssh 上去看 kubelet 状态和系统日志。|运行时

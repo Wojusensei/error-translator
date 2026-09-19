@@ -207,6 +207,8 @@ std::string detect_language(const std::string& input) {
     if (input.find("SQLSTATE[") != std::string::npos || input.find("ORA-") != std::string::npos) return "SQL";
     if (input.find("RenderFlex") != std::string::npos ||
         input.find("Null check operator") != std::string::npos) return "Dart/Flutter";
+    if (input.find("CrashLoopBackOff") != std::string::npos || input.find("ImagePullBackOff") != std::string::npos ||
+        input.find("kubectl") != std::string::npos) return "Kubernetes";
     if (input.find("Module build failed") != std::string::npos ||
         input.find("You may need an appropriate loader") != std::string::npos) return "前端构建";
     if (input.find("npm ERR!") != std::string::npos || input.find("ERR_PNPM_") != std::string::npos ||
