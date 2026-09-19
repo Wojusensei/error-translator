@@ -10,17 +10,17 @@ Python|SyntaxError||invalid syntax||unmatched '('||unmatched ')'||EOL while scan
 Python|unexpected EOF while parsing||'(' was never closed||EOF in multi-line statement|fatal|代码到结尾还没写完，通常是括号或引号没闭合。从报错行往上找缺的那一半。|编译/链接
 Python|IndentationError||unexpected indent||expected an indented block|fatal|缩进错误。Python 对空格和 Tab 敏感，检查是否混用了，或者缩进层级不对。|编译/链接
 Python|TabError||inconsistent use of tabs and spaces|fatal|Tab 和空格混用导致缩进无法对齐。建议编辑器统一设置为 4 个空格缩进。|运行时
-Python|ZeroDivisionError||division by zero||integer division or modulo by zero|error|不能除以0。在做除法或取模之前检查除数是否可能为0。|运行时
+Python|ZeroDivisionError||integer division or modulo by zero|error|不能除以0。在做除法或取模之前检查除数是否可能为0。|运行时
 Python|ModuleNotFoundError||No module named|error|找不到你导入的模块。先用 pip install 安装对应的库，注意虚拟环境里装没装。|网络
 Python|RecursionError||maximum recursion depth|fatal|递归太深了。函数一直调用自己没有结束条件，检查递归出口，或者改成循环实现。|运行时
-Python|PermissionError||Permission denied||Errno 13||WinError 5|error|没有权限访问文件。文件被其他程序占用了，或者需要管理员权限，检查文件是否只读。|权限
+Python|PermissionError||Errno 13||WinError 5|error|没有权限访问文件。文件被其他程序占用了，或者需要管理员权限，检查文件是否只读。|权限
 Python|StopIteration|warning|迭代器到头了。通常在 next() 调用时触发，可以用 for 循环代替手动迭代。|运行时
 Python|KeyboardInterrupt|warning|你按了 Ctrl+C 中断了程序。这不是代码的问题，是手动终止的。|运行时
 Python|UnboundLocalError||referenced before assignment|error|在函数里用了还没赋值的局部变量。如果你想把外面的全局变量拿进来用，加 global 声明。|运行时
 Python|EOFError||EOF when reading|error|输入到末尾了。通常是用 input() 读取时没收到足够的输入，检查文件或输入流。|文件/IO
 Python|MemoryError||Unable to allocate|fatal|内存不足。程序占用的内存超过了系统能给的极限。尝试减少一次处理的数据量，或用分块读取。|内存/资源
-Python|TimeoutError||timed out|error|操作超时。网络请求或某个操作等待太久没响应。检查网络连接或增加超时时间。|运行时
-Python|ConnectionError||Connection refused||Max retries exceeded||WinError 10061|error|网络连接失败。目标服务器拒绝了连接或无法访问。检查网址、端口和网络。|网络
+Python|TimeoutError||timed out|error|操作超时。目标响应太慢，调大超时时间或加自动重试。|运行时
+Python|ConnectionError||Connection refused||Max retries exceeded||WinError 10061|error|连接被拒绝。目标端口没有服务在监听，确认服务已启动、地址和端口正确。|网络
 Python|ConnectionResetError||Connection reset by peer||Errno 104|error|连接被对方重置了。服务器中途断开，可能是请求太快被限流，或服务端出了问题，加重试逻辑。|网络
 Python|OSError|error|操作系统相关的错误。可能是文件操作失败、路径问题或系统资源不足，看 Errno 编号定位。|运行时
 Python|RuntimeError|error|运行时错误。程序运行时遇到了意外的情况。检查代码逻辑是否有死循环或不合理的状态。|运行时
@@ -48,11 +48,11 @@ Python|UnicodeDecodeError||can't decode byte|error|解码失败，字节流不�
 Python|UnicodeEncodeError||codec can't encode|error|编码失败，当前编码表示不了某些字符。输出前用 errors='ignore' 或统一转成 UTF-8 处理。|运行时
 Python|HTTPError||HTTP Error 404||HTTP Error 403|error|服务器返回了错误状态码。403 多是没登录或被反爬，404 是地址不对，401 是认证失败。|网络
 Python|MissingSchema||No scheme supplied|error|请求的 URL 缺少协议头。地址要以 http:// 或 https:// 开头。|网络
-Python|InvalidURL||Invalid URL|error|URL 格式不合法。检查是否有空格、中文等未编码字符，必要时用 quote() 转义。|运行时
-Python|SSLError||certificate verify failed|error|SSL 证书校验失败。常见于公司内网代理或系统时间不对，不要轻易关闭验证，先更新证书库。|网络
+Python|InvalidURL||Invalid URL|error|URL 格式不合法。检查是否漏了协议头 http://，或地址里有空格、中文等非法字符。|网络
+Python|SSLError||certificate verify failed|error|SSL 证书校验失败。常见于公司内网代理或自签证书，先更新系统证书库，不要轻易关闭校验。|网络
 Python|gaierror||Name or service not known||getaddrinfo failed|error|域名解析失败。检查主机名拼写和 DNS，确认拼写不是把 URL 写成了别的形式。|网络
-Python|socket.timeout||Read timed out|error|Socket 读取超时。对端响应太慢或网络不稳，调大 timeout 或加自动重试。|网络
-Python|Address already in use||WinError 10048|error|端口已经被别的程序占了。换一个端口，或者先找到并结束占用端口的旧进程。|运行时
+Python|socket.timeout||Read timed out|error|读取响应超时。对端响应太慢或网络不稳，调大超时时间或加重试。|网络
+Python|Address already in use||WinError 10048|error|端口已被占用。换端口，或找到并结束占用端口的旧进程。|运行时
 Python|BrokenPipeError||Errno 32|error|对端已经关闭连接你还在写数据。常见于客户端提前断开，捕获异常并检查写入时机。|依赖/环境
 Python|FileExistsError|error|要创建的文件或目录已经存在。先判断 os.path.exists()，或者用 exist_ok=True 参数。|文件/IO
 Python|IsADirectoryError|error|你把目录当文件打开了。确认路径最后指向的是文件，需要的话先列出目录内容。|数据库
@@ -121,7 +121,7 @@ Python|Remote end closed connection without response|error|服务端没回响应
 Python|field larger than field limit|error|单行字段超过 csv 默认上限。csv.field_size_limit 调大。|运行时
 Python|new-line character seen in unquoted field|error|CSV 里有多余换行。用 newline='' 打开文件，检查数据格式。|运行时
 Python|unpack requires a buffer|error|struct 解包的数据太短。检查数据长度和格式串是否匹配。|依赖/环境
-Python|UNIQUE constraint failed|error|唯一约束冲突，记录已存在。先查重或用 INSERT OR REPLACE。|数据库
+Python|UNIQUE constraint failed|error|唯一约束冲突（SQLite）。这条记录已存在，先查重或用 INSERT OR REPLACE。|数据库
 Python|QueuePool limit of size|error|连接池耗尽。检查连接泄漏（没 close 的会话），或调大 pool_size。|运行时
 Python|cannot assign to field|error|frozen dataclass 不可修改。用 dataclasses.replace 生成新对象。|运行时
 JavaScript|ReferenceError|error|引用了不存在的变量。检查变量名拼写，或者确认变量在使用前已经声明了。|运行时
@@ -130,8 +130,8 @@ JavaScript|SyntaxError|fatal|语法错误。可能是少写了逗号、括号不
 JavaScript|Unexpected token|fatal|代码里出现了意外的符号。常见原因：少了逗号、多了括号、字符串没闭合，或把对象当成了别的用法。|编译/链接
 JavaScript|RangeError||Maximum call stack size exceeded|error|某个值超出允许的范围。若提示 Maximum call stack 是递归没有出口，检查终止条件。|运行时
 JavaScript|Cannot read properties of undefined||Cannot read properties of null||Cannot read property|error|你在对 undefined 或 null 取属性。先判断对象是否存在，或用 ?. 可选链安全取值。|运行时
-JavaScript|Cannot set properties of undefined||Cannot set properties of null||Cannot set property|error|你在给 undefined/null 赋属性。检查对象是否已声明并初始化，DOM 是否还没渲染出来。|运行时
-JavaScript|is not a function|error|你当成函数调用的东西不是一个函数。检查变量是否被覆盖、方法名是否拼错、对象上是否有该方法。|运行时
+JavaScript|Cannot set properties of undefined||Cannot set properties of null|error|你在给 undefined/null 赋属性。检查对象是否已声明并初始化，DOM 是否还没渲染出来。|运行时
+JavaScript|is not a function|error|你当成函数调用的东西不是一个函数。检查变量是否被覆盖，或名字拼错了。|运行时
 JavaScript|undefined is not an object|error|Safari 报错：对 undefined 做对象操作。等价于 Chrome 的 Cannot read properties of undefined，检查前面的变量。|运行时
 JavaScript|Assignment to constant variable|error|给 const 声明的变量重新赋值了。如果确实需要改，把 const 改成 let。|运行时
 JavaScript|Unexpected end of input||Unexpected end of JSON input|fatal|代码或 JSON 到结尾就断了。代码是括号没闭合；JSON 是内容为空或被截断，先打印原始响应看看。|编译/链接
@@ -140,7 +140,7 @@ JavaScript|Unexpected reserved word||Unexpected strict mode reserved word|fatal|
 JavaScript|Missing initializer in const declaration|fatal|const 声明必须同时赋值。要么补上初始值，要么改成 let。|运行时
 JavaScript|Invalid regular expression|fatal|正则表达式写错了。检查括号、量词和转义符是否配对，特殊字符要加反斜杠。|运行时
 JavaScript|await is only valid in async|fatal|await 只能用在 async 函数里。给外层函数加 async，或把 IIFE 写成 (async () => {})()。|并发/异步
-JavaScript|Cannot use import statement outside a module|fatal|当前文件被当成普通脚本。给 script 标签加 type module，或改用 require / 打包工具。|依赖/环境
+JavaScript|Cannot use import statement outside a module|fatal|当前文件被当成普通脚本。给 script 标签加 type module、配置 ESM，或改用 require / 打包工具。|依赖/环境
 JavaScript|Unexpected token '<'|fatal|解析 JS 时收到了 HTML 页面开头。通常是接口返回了 404/500 页面而不是 JSON，或 script 路径配错了。|编译/链接
 JavaScript|Invalid array length|error|给数组设置了非法长度，或 new Array 收到负数/非整数。检查计算出来的长度值。|运行时
 JavaScript|Reduce of empty array with no initial value|error|对空数组调用 reduce 却没给初始值。传入第二个参数作为初始值，或先判断数组是否为空。|运行时
@@ -163,7 +163,7 @@ JavaScript|ERR_REQUIRE_ESM||require() of ES Module||Must use import to load ES M
 JavaScript|EADDRINUSE||address already in use|error|端口被占用了。换端口，或找到并结束占用端口的旧 Node 进程再启动。|运行时
 JavaScript|ECONNREFUSED|error|目标端口没人监听，连接被拒绝。确认服务已启动、主机和端口写对了。|网络
 JavaScript|ECONNRESET||socket hang up|error|连接被对端强制断开。服务可能崩溃或主动关闭，加重试逻辑并查看服务端日志。|网络
-JavaScript|ENOTFOUND||getaddrinfo|error|域名解析失败。检查主机名拼写和 DNS 配置，确认不是把 URL 前缀或端口写错。|网络
+JavaScript|ENOTFOUND||getaddrinfo ENOTFOUND|error|域名解析失败。检查主机名拼写和 DNS 配置，确认不是把 URL 前缀或端口写错。|网络
 JavaScript|ETIMEDOUT|error|连接超时。目标服务响应太慢或网络不通，设置合理超时并考虑重试。|网络
 JavaScript|EACCES|error|没有权限，通常是绑定了 80/443 等特权端口或目录权限不足。换端口或用管理员/sudo。|权限
 JavaScript|ENOENT|error|文件或目录不存在。检查相对路径基准是进程启动目录，必要时用 path.resolve 拼绝对路径。|文件/IO
@@ -191,7 +191,7 @@ JavaScript|window is not defined|error|Node/SSR 环境没有 window 对象。把
 JavaScript|document is not defined|error|Node/SSR 环境没有 document 对象。DOM 操作要在浏览器阶段（useEffect）里做。|运行时
 JavaScript|process is not defined|error|浏览器代码里直接用了 process。用打包工具注入的环境变量，或改用 import.meta.env。|运行时
 JavaScript|is not defined in ES module scope|fatal|ESM 里没有某些 CommonJS 变量（如 __dirname）。用 import.meta.url 配合 fileURLToPath 转换。|文件/IO
-JavaScript|Invalid URL|error|URL 格式不合法。检查是否漏了协议头 http://，或者地址里有空格等非法字符。|网络
+JavaScript|Invalid URL|error|URL 格式不合法。检查是否漏了协议头 http://，或地址里有空格、中文等非法字符。|网络
 JavaScript|Cannot convert undefined or null to object|error|Object.keys 等方法收到了 undefined/null。先判断对象是否存在再操作。|运行时
 JavaScript|ERESOLVE||unable to resolve dependency tree|error|npm 依赖版本冲突无法解析。按提示安装兼容版本，或临时用 --legacy-peer-deps 绕过。|依赖/环境
 JavaScript|npm ERR! code ELIFECYCLE|error|npm 脚本执行失败退出。往上看真正的报错内容，通常是脚本对应的命令本身出错了。|依赖/环境
@@ -216,7 +216,7 @@ JavaScript|state update on an unmounted component|warning|组件卸载后还在 
 JavaScript|Exceeded timeout of|error|测试超时。异步断言没有 await，或用例真的太慢，设置更长超时。|并发/异步
 JavaScript|trouble with your network connection|error|yarn 下载失败。检查网络和镜像源，重试即可。|网络
 JavaScript|compiled against a different Node.js version|error|原生模块和 Node 版本不匹配。npm rebuild 重编译，或换用匹配的模块版本。|编译/链接
-JavaScript|wrong version number|error|TLS 握手失败，常见于用 https 请求了 http 端口。检查协议和端口。|网络
+JavaScript|wrong version number|error|TLS 握手版本不对。常见为用 https 请求了 http 端口，或代理拦截。|网络
 JavaScript|write EPIPE|error|输出管道已关闭还在写数据，比如进程输出被截断。检查下游消费者的生命周期。|依赖/环境
 JavaScript|Parse Error: Expected HTTP/|error|收到的不是合法 HTTP 响应。检查目标是不是 HTTP 服务、代理配置是否正确。|编译/链接
 JavaScript|PayloadTooLargeError|error|请求体超过大小限制。调整 body-parser 的 limit 配置或压缩上传内容。|编译/链接
@@ -250,15 +250,15 @@ Java|TimeoutException|error|等待超时。任务没在期限内完成，检查�
 Java|IOException|error|输入输出操作失败。看具体 message 定位是文件、流还是网络问题。|运行时
 Java|FileNotFoundException|error|文件找不到。检查文件路径是否正确，文件是否被移动或删除，注意工作目录。|网络
 Java|EOFException|error|读数据时流提前结束。文件可能被截断，或读取的数据长度和写入时不一致。|文件/IO
-Java|SocketException||Socket is closed||Broken pipe|error|Socket 连接异常断开。对端关闭了连接或网络中断，加重连机制并检查读写时机。|网络
-Java|SocketTimeoutException||Read timed out||connect timed out|error|Socket 读写超时。对端响应慢或网络不稳，调大 timeout 或加重试。|网络
-Java|ConnectException||Connection refused|error|连接被拒绝。目标地址没有服务监听，确认服务启动、IP 和端口正确。|网络
+Java|SocketException||Socket is closed||Broken pipe|error|对端已经关闭连接，还在往管道里写数据。检查接收方的生命周期。|网络
+Java|SocketTimeoutException||Read timed out||connect timed out|error|读取响应超时。对端响应太慢或网络不稳，调大超时时间或加重试。|网络
+Java|ConnectException||Connection refused|error|连接被拒绝。目标端口没有服务在监听，确认服务已启动、地址和端口正确。|网络
 Java|UnknownHostException|error|域名解析失败。检查主机名拼写和 DNS 配置。|网络
 Java|MalformedURLException||no protocol|error|URL 格式不对。地址要以 http:// 或 https:// 等协议开头。|网络
 Java|URISyntaxException||Illegal character in|error|URI 含有非法字符。中文、空格等要先 URL 编码再拼进地址。|编译/链接
 Java|SQLException|error|数据库操作出错。看具体 message：可能是 SQL 语法、字段、连接或事务问题。|数据库
 Java|Communications link failure|error|MySQL 连接中断。检查数据库是否启动、地址端口、网络和连接超时配置。|数据库
-Java|Access denied for user|error|数据库用户名或密码错误。检查连接配置，或该用户没有对应主机的访问权限。|权限
+Java|Access denied for user|error|数据库用户名或密码错误。检查连接配置，或该账号没有对应主机的访问权限。|权限
 Java|no suitable driver|error|找不到 JDBC 驱动。把对应数据库的驱动 jar 加进依赖，确认 URL 前缀正确。|运行时
 Java|CloneNotSupportedException|error|类没有实现 Cloneable 却调用了 clone()。实现接口并重写 clone，或改用拷贝构造。|运行时
 Java|StackOverflowError|fatal|栈溢出了。通常是无限递归导致的，检查递归函数的终止条件。|运行时
@@ -303,7 +303,7 @@ Java|NegativeArraySizeException|error|用负数创建数组。检查长度的计
 Java|EmptyStackException|error|栈已经空了还在 pop()/peek()。先调用 isEmpty() 判断。|运行时
 Java|DateTimeParseException||could not be parsed at index|error|日期字符串解析失败。对照实际文本调整 DateTimeFormatter 的格式模式。|编译/链接
 Java|SSLHandshakeException||PKIX path building failed|error|SSL 握手失败。多为自签名证书不受信任，把证书导入信任库，不要关闭校验。|网络
-Java|BindException||Address already in use|error|端口绑定失败，已被占用。换端口或结束占用端口的旧进程。|运行时
+Java|BindException||Address already in use|error|端口已被占用。换端口，或找到并结束占用端口的旧进程。|运行时
 Java|MissingFormatArgumentException|error|String.format 的占位符比参数多。检查格式串里 %s 等占位符和参数是否一一对应。|运行时
 Java|Application run failed|fatal|Spring Boot 启动失败。往下看 caused by 的第一个异常，通常是配置或 Bean 的问题。|运行时
 Java|Failed to configure a DataSource|fatal|Spring Boot 没配好数据源。检查 application.yml 的 spring.datasource 配置和驱动依赖。|运行时
@@ -319,7 +319,7 @@ Java|AccessDeniedException|error|没有文件访问权限。检查权限设置�
 Java|Found one Java-level deadlock|fatal|JVM 检测到死锁。jstack 输出会指出互相等待的锁，统一加锁顺序。|并发/异步
 Java|sleep interrupted|error|线程在休眠时被中断。处理 InterruptedException 或检查中断逻辑。|运行时
 Java|error in opening zip file|error|jar/zip 文件损坏或不完整。重新下载或构建依赖。|文件/IO
-Java|Could not reserve enough space for object heap|fatal|堆内存超过系统可用上限。调小 -Xmx。|内存/资源
+Java|Could not reserve enough space for object heap|fatal|给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。|内存/资源
 Java|Unrecognized VM option|fatal|JVM 不认识这个参数。检查拼写或当前 JVM 版本是否支持。|运行时
 Java|no main manifest attribute|fatal|jar 包没指定 Main-Class。在构建配置里设置主类，或 java -cp 主类 运行。|配置
 Java|HttpMessageNotReadableException|error|请求体解析失败。检查 JSON 格式和字段类型是否与 DTO 匹配。|网络
@@ -345,9 +345,9 @@ C++|was not declared in this scope||was not declared||use of undeclared identifi
 C++|expected ';' before||expected ';'|fatal|缺少分号。C++ 的每条语句结尾必须有分号，检查报错指向的位置和上一行末尾。|编译/链接
 C++|expected '}' at end of input||expected '}'|fatal|缺少花括号。检查花括号是否成对出现，可能某个 { 没有对应的 }。|编译/链接
 C++|no matching function for call to|error|没有能匹配这次调用的函数重载。检查参数个数、类型和 const 属性是否与声明一致。|运行时
-C++|no member named||is not a member of|error|这个类或名字空间里没有该成员。检查拼写、头文件是否包含正确版本的类。|运行时
-C++|cannot convert||invalid conversion from|error|类型无法隐式转换。检查两边的类型，必要时显式转换或修改函数签名。|运行时
-C++|is ambiguous|error|调用有歧义，多个重载都能匹配。显式转换参数类型，或加模板/限定名消除歧义。|运行时
+C++|no member named||is not a member of|error|这个对象/类型上没有该成员。检查拼写、import，或访问的类型搞错了。|运行时
+C++|invalid conversion from||cannot convert.*to '|error|类型无法隐式转换。检查两边的类型，必要时显式转换或修改函数签名。|运行时
+C++|is ambiguous|error|引用有歧义，多个候选都能匹配。用限定名或显式类型消除歧义。|运行时
 C++|redefinition of||previous definition|error|重复定义了同一个东西。变量、函数或类名和已有的冲突了，检查头文件保护宏是否生效。|编译/链接
 C++|does not name a type|error|编译器不认识这个类型。检查是否漏了 #include、std:: 前缀，或类型在使用前没有定义。|编译/链接
 C++|incomplete type||has incomplete type||invalid use of incomplete type|error|使用了只有前向声明的类型。只有声明没有完整定义时不能创建对象或取大小，包含完整定义的头文件。|运行时
@@ -397,7 +397,7 @@ C++|cannot be used as a function||called object type|error|你把不是函数的
 C++|static assertion failed|fatal|编译期断言失败。看提示的消息文本，检查类型大小、模板参数等编译期条件。|运行时
 C++|narrowing conversion|error|初始化列表里发生了可能丢数据的窄化转换。改成显式转换，或使用相同宽度的类型。|运行时
 C++|may be used uninitialized|warning|变量在某些路径下可能未初始化就被使用。声明时初始化，或补全赋值分支。|运行时
-C++|unused variable||unused-but-set variable|warning|声明了变量但没使用。删掉或者暂时加 (void)var 压掉警告。|运行时
+C++|unused variable||unused-but-set variable|warning|声明了变量但没使用。删掉，或用 (void)/下划线前缀标记有意不用。|运行时
 C++|division by zero|warning|编译器发现除数可能为 0。运行时会崩溃，除法前先判断除数。|运行时
 C++|ISO C++ forbids|error|代码违反了 C++ 标准。常见于把字符串字面量赋给 char*、跳过带初始化的变量声明等。|运行时
 C++|invalid use of non-static member function|error|调用成员函数时没通过对象。用对象.方法() 或 对象指针->方法() 的方式调用。|运行时
@@ -481,7 +481,7 @@ C|linker command failed|fatal|链接阶段失败。往上看链接器的具体�
 C|unrecognized command line option|fatal|编译器不认识这个命令行选项。检查编译器版本是否支持该选项，拼写是否正确。|运行时
 C|unused variable||unused-but-set variable|warning|声明了变量但没使用。删掉或者暂时加 (void)var 压掉警告。|运行时
 C|ignoring return value of|warning|函数返回值必须使用却忽略了，比如 scanf。检查返回值判断输入是否成功。|运行时
-C|is deprecated|warning|使用了废弃的函数。按提示换成新的替代函数。|运行时
+C|is deprecated|warning|这个函数已被弃用。按提示改用新函数，未来版本会移除。|运行时
 C|only allowed in C99|error|在 for 里声明变量需要 C99 模式。编译加 -std=c99，或把声明移到循环外。|运行时
 C|no newline at end of file|warning|文件末尾没有换行符。标准要求源文件以换行结束，在最后一行末尾补一个回车即可。|文件/IO
 C|ISO C90 forbids||ISO C forbids|error|代码违反了 C 标准。常见于 C90 里在语句中间声明变量，把声明放到代码块开头或启用更新的标准。|运行时
@@ -541,7 +541,7 @@ C|variable-sized object may not be initialized|error|变长数组不能在声明
 C|requires a non-null argument|warning|给标记了 nonnull 的函数传了空指针。调用前检查参数是否为 NULL。|依赖/环境
 C|memcpy-param-overlap|fatal|memcpy 源和目的区间重叠（未定义行为）。用 memmove。|运行时
 C|out of bounds for type|fatal|UBSan 检测到数组越界访问。报错里有类型和索引，检查边界。|运行时
-C|unknown escape sequence|warning|字符串里的转义序列不合法。需要字面反斜杠要写 \\。|运行时
+C|unknown escape sequence|warning|字符串里的转义序列不合法。想输出字面反斜杠就连写两个。|运行时
 C|redeclared as different kind of symbol|error|同一个名字被声明成了不同类型的东西（变量 vs 函数）。检查名字冲突。|运行时
 C|buffer overflow detected|fatal|glibc FORTIFY 检测到缓冲区溢出并中止。检查 sprintf/strcpy 等的边界。|运行时
 C|used but never defined|fatal|声明了函数但没有实现。补上定义，或链接对应的源文件/库。|运行时
@@ -569,7 +569,7 @@ Go|not enough return values||not enough arguments to return|error|return 的返�
 Go|cannot convert|error|这两个类型之间不能直接转换。Go 只允许兼容类型转换，检查类型定义或改用辅助函数。|运行时
 Go|invalid operation|error|这个运算符不支持该类型组合。比如对不同类型做运算、对 nil 比较，检查操作数类型。|运行时
 Go|invalid character|fatal|代码里出现了非法字符，常见于中文标点、BOM 或复制粘贴带来的特殊字符。|运行时
-Go|expected ';', found||expected ';'|fatal|缺少分号或语句没写完。检查上一行末尾，复合字面量里是否有换行问题。|编译/链接
+Go|expected ';', found|fatal|缺少分号或语句没写完。检查上一行末尾，复合字面量里是否有换行问题。|编译/链接
 Go|found 'EOF'|fatal|代码到结尾还没写完，一般是括号或引号没闭合。从报错行往上找缺的部分。|文件/IO
 Go|missing ','|fatal|结构体/切片字面量里漏了逗号。Go 要求最后一个元素后也必须跟逗号再换行。|运行时
 Go|unexpected newline|fatal|这里不应该换行。检查是否在逗号、括号中间断行，元素结尾要加逗号。|编译/链接
@@ -579,7 +579,7 @@ Go|syntax error: unexpected|fatal|语法错误。Go 很严格，检查关键字�
 Go|unterminated raw string literal|fatal|反引号字符串没有闭合。检查 ` 是否成对出现。|编译/链接
 Go|entry in nil map|fatal|往 nil map 里写数据会 panic。用前先 make(map[K]V) 初始化。|运行时
 Go|nil pointer dereference||invalid memory address or nil pointer dereference|fatal|对 nil 指针解引用导致 panic。返回指针可能为 nil，使用前先判断。|运行时
-Go|index out of range|fatal|下标越界 panic。访问了超出 len 的索引，取值前检查长度。|运行时
+Go|index out of range|fatal|下标越界。访问了超出长度的索引，报错里有长度和索引值，检查下标计算。|运行时
 Go|slice bounds out of range|fatal|切片范围越界。s[a:b] 的 a、b 超过了长度或 a>b，先检查 len/cap。|运行时
 Go|makeslice: len out of range|fatal|make 的长度参数非法（负数或超大）。检查长度来源的计算逻辑。|运行时
 Go|concurrent map writes|fatal|多个 goroutine 同时写 map，Go 直接崩溃。加 sync.Mutex 或换 sync.Map。|并发/异步
@@ -590,13 +590,13 @@ Go|close of closed channel|fatal|channel 被 close 了两次。用 sync.Once 或
 Go|send on closed channel|fatal|往已关闭的 channel 发送数据会 panic。理清关闭时机，保证发送方关闭。|运行时
 Go|goroutine stack exceeds|fatal|goroutine 栈超过上限。递归太深没有终止，检查递归出口。|并发/异步
 Go|out of memory|fatal|内存不足。一次加载的数据太大，分块处理或检查是否有内存泄漏。|内存/资源
-Go|panic: runtime error|fatal|运行时 panic。往上看第一行 goroutine 堆栈，定位出错的那一行代码。|并发/异步
-Go|panic:|fatal|程序 panic 崩溃了。看 panic 后面的堆栈第一行定位代码，关键路径用 recover 兜底。|运行时
+Go|panic: runtime error|fatal|程序 panic 崩溃。看 panic 消息和堆栈第一行定位代码；运行时内部 panic 通常是扩展或解释器的 bug。|运行时
+Go|panic:|fatal|程序 panic 崩溃。看 panic 消息和堆栈第一行定位代码；运行时内部 panic 通常是扩展或解释器的 bug。|运行时
 Go|go.mod file not found|error|当前目录不在模块里。在项目根目录先执行 go mod init，或进入有 go.mod 的目录。|文件/IO
 Go|no required module provides package|error|导入的包不在 go.mod 依赖里。执行 go mod tidy 拉取缺失的依赖。|依赖/环境
 Go|cannot find package|error|找不到导入的包。检查导入路径拼写，确认依赖已下载、GOPATH/模块配置正确。|依赖/环境
 Go|missing go.sum entry|error|go.sum 里没有这个依赖的校验记录。执行 go mod tidy 或 go mod download 更新。|运行时
-Go|unknown revision|error|依赖的版本号不存在。检查 tag 是否拼写正确，或换用已有的版本。|运行时
+Go|unknown revision|error|引用的版本/提交不存在。检查 tag 或分支名拼写，确认远端存在。|运行时
 Go|relative import|error|Go 不支持相对路径导入。用 module path 开头的完整导入路径。|文件/IO
 Go|cannot take the address of|error|不能对临时值或常量取地址。先把值存到变量里再取 &。|运行时
 Go|cannot assign to|error|左边的值不可赋值，可能是常量、函数返回的临时值或字符串下标。先取出到变量再改。|运行时
@@ -703,7 +703,7 @@ C#|AggregateException||One or more errors occurred|error|并行任务里抛出�
 C#|ObjectDisposedException||Cannot access a disposed object||Cannot access a closed|error|对象已被 Dispose 还在使用。检查 using 块的范围，不要在释放后继续访问。|运行时
 C#|SocketException||No connection could be made||actively refused it|error|网络连接失败。目标机器拒绝连接，确认服务已启动、IP 端口和防火墙正确。|网络
 C#|SqlException||network-related or instance-specific|error|数据库操作出错。看 Number 和 Message：连接、语法或约束问题各有不同处理。|网络
-C#|Incorrect syntax near|error|SQL 语法错误。检查关键字拼写、逗号括号和 T-SQL 写法。|编译/链接
+C#|Incorrect syntax near|error|SQL 语法错误（SQL Server）。检查 T-SQL 关键字、标点和 GO 分隔符。|编译/链接
 C#|Invalid column name|error|表里没有这个列。检查列名拼写，或数据库结构是否已经更新。|数据库
 C#|Cannot insert duplicate key|error|唯一键冲突，插入的记录已存在。先查询再决定插入或更新，或用 MERGE/UPSERT。|编译/链接
 C#|conflicted with the REFERENCE constraint||foreign key constraint|error|外键约束失败。引用的记录不存在（或还有子记录在引用），先处理关联数据。|数据库
@@ -765,9 +765,9 @@ C#|specified command or file was not found|fatal|找不到该命令。检查 .NE
 C#|NU1202|error|包和项目框架不兼容。检查 TargetFramework 和包支持的框架列表。|运行时
 Ruby|NoMethodError||undefined method for nil:NilClass||private method called|error|对象没有这个方法。特别注意对 nil 调方法的情况，往上找它为什么是 nil。|运行时
 Ruby|NameError||uninitialized constant||undefined local variable or method|error|未定义的变量、方法或常量。检查拼写和作用域，确认已定义或已 require。|依赖/环境
-Ruby|syntax error, unexpected|fatal|语法错误。检查关键字拼写、end 是否匹配、do/end 是否漏了，看指向的行号。|编译/链接
+Ruby|syntax error, unexpected|fatal|语法错误。检查关键字拼写、括号配对和引号闭合，看报错指向的位置。|编译/链接
 Ruby|unexpected end-of-input|fatal|代码到文件结尾还没闭合，一般是少了 end。配对检查所有 block/def/class 的 end。|编译/链接
-Ruby|ArgumentError||wrong number of arguments||unknown keyword||missing keyword|error|传给方法的参数数量或关键字不对。对照方法签名检查参数个数与命名。|运行时
+Ruby|ArgumentError||wrong number of arguments||unknown keyword||missing keyword|error|函数参数个数不匹配。对照定义检查传入的参数个数。|运行时
 Ruby|LoadError||cannot load such file|error|加载文件或库失败。require 的路径不对，或对应的 gem 没安装。|依赖/环境
 Ruby|Could not find gem|error|Bundler 找不到这个 gem。先 bundle install，或把 gem 加进 Gemfile 并指定存在的版本。|依赖/环境
 Ruby|could not find compatible versions|error|gem 版本互相冲突。看冲突来源，放宽或统一版本约束。|依赖/环境
@@ -778,19 +778,19 @@ Ruby|RuntimeError||can't add a new key into hash during iteration|error|运行�
 Ruby|LocalJumpError||no block given (yield)||unexpected return|error|块或 return 用错了位置：方法里 yield 但调用时没传块，或 return 出现在块外。|编译/链接
 Ruby|EOFError||end of file reached|error|读到了输入末尾。gets/read 没有数据了，检查文件内容和读取逻辑。|文件/IO
 Ruby|IOError||closed stream||not opened for reading|error|IO 流状态不对，比如流已关闭或没按读模式打开。检查文件的打开方式。|文件/IO
-Ruby|SocketError||getaddrinfo||Failed to open TCP connection|error|网络连接失败。域名解析不了或 TCP 连不上，检查地址、端口和网络。|网络
+Ruby|SocketError||getaddrinfo:||Failed to open TCP connection|error|网络连接失败。域名解析不了或 TCP 连不上，检查地址、端口和网络。|网络
 Ruby|Errno::ENOENT|error|文件或目录不存在。检查路径拼写和当前工作目录。|文件/IO
 Ruby|Errno::EACCES|error|没有权限访问文件或目录。检查权限设置，必要时用 sudo。|权限
 Ruby|Errno::ECONNREFUSED|error|连接被拒绝。目标端口没有服务在监听，确认服务已启动。|网络
-Ruby|Errno::EADDRINUSE||Address already in use|error|端口已被占用。换端口或结束占用端口的旧进程。|运行时
+Ruby|Errno::EADDRINUSE||Address already in use|error|端口已被占用。换端口，或找到并结束占用端口的旧进程。|运行时
 Ruby|Errno::EPERM|error|操作不被允许。权限不足或系统限制，检查运行环境。|权限
-Ruby|Errno::ENOSPC||No space left on device|error|磁盘空间满了。清理磁盘或换存储位置。|文件/IO
-Ruby|Errno::EMFILE||Too many open files|error|打开的文件数超过系统限制。检查是否有文件句柄泄漏，或调大 ulimit。|文件/IO
+Ruby|Errno::ENOSPC||No space left on device|error|磁盘满了。清理大文件或日志，必要时扩容。|文件/IO
+Ruby|Errno::EMFILE||Too many open files|error|打开的文件数超过系统限制。检查句柄泄漏，或调大 ulimit -n。|文件/IO
 Ruby|Errno::EPIPE|error|对端已经关闭，还在往管道里写数据。检查连接的生命周期，写之前确认对端还在。|依赖/环境
 Ruby|Errno::EISDIR|error|把目录当文件操作了。检查路径最后是否指向具体文件。|文件/IO
 Ruby|Errno::EEXIST|error|文件或目录已经存在。先判断 File.exist? 再创建。|文件/IO
-Ruby|OpenURI::HTTPError||404 Not Found||401 Unauthorized|error|HTTP 请求返回了错误状态码。403/404 检查权限和地址，401 补认证信息。|网络
-Ruby|OpenSSL::SSL::SSLError||certificate verify failed|error|SSL 证书校验失败。更新系统证书库，内网自签证书需导入信任。|网络
+Ruby|OpenURI::HTTPError||404 Not Found|error|HTTP 请求返回了错误状态码。403/404 检查权限和地址，401 补认证信息。|网络
+Ruby|OpenSSL::SSL::SSLError||certificate verify failed|error|SSL 证书校验失败。常见于公司内网代理或自签证书，先更新系统证书库，不要轻易关闭校验。|网络
 Ruby|JSON::ParserError||unexpected token at|error|JSON 解析失败。内容可能不是合法 JSON 或编码有问题，打印原文确认。|编译/链接
 Ruby|Psych::SyntaxError||Tab characters are not allowed|error|YAML 格式错误。常见于缩进不对、冒号后缺空格、Tab 字符混入。|编译/链接
 Ruby|RangeError||bignum too big|error|数值超出可表示范围。检查超大数转换或数组下标越界。|运行时
@@ -809,9 +809,9 @@ Ruby|deadlock detected (fatal)|fatal|所有线程都在等锁，死锁了。理�
 Ruby|SystemStackError||stack level too deep|fatal|栈溢出。无限递归或过深嵌套，检查递归终止条件。|运行时
 Ruby|NoMemoryError|fatal|内存耗尽。检查是否一次处理了过大的数据。|内存/资源
 Ruby|SystemCallError|error|系统调用失败。看 Errno 编号定位具体原因。|运行时
-Ruby|PG::ConnectionBad||could not connect to server|error|连不上 PostgreSQL。检查服务是否启动、host/port/密码配置和网络。|数据库
+Ruby|PG::ConnectionBad||could not connect to server|error|连不上 PostgreSQL。服务可能没启动或端口/主机不对，检查连接配置和防火墙。|数据库
 Ruby|PG::UniqueViolation||PG::NotNullViolation||PG::ForeignKeyViolation|error|数据库约束被违反。唯一键重复、非空字段为 null 或外键不满足，检查数据。|数据库
-Ruby|PG::SyntaxError||syntax error at or near|error|SQL 语法错误。检查 SQL 写法和关键字拼写。|编译/链接
+Ruby|PG::SyntaxError|error|SQL 语法错误。检查 SQL 写法和关键字拼写。|编译/链接
 Ruby|ActiveRecord::RecordNotFound|error|按 ID 查不到记录。find 抛出异常，改用 find_by 可得 nil 自行处理。|运行时
 Ruby|ActiveRecord::StatementInvalid|error|SQL 执行失败。看 caused by 里的数据库原始报错。|数据库
 Ruby|ActionController::RoutingError||No route matches|error|Rails 找不到匹配的路由。检查 routes.rb 和请求的 URL、HTTP 方法。|网络
@@ -851,7 +851,7 @@ Ruby|ConnectionTimeoutError|error|连接池耗尽。调大 pool 配置，或检�
 Ruby|ActiveRecord::Deadlocked|error|数据库死锁，事务被回滚。统一加锁顺序并加重试。|并发/异步
 Ruby|Failed to build gem native extension|fatal|gem 的 C 扩展编译失败。安装系统依赖（build-essential 等），看 mkmf.log 具体缺什么。|依赖/环境
 Ruby|ActionView::Template::Error|error|Rails 模板渲染出错。看 caused by 里的模板行号和变量。|运行时
-PHP|Parse error||syntax error, unexpected|fatal|语法解析失败。检查分号是否漏了、括号是否匹配、引号是否闭合，看指向的行号。|编译/链接
+PHP|Parse error||syntax error, unexpected|fatal|语法错误。检查关键字拼写、括号配对和引号闭合，看报错指向的位置。|编译/链接
 PHP|unexpected end of file|fatal|文件意外结束。某个花括号或 PHP 标签没闭合，配对检查大括号和 <?php 标签。|编译/链接
 PHP|Fatal error|fatal|致命错误，脚本直接终止。看后面的 Uncaught Error 描述定位问题。|运行时
 PHP|Call to undefined function|fatal|调用了不存在的函数。检查函数名拼写，或者对应的 PHP 扩展没有安装启用。|运行时
@@ -874,21 +874,21 @@ PHP|ArgumentCountError||Too few arguments to function||Too many arguments to fun
 PHP|Uncaught TypeError|fatal|传参或返回值的类型和声明不符。检查参数类型标注，注意 int 和 string 不能自动转换。|运行时
 PHP|Return value must be of type|fatal|函数返回值类型和声明不符。确保 return 的类型正确，或放宽返回类型声明。|运行时
 PHP|must be of type|fatal|参数类型不匹配。看报错里期望的类型和实际传入的类型，转换后再传。|运行时
-PHP|DivisionByZeroError||Division by zero||Modulo by zero|fatal|除以零。PHP 8 里这是致命错误，除法或取模前检查除数。|运行时
+PHP|DivisionByZeroError||Modulo by zero|fatal|除以零。PHP 8 里这是致命错误，除法或取模前检查除数。|运行时
 PHP|Uncaught ValueError|fatal|参数类型对了但值不合法。比如空字符串传给要求非空的函数，检查输入内容。|运行时
 PHP|could not be converted to string|fatal|对象被当成字符串用了。给类加 __toString 方法，或改用对象的具体属性。|运行时
 PHP|Base table or view not found|error|表不存在。检查表名拼写、前缀配置，确认建表迁移已执行。|数据库
 PHP|Column not found|error|列不存在。检查列名拼写和数据库结构是否已更新。|数据库
 PHP|Integrity constraint violation||1062 Duplicate entry|error|违反完整性约束。常见为唯一键重复插入，先查重或改用 upsert。|编译/链接
 PHP|SQLSTATE[HY000] [2002]||mysqli_connect(): (HY000/2002|fatal|连不上数据库服务。检查主机、端口是否正确，MySQL 服务是否在运行。|数据库
-PHP|Access denied for user|fatal|数据库用户名或密码错误。检查连接配置和账号权限。|权限
+PHP|Access denied for user|fatal|数据库用户名或密码错误。检查连接配置，或该账号没有对应主机的访问权限。|权限
 PHP|syntax error or access violation|error|SQL 语法错误。检查 SQL 语句拼写、保留字和引号用法。|编译/链接
 PHP|Allowed memory size of|fatal|内存超过 memory_limit。一次读取的数据太大，分批处理或调大内存限制。|运行时
 PHP|Maximum execution time of|fatal|脚本超过 max_execution_time。优化慢逻辑，或 set_time_limit 调大限制。|运行时
 PHP|Maximum function nesting level|fatal|函数嵌套太深，通常是 xdebug 的限制。调大 xdebug.max_nesting_level 或检查无限递归。|运行时
 PHP|headers already sent||Cannot modify header information|warning|输出内容之后才调用 header()。把 header 调用放到任何输出之前，或开启输出缓冲。|运行时
 PHP|Cannot start session when headers already sent|warning|session_start 必须在任何输出前调用。检查前面是否有 echo 或 HTML。|运行时
-PHP|Deprecated:||is deprecated|warning|用到了废弃的特性。目前还能运行，但应按提示迁移到新写法。|运行时
+PHP|Deprecated:|warning|用到了废弃的特性。目前还能运行，但应按提示迁移到新写法。|运行时
 PHP|mysql extension is deprecated|warning|mysql 扩展已废弃并移除。迁移到 mysqli 或 PDO。|数据库
 PHP|expects parameter 1 to be|warning|函数第一个参数类型不对。检查传入值，常见于把数组传给了要字符串的函数。|运行时
 PHP|Illegal offset type|warning|数组键不能是数组/对象类型。把键转成字符串或整数。|运行时
@@ -976,17 +976,17 @@ Rust|generic arguments|error|泛型参数个数不对。对照定义检查 <> �
 Rust|expected `;`|fatal|缺少分号。Rust 语句结尾要有分号，或检查是否漏了花括号。|编译/链接
 Rust|unclosed delimiter|fatal|括号没有闭合。检查 { ( [ 是否成对出现。|编译/链接
 Rust|mismatched closing delimiter|fatal|闭合括号类型不匹配，比如用 ) 关了 {。检查嵌套的括号顺序。|编译/链接
-Rust|unexpected token|fatal|出现了不该出现的符号。检查是否漏了分号、逗号或括号配对错了。|编译/链接
+Rust|unexpected token|fatal|出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。|编译/链接
 Rust|expected item|fatal|模块顶层只能放声明。检查是否把语句写在了函数外，或漏了 fn。|编译/链接
 Rust|this macro takes|error|宏参数个数不对。对照宏的用法检查传入参数。|运行时
 Rust|non-exhaustive patterns|error|match 没有覆盖所有情况。补全分支，或加 _ 兜底。|运行时
 Rust|unreachable pattern|warning|这个分支永远不会被匹配到，被前面的分支挡住了。调整分支顺序或删除。|运行时
-Rust|unused variable|warning|变量声明了没用。删掉，或改名成 _x 表示有意不用。|运行时
+Rust|unused variable|warning|声明了变量但没使用。删掉，或用 (void)/下划线前缀标记有意不用。|运行时
 Rust|unused import|warning|导入没用上。删掉这个 use，或暂时加 #[allow(unused_imports)]。|运行时
 Rust|does not need to be mutable|warning|变量声明了 mut 但从没被修改。去掉 mut 让意图更明确。|运行时
 Rust|unreachable code|warning|这段代码永远不会执行，前面可能已经 return 或 panic。检查控制流。|运行时
 Rust|must be used|warning|返回值标了 #[must_use] 却没被使用。用 let _ = 显式忽略，或按返回值处理错误。|运行时
-Rust|never used||never read||is never used|warning|这个函数/字段从未被使用。删除，或用 #[allow(dead_code)] 标记保留。|运行时
+Rust|never used||never read||is never used|warning|声明了但从未使用。删除，或用下划线前缀命名表示有意忽略。|运行时
 Rust|use of deprecated|warning|用到了废弃的 API。按提示换成新接口，或暂时加 #[allow(deprecated)]。|运行时
 Rust|on a `None` value|fatal|Option 是 None 还调用了 unwrap。用 if let / unwrap_or 处理空值。|运行时
 Rust|on an `Err` value|fatal|Result 是 Err 还调用了 unwrap。用 match 或 ? 把错误传上去处理。|运行时
@@ -1012,12 +1012,12 @@ Rust|environment variable not found|error|环境变量不存在。检查是否�
 Rust|os error 2|error|文件或路径不存在（os error 2）。检查路径拼写和工作目录。|运行时
 Rust|os error 13|error|没有权限访问（os error 13）。检查文件权限和运行身份。|运行时
 Rust|error sending request|error|HTTP 请求发送失败。检查网络、地址，看底层 IO 错误定位。|网络
-Rust|timed out|error|请求超时。目标响应太慢，调大超时时间或加重试。|运行时
+Rust|timed out|error|操作超时。目标响应太慢，调大超时时间或加自动重试。|运行时
 Rust|could not compile|fatal|编译失败。往上看 rustc 的具体报错（通常标了 error[E0xxx]），修复后重试。|编译/链接
 Rust|no matching package named|error|crates.io 上找不到这个包或版本。检查包名拼写和版本号是否存在。|依赖/环境
 Rust|failed to select a version|error|依赖版本无法同时满足。看冲突提示，放宽或统一版本要求。|运行时
 Rust|failed to parse manifest|fatal|Cargo.toml 解析失败。检查语法、字段名和版本号格式。|编译/链接
-Rust|linking with||undefined reference to|fatal|链接失败。检查系统链接器、依赖的 C 库是否安装、目标环境配置。|运行时
+Rust|linking with|fatal|链接失败。检查系统链接器、依赖的 C 库是否安装、目标环境配置。|运行时
 Rust|can't find crate|error|找不到编译所需的 crate。检查依赖声明和 Cargo.toml 配置。|依赖/环境
 Rust|the `?` operator|error|? 运算符用法不对。它只能用在返回 Result/Option 的函数里，或对不支持的类型手动处理。|运行时
 Rust|only used inside `async`|error|await 只能在 async 函数或 async 块里使用。给函数加 async 或用异步运行时包装。|并发/异步
@@ -1037,7 +1037,7 @@ Rust|cannot be made into an object|error|trait 有泛型方法/静态方法，�
 Rust|cannot be indexed|error|这个类型没有实现 Index。检查类型，或改用对应方法取值。|运行时
 Rust|no default toolchain configured|fatal|rustup 没有默认工具链。运行 rustup default stable。|运行时
 Rust|link.exe not found|fatal|Windows 缺 MSVC 链接工具。安装 Visual Studio Build Tools 或改用 GNU 工具链。|运行时
-Rust|recursion limit reached|error|宏/类型展开超过递归上限。简化宏调用，或加 #![recursion_limit = "256"]。|运行时
+Rust|recursion limit reached|error|宏或类型展开超过递归上限。简化宏调用，或在 crate 顶层调大 recursion_limit 属性。|运行时
 Rust|not all trait items implemented|error|没有实现 trait 要求的全部成员。补上缺失项，或加 default。|运行时
 Rust|trailing characters|error|JSON 解析完后还有剩余内容。确认数据里没有多余文本。|运行时
 Rust|proc macro panicked|fatal|宏展开时出错。看宏的报错消息，检查输入是否符合宏要求。|运行时
@@ -1095,7 +1095,7 @@ TypeScript|TS1479|fatal|CommonJS 文件用了 ESM import，会被编译成 requi
 TypeScript|TS18003|error|tsconfig 没匹配到任何输入文件。检查 include/exclude 的路径配置。|配置
 TypeScript|TS5023|fatal|不认识的编译器选项。检查 tsconfig 的字段名拼写和 TypeScript 版本。|配置
 TypeScript|TSError|fatal|ts-node 编译失败。往上看具体的 TS 报错代码，修复类型问题。|编译/链接
-TypeScript|Cannot use import statement outside a module|fatal|Node 把文件当 CommonJS 跑了。配置 ESM（package.json type: module）或改用 require。|依赖/环境
+TypeScript|Cannot use import statement outside a module|fatal|当前文件被当成普通脚本。给 script 标签加 type module、配置 ESM，或改用 require / 打包工具。|依赖/环境
 TypeScript|Unknown file extension|fatal|Node 不认识 .ts 文件。用 tsx/ts-node 运行，或先编译成 JS。|文件/IO
 TypeScript|TS2351|error|这个表达式不是构造函数。检查是不是把类型当值 new 了，或导入方式不对。|编译/链接
 TypeScript|TS7053|error|用 string 类型索引对象被隐式推断为 any。给对象加索引签名，或收窄索引类型。|编译/链接
@@ -1144,7 +1144,7 @@ Kotlin|must be initialized|error|属性必须初始化。声明时赋值、用 l
 Kotlin|UninitializedPropertyAccessException||lateinit property|fatal|lateinit 属性还没赋值就被访问了。确保先初始化（如 onCreate 里）再用，或加 isInitialized 判断。|运行时
 Kotlin|lateinit modifier is not allowed|error|lateinit 只能用于非空、非基本类型的 var 属性。去掉 lateinit 或改成可空类型。|运行时
 Kotlin|No value passed for parameter||no value passed for parameter|error|必填参数没传值。对照函数签名补全参数，或给参数加默认值。|运行时
-Kotlin|too many arguments for|error|传了过多的参数。检查函数签名和调用处的参数个数。|运行时
+Kotlin|too many arguments for|error|参数传多了。对照方法签名减少参数。|运行时
 Kotlin|none of the following functions can be called with the arguments supplied|error|没有重载能匹配这次调用。检查参数类型和个数是否与某个签名完全一致。|运行时
 Kotlin|cannot infer a type for this parameter|error|推不出这个参数的类型。显式写出类型标注。|运行时
 Kotlin|is not applicable to||is incompatible with|error|修饰符用在了不合法的位置或互相冲突。比如 open 和 private 同时用，检查修饰符组合。|运行时
@@ -1163,7 +1163,7 @@ Kotlin|ClassCastException|error|类型强转失败。对象实际类型和目标
 Kotlin|IndexOutOfBoundsException||Empty list doesn't contain element at index|fatal|列表下标越界。检查列表是否为空、索引是否在 size 范围内。|运行时
 Kotlin|NoSuchElementException||List is empty||Collection contains no element matching the predicate|error|集合里没有满足条件的元素。first() 改成 firstOrNull() 处理空结果。|运行时
 Kotlin|NumberFormatException|error|字符串转数字失败。内容不是合法数字，先校验格式或用 toIntOrNull。|运行时
-Kotlin|ArithmeticException||divide by zero|error|除以零。整数除法会抛异常，运算前检查除数。|运行时
+Kotlin|ArithmeticException||divide by zero|error|除以零。除法前检查除数。|运行时
 Kotlin|ConcurrentModificationException|error|遍历集合时修改了它。用 iterator 的 remove，或遍历副本。|并发/异步
 Kotlin|UnsupportedOperationException||Operation is not supported for read-only collection|error|对只读集合做了修改操作。listOf 生成的列表不可变，换成 mutableListOf 或 ArrayList。|权限
 Kotlin|IOException|error|IO 操作失败。检查文件路径、网络状态和权限。|运行时
@@ -1194,7 +1194,7 @@ Kotlin|Conflicting overloads|error|重复定义了签名相同的函数。删除
 Kotlin|Overload resolution ambiguity|error|重载调用有歧义。显式指定参数类型帮助编译器选择。|运行时
 Kotlin|it is 'private' in||it is private in||it is invisible|error|访问了不可见的成员。检查可见性修饰符（private/internal/protected）。|运行时
 Kotlin|is not abstract and does not implement abstract|error|类没有实现接口/抽象父类的抽象成员。补全实现，或把类声明成 abstract。|运行时
-Kotlin|is never used|warning|参数或变量从未被使用。删除，或用下划线命名表示有意忽略。|运行时
+Kotlin|is never used|warning|声明了但从未使用。删除，或用下划线前缀命名表示有意忽略。|运行时
 Kotlin|Cannot inline bytecode built with|error|依赖的 JVM target 比 当前的高，无法内联。统一各模块的 JVM target。|运行时
 Kotlin|Expecting a top-level declaration|fatal|这里需要顶层声明。检查是否多了右括号把语句挤出了函数。|运行时
 Kotlin|use ';' to separate|fatal|同一行写了多个语句或表达式没写完。检查括号配对和分号。|运行时
@@ -1240,7 +1240,7 @@ Swift|Expression implicitly coerced from|warning|可选值被隐式转成非可�
 Swift|nil cannot be assigned|error|nil 不能赋给非可选类型。把类型声明成 Optional（T?）。|运行时
 Swift|'nil' cannot initialize specified type|error|不能用 nil 初始化非可选类型。改类型为 T?，或赋实际值。|运行时
 Swift|Unexpectedly found nil while unwrapping|fatal|强制解包时值是 nil，程序崩溃。用 if let/guard let 解包，检查数据来源为什么是 nil。|编译/链接
-Swift|Index out of range||index out of range|fatal|数组下标越界。检查索引计算和数组是否为空。|运行时
+Swift|Index out of range||index out of range|fatal|下标越界。访问了超出长度的索引，报错里有长度和索引值，检查下标计算。|运行时
 Swift|lowerBound|fatal|Range 的下界大于上界，创建区间崩溃。检查区间两端值。|运行时
 Swift|because it is either infinite or NaN|fatal|浮点数是 Infinity/NaN，无法转成 Int。转换前判断 isFinite。|运行时
 Swift|always fails|error|两个类型没有继承关系，转换永远失败。检查类型体系，或改用协议。|运行时
@@ -1445,7 +1445,7 @@ SQL|duplicate key value violates unique constraint|error|唯一约束冲突（Po
 SQL|violates foreign key constraint|error|外键约束失败（PostgreSQL）。引用的记录不存在或还有子记录引用，先处理关联数据。|数据库
 SQL|violates not-null constraint|error|非空列收到了 null（PostgreSQL）。补上值或修改列定义。|数据库
 SQL|violates check constraint|error|违反 CHECK 约束（PostgreSQL）。数据不满足表上定义的条件，检查取值。|数据库
-SQL|is ambiguous|error|列名有歧义（PostgreSQL），多个表都有这个列。用 表名.列名 限定。|数据库
+SQL|is ambiguous|error|引用有歧义，多个候选都能匹配。用限定名或显式类型消除歧义。|运行时
 SQL|aggregate functions are not allowed in WHERE|error|聚合函数不能用在 WHERE（PostgreSQL）。改用 HAVING 过滤聚合结果。|数据库
 SQL|must appear in the GROUP BY clause|error|SELECT 的列必须出现在 GROUP BY 里或被聚合（PostgreSQL）。补全 GROUP BY 或用聚合函数。|数据库
 SQL|must appear in select list|error|SELECT DISTINCT 时 ORDER BY 的列必须在 SELECT 列表里（PostgreSQL）。补列或去掉 DISTINCT。|数据库
@@ -1461,7 +1461,7 @@ SQL|password authentication failed|error|密码认证失败（PostgreSQL）。�
 SQL|role ".*" does not exist|error|用户/角色不存在（PostgreSQL）。检查用户名，或先 CREATE ROLE/USER。|数据库
 SQL|too many connections|error|连接数超过 max_connections（PostgreSQL）。用连接池，或调大连接上限。|数据库
 SQL|no pg_hba.conf entry|error|pg_hba.conf 没有放行这个来源（PostgreSQL）。在配置里加对应 host/user/database 的规则并重载。|数据库
-SQL|could not connect to server|error|连不上 PostgreSQL。服务可能没启动或端口/主机不对，检查 postgresql.conf 和防火墙。|数据库
+SQL|could not connect to server|error|连不上 PostgreSQL。服务可能没启动或端口/主机不对，检查连接配置和防火墙。|数据库
 SQL|database ".*" does not exist|error|数据库不存在（PostgreSQL）。检查库名，或先 CREATE DATABASE。|数据库
 SQL|tuple concurrently updated|error|并发更新同一行冲突（PostgreSQL）。重试操作，或用 SELECT ... FOR UPDATE 控制并发。|数据库
 SQL|near ".*": syntax error|error|SQL 语法错误（SQLite）。检查关键字拼写、括号配对和表名列名。|编译/链接
@@ -1469,7 +1469,7 @@ SQL|UNIQUE constraint failed|error|唯一约束冲突（SQLite）。这条记录
 SQL|FOREIGN KEY constraint failed|error|外键约束失败（SQLite）。引用的数据不存在或还有关联数据，先处理相关表。|数据库
 SQL|NOT NULL constraint failed|error|非空列收到了 null（SQLite）。补上值或修改表结构。|数据库
 SQL|readonly database|error|数据库是只读的（SQLite）。检查文件权限、所在磁盘是否只读。|数据库
-SQL|Incorrect syntax near|error|SQL 语法错误（SQL Server）。检查 T-SQL 关键字、GO 分隔符和标点。|编译/链接
+SQL|Incorrect syntax near|error|SQL 语法错误（SQL Server）。检查 T-SQL 关键字、标点和 GO 分隔符。|编译/链接
 SQL|Invalid object name|error|对象不存在（SQL Server）。检查表名、库名和 schema 前缀。|数据库
 SQL|Violation of PRIMARY KEY|error|主键冲突（SQL Server）。记录已存在，用 UPDATE 或 MERGE 代替插入。|数据库
 SQL|aggregate function or the GROUP BY|error|SELECT 的列不在 GROUP BY 里也没聚合（SQL Server）。补全 GROUP BY 或加聚合。|数据库
@@ -1512,12 +1512,12 @@ Shell|syntax error in expression||arithmetic syntax error|error|算术表达式�
 Shell|not a valid identifier|error|变量名/别名不合法。名字只能用字母、数字和下划线，不能有空格和横线。|运行时
 Shell|cd: |error|cd 失败：目录不存在或没权限。检查路径，注意相对路径的基准目录。|运行时
 Shell|Argument list too long|error|参数太多超过系统上限（比如 rm 一堆文件）。用 find -delete 或 xargs 分批处理。|运行时
-Shell|No space left on device|error|磁盘满了。du 找大文件清理，或扩容磁盘、清理日志。|文件/IO
+Shell|No space left on device|error|磁盘满了。清理大文件或日志，必要时扩容。|文件/IO
 Shell|Read-only file system|error|文件系统是只读的。磁盘可能挂载为 ro 或报错进入保护模式，检查 mount 状态。|权限
 Shell|File exists|error|目标已存在。先删除/重命名，或用 mv -n、mkdir -p 的容错方式。|文件/IO
 Shell|Is a directory|error|把目录当文件操作了。补上 -r（cp/rm）或指向具体文件。|数据库
 Shell|Text file busy|error|程序正在运行，不能覆盖写。先停掉进程，或先删除旧文件再放新文件。|文件/IO
-Shell|Too many open files|error|打开的文件数超限。ulimit -n 调大上限，检查是否有句柄泄漏。|文件/IO
+Shell|Too many open files|error|打开的文件数超过系统限制。检查句柄泄漏，或调大 ulimit -n。|文件/IO
 Shell|Cannot allocate memory||Resource temporarily unavailable|fatal|系统资源不足，无法创建进程。内存或进程数超限，清理负载或调大 ulimit。|内存/资源
 Shell|core dumped|fatal|程序崩溃并转储了核心。用 gdb 分析 core 文件定位崩溃点。|运行时
 Shell|Device or resource busy|error|资源被占用。有进程在使用该文件/目录/挂载点，找到并结束相关进程。|运行时
@@ -1541,7 +1541,7 @@ Shell|missing argument to|error|find -exec 语法不完整。结尾要有转义�
 Shell|unterminated `s' command|error|sed 的 s 命令缺少结束分隔符。检查 s/旧/新/ 的斜杠是否成对。|编译/链接
 Shell|extra characters after|error|sed 命令后有多余字符。检查分隔符和引号，正则里的特殊字符要转义。|运行时
 Shell|sed: can't read|error|sed 找不到要处理的文件。检查路径，或用 -i 处理文件而不是管道。|运行时
-Shell|syntax error at or near||bailing out|error|awk 语法错误。检查引号嵌套、花括号配对和 $ 字段的写法。|编译/链接
+Shell|bailing out||cmd. line|error|awk 语法错误。检查引号嵌套、花括号配对和 $ 字段的写法。|运行时
 Shell|No such process|error|要终止的进程不存在。可能已经退出了，用 ps/pgrep 确认 PID。|运行时
 Shell|Operation not permitted|error|权限不足或不允许的操作。检查是否需要 root，或进程/文件被保护。|运行时
 Shell|cannot execute binary file|fatal|把二进制当脚本执行，或架构不匹配。检查文件类型（file 命令）和系统架构。|文件/IO
@@ -1555,7 +1555,7 @@ Shell|find: |error|find 报错。检查路径是否存在、权限是否足够�
 Shell|Authentication failure|error|su/sudo 密码错误。检查密码和账号状态。|运行时
 Shell|no tty present and no askpass program specified|error|非交互终端无法输密码。配置 NOPASSWD 或用 SSH 密钥免密。|运行时
 Shell|failed to create symbolic link|error|软链接创建失败：目标已存在或权限不足。加 -f 或先删除。|运行时
-Shell|unknown option to `s'|error|sed 的 s/// 里分隔符与内容冲突。换分隔符如 s/old/new/。|运行时
+Shell|unknown option to `s'|error|sed 的 s 命令分隔符与内容冲突。换一个别的分隔符。|运行时
 Shell|here-document at line .* delimited by end-of-file|warning|heredoc 的结束标记没写对，读到文件尾。检查结束标记拼写与缩进。|文件/IO
 R|object '.*' not found|error|找不到这个对象。变量名拼写错误，或者它是在别的函数/环境里创建的还没加载。|运行时
 R|could not find function|error|找不到这个函数。先 library() 加载对应的包，或检查函数名拼写。|运行时
@@ -1650,7 +1650,7 @@ Scala|wrong number of|error|参数或类型参数的个数不对。对照定义�
 Scala|match may not be exhaustive|warning|match 没覆盖所有可能，运行时会抛 MatchError。补全 case 或加兜底分支。|运行时
 Scala|do not conform to|error|类型参数不满足上界约束。检查泛型实参是否符合 <: 声明。|运行时
 Scala|does not take parameters|error|这个东西不接受参数。检查是不是把无参方法当函数值用了。|运行时
-Scala|is not a member of|error|这个对象上没有该成员。检查拼写、import，或是不是访问了别的类型。|运行时
+Scala|is not a member of|error|这个对象/类型上没有该成员。检查拼写、import，或访问的类型搞错了。|运行时
 Scala|object creation impossible||needs to be abstract|error|类没有实现继承要求的抽象成员，不能实例化。补全实现或声明为 abstract。|运行时
 Scala|needs `override' modifier||needs `override` modifier|error|重写父类成员必须加 override 关键字。|运行时
 Scala|cannot override final member|error|父类成员是 final 的，不能重写。|运行时
@@ -1672,8 +1672,8 @@ Scala|occurs in contravariant position|error|协变类型参数出现在了不�
 Scala|expected but|fatal|语法错误，这个位置应该是提示里的符号。检查括号配对和缺的分号逗号。|编译/链接
 Scala|illegal start of simple expression||illegal start of definition|fatal|表达式起始位置不合法。常见于括号没配对、修饰符放错位置。|运行时
 Scala|`: _*' annotation||`: _* annotation|error|把序列展开传给变参方法要用 seq: _* 语法。检查展开写法。|运行时
-Scala|unexpected token|fatal|出现了不该出现的符号。检查括号配对和关键字拼写。|编译/链接
-Scala|unexpected char|fatal|代码里混入了非法字符，常见于中文标点或看不见的特殊符号。|编译/链接
+Scala|unexpected token|fatal|出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。|编译/链接
+Scala|unexpected char|fatal|出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。|编译/链接
 Scala|not allowed here|error|这个修饰符用在了不合法的位置。检查 open/implicit/lazy 等修饰符的适用范围。|运行时
 Scala|overrides nothing|error|标了 override 但父类里没有这个成员。删掉 override 或检查签名。|运行时
 Scala|needs result type|error|递归方法必须显式声明返回类型，编译器推不出来。给方法加上 : Type。|运行时
@@ -1689,19 +1689,19 @@ Scala|bad symbolic reference|error|依赖是用不兼容的 Scala 版本编译�
 Scala|unresolved dependency|error|sbt 找不到这个依赖。检查坐标拼写和仓库配置，执行 sbt update。|编译/链接
 Scala|not a valid key||Not a valid command|error|sbt 不认识这个命令或设置键。检查拼写，或插件没有把该 key 引入。|运行时
 Scala|A problem occurred|error|构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。|运行时
-Scala|BUILD FAILED|error|构建失败。往上看 * What went wrong 部分，定位具体任务和原因。|运行时
-Scala|not found in root project|error|这个 task 不存在。gradlew tasks 查看可用任务，检查拼写和插件。|运行时
-Scala|Timeout waiting to lock|error|Gradle 的锁被别的进程占着。结束其他 gradle 进程，或删除 .gradle 里的锁文件。|运行时
-Scala|daemon disappeared unexpectedly|error|Gradle 守护进程被杀了，常见为内存不足。调大 org.gradle.jvmargs 或清理系统内存。|编译/链接
-Scala|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查 -Xmx 等内存参数是否超出机器可用内存，JAVA_HOME 是否正确。|运行时
+Scala|BUILD FAILED|error|构建失败。往上看 * What went wrong 部分定位任务和原因。|运行时
+Scala|not found in root project|error|这个 task 不存在。查看可用任务列表，检查拼写和插件。|运行时
+Scala|Timeout waiting to lock|error|构建工具的锁被别的进程占着。结束其他进程，或删除锁文件。|运行时
+Scala|daemon disappeared unexpectedly|error|构建守护进程被杀了，常见为内存不足。调大 JVM 内存参数。|编译/链接
+Scala|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查内存参数是否超出机器可用内存和 JAVA_HOME。|运行时
 Scala|Could not reserve enough space for object heap|fatal|给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。|内存/资源
 Scala|given input columns|error|Spark SQL 找不到这个列。检查列名大小写，用 printSchema 看实际结构。|数据库
-Scala|Task not serializable|fatal|闭包引用了不可序列化的对象（常见是 outer class 或连接对象）。在算子内部创建连接，或把依赖提取为局部变量。|运行时
+Scala|Task not serializable|fatal|闭包引用了不可序列化的对象。在算子内部创建连接，或把依赖提取为局部变量。|运行时
 Scala|Job aborted due to stage failure|fatal|某个 stage 失败导致整个 Job 放弃。看 caused by 里第一个真正的异常。|运行时
 Scala|exceeding memory limits|fatal|容器内存超限被 YARN 杀掉。调大 executor 内存或减少并行度。|运行时
-Scala|No configuration setting found for key|error|Typesafe Config 里没有这个配置项。检查 application.conf 的路径和键名。|配置
+Scala|No configuration setting found for key|error|配置文件里没有这个配置项。检查 application.conf 的路径和键名。|配置
 Scala|Broker may not be available|error|Kafka 连不上 broker。检查 bootstrap.servers、网络和安全协议配置。|网络
-Scala|was not equal to|error|ScalaTest 断言失败。报错直接展示了期望值和实际值，对照排查。|运行时
+Scala|was not equal to|error|断言失败，期望值与实际值不符。对照输出排查。|运行时
 Scala|does not take type parameters|error|这个类型不接受泛型参数。检查 <> 的使用。|运行时
 Scala|unbound placeholder parameter|error|下划线占位符用在了推不出类型的位置。补全参数类型或改用具名参数。|运行时
 Scala|repeated modifier|error|同一个修饰符重复写了，或修饰符组合冲突。检查声明头部。|运行时
@@ -1717,7 +1717,7 @@ Lua|attempt to call|fatal|把 nil 当函数调用了。函数名拼错、没 req
 Lua|attempt to perform arithmetic on|fatal|对不能做运算的值（nil、字符串、表）做了算术运算。先 tonumber() 转换或检查数据。|运行时
 Lua|attempt to compare|fatal|比较的两个值类型不匹配，比如 number 和 string。统一类型再比较，注意 Lua 不自动转换。|运行时
 Lua|bad argument #|fatal|调用内置函数时参数不对，报错里写了期望的类型和实际收到的。检查参数个数和类型。|运行时
-Lua|wrong number of arguments|fatal|标准库函数的参数个数不对，比如 table.insert。对照文档检查参数。|运行时
+Lua|wrong number of arguments|fatal|函数参数个数不匹配。对照定义检查传入的参数个数。|运行时
 Lua|table index is nil|fatal|用 nil 当表的键。Lua 不允许，键必须是 number/string/table 等。|运行时
 Lua|table index is NaN|fatal|用 NaN 当表的键。NaN 是无效键，检查数值计算哪里产生了 NaN。|运行时
 Lua|invalid order function for sorting|fatal|table.sort 的比较函数不满足严格弱序，比如对相等元素返回 true。改比较逻辑或加并列判断。|运行时
@@ -1813,7 +1813,7 @@ Perl|Died at|fatal|脚本调用了 die 但没给消息。检查调用栈上哪�
 Perl|glob failed|warning|外部 glob 命令执行失败。检查 shell 环境和通配符。|运行时
 Perl|Insecure dependency|fatal|Taint 模式下使用了未清洗的外部输入。对数据做正则提取后再使用。|依赖/环境
 Perl|A thread exited while|warning|有线程还在运行主线程就结束了。join 所有线程再退出。|并发/异步
-Perl|panic:|fatal|Perl 内部错误。通常是 XS 模块或核心 bug，尝试复现最小用例并上报。|运行时
+Perl|panic:|fatal|程序 panic 崩溃。看 panic 消息和堆栈第一行定位代码；运行时内部 panic 通常是扩展或解释器的 bug。|运行时
 Perl|Illegal seek|warning|对流式句柄做 seek，比如管道。管道只能顺序读。|运行时
 Perl|The experimental postfix dereference|warning|后置解引用还是实验特性。避免使用或接受警告。|运行时
 Perl|Smartmatch is experimental|warning|智能匹配行为不稳定。改用显式比较。|运行时
@@ -1822,7 +1822,7 @@ Perl|Range iterator outside integer range|fatal|范围超出整数上限。数�
 Perl|Can't modify non-lvalue subroutine call|fatal|函数调用结果不能作为左值。先取出到变量再修改。|运行时
 Perl|Out of memory!|fatal|Perl 内存耗尽。检查是否有超大结构或死循环累积数据。|内存/资源
 Perl|exited with status|warning|外部命令以非 0 状态退出。检查子进程自己的输出和返回码。|运行时
-Perl|Broken pipe|warning|下游已经关闭还在往管道写。检查接收方的生命周期。|依赖/环境
+Perl|Broken pipe|warning|对端已经关闭连接，还在往管道里写数据。检查接收方的生命周期。|依赖/环境
 Perl|Alarm clock|warning|alarm 定时器到点触发了 SIGALRM。检查超时逻辑，必要时重新设置。|运行时
 Perl|chdir: |warning|切换目录失败。检查路径是否存在。|运行时
 Perl|did not return a true value|fatal|模块最后一行没返回真值。确认文件末尾有 1;|运行时
@@ -1913,7 +1913,7 @@ Julia|SystemError: opening|error|系统调用失败，多为文件打不开。�
 Julia|failed process|error|外部命令执行失败。看 exit code 和命令输出定位。|运行时
 Julia|reducing over an empty collection|error|对空集合做 reduce。用 fold 提供初始值或先判断 isempty。|运行时
 Julia|InterruptException|warning|你按 Ctrl+C 中断了执行，不是代码错误。|运行时
-Julia|Erlang error:|error|底层 C/Erlang 库抛出的错误。看消息定位到具体库调用。|运行时
+Julia|Erlang error:|error|底层 Erlang/OTP 抛出的错误。看具体消息定位到调用。|运行时
 Julia|Test Failed|error|单元测试断言失败。看表达式两侧的期望值和实际值。|运行时
 Julia|cannot serialize|error|对象无法序列化传输（多为分布式/worker 场景）。检查类型定义是否对 worker 可见。|运行时
 Julia|UnicodeError|error|Unicode 处理出错。检查字符编码和索引。|运行时
@@ -1932,22 +1932,22 @@ Groovy|GroovyCastException|fatal|对象无法 as 成目标类型。检查两边�
 Groovy|matching constructor|fatal|找不到匹配的构造函数。检查参数个数和类型。|运行时
 Groovy|unable to resolve class|fatal|找不到这个类。检查 import、依赖 jar 和类名拼写。|运行时
 Groovy|expecting '}'||expecting EOF|fatal|语法错误，缺少提示的符号。检查花括号配对和字符串闭合。|文件/IO
-Groovy|unexpected token||unexpected char|fatal|出现了不该出现的符号。常见于中文标点、缺逗号或关键字误用。|编译/链接
+Groovy|unexpected token||unexpected char|fatal|出现了不该出现的符号或非法字符。检查括号配对、漏掉的分号逗号，以及混入的中文标点。|编译/链接
 Groovy|MultipleCompilationErrorsException||during semantic analysis||during conversion|fatal|编译发现多处错误。看日志逐条修复，通常第一条会引发后面的错误。|运行时
-Groovy|illegal string body character after dollar sign|fatal|GString 里的 $ 后面要跟表达式或 { }。想输出字面 $ 用 \\ 转义。|运行时
+Groovy|illegal string body character after dollar sign|fatal|GString 里的 $ 后面要跟表达式或花括号。想输出字面 $ 就连写两个。|运行时
 Groovy|A problem occurred|error|构建脚本执行出错。看 caused by 找到脚本里抛异常的位置。|运行时
 Groovy|BUILD FAILED|error|构建失败。往上看 * What went wrong 部分定位任务和原因。|运行时
-Groovy|not found in root project|error|这个 task 不存在。gradlew tasks 查看可用任务列表。|运行时
-Groovy|Timeout waiting to lock|error|Gradle 锁被占用。结束其他 gradle 进程或删除锁文件。|运行时
-Groovy|daemon disappeared unexpectedly|error|Gradle 守护进程被杀，常见为内存不足。调大 org.gradle.jvmargs。|编译/链接
-Groovy|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查内存参数和 JAVA_HOME。|运行时
-Groovy|Could not reserve enough space for object heap|fatal|堆内存超过系统可用上限，调小 -Xmx。|内存/资源
-Groovy|NotSerializableException||Task not serializable|fatal|对象不可序列化。实现 Serializable，或把不可序列化依赖移出闭包。|运行时
-Groovy|Cannot run program|error|启动外部进程失败。检查命令是否在 PATH 里。|文件/IO
+Groovy|not found in root project|error|这个 task 不存在。查看可用任务列表，检查拼写和插件。|运行时
+Groovy|Timeout waiting to lock|error|构建工具的锁被别的进程占着。结束其他进程，或删除锁文件。|运行时
+Groovy|daemon disappeared unexpectedly|error|构建守护进程被杀了，常见为内存不足。调大 JVM 内存参数。|编译/链接
+Groovy|Could not create the Java Virtual Machine|fatal|JVM 启动失败。检查内存参数是否超出机器可用内存和 JAVA_HOME。|运行时
+Groovy|Could not reserve enough space for object heap|fatal|给 JVM 的堆内存超过了系统可用内存。调小 -Xmx。|内存/资源
+Groovy|NotSerializableException||Task not serializable|fatal|闭包引用了不可序列化的对象。在算子内部创建连接，或把依赖提取为局部变量。|运行时
+Groovy|Cannot run program|error|启动外部进程失败。检查命令是否在 PATH 里、路径是否写对。|文件/IO
 Groovy|AnalysisException|error|Spark SQL 分析失败。看具体列/表名，检查 schema。|数据库
-Groovy|Broker may not be available|error|Kafka 连不上 broker。检查 bootstrap.servers 和网络。|网络
-Groovy|No configuration setting found for key|error|Typesafe Config 缺少配置项。检查 application.conf 路径和键名。|配置
-Groovy|was not equal to|error|Spock/断言失败，期望值与实际值不符。对照输出排查。|运行时
+Groovy|Broker may not be available|error|Kafka 连不上 broker。检查 bootstrap.servers、网络和安全协议配置。|网络
+Groovy|No configuration setting found for key|error|配置文件里没有这个配置项。检查 application.conf 的路径和键名。|配置
+Groovy|was not equal to|error|断言失败，期望值与实际值不符。对照输出排查。|运行时
 Groovy|Cannot invoke method|fatal|对 null 对象调方法。上游返回了 null，先判空再用。|运行时
 Groovy|Cannot get property||Cannot set property|fatal|在 null 上取/设属性。检查对象为什么是 null。|运行时
 Groovy|Ambiguous method overloading|fatal|重载调用有歧义。显式转换参数类型帮助选择。|运行时
@@ -1966,12 +1966,12 @@ Elixir|no match of right hand side value|fatal|模式匹配失败：= 右边的�
 Elixir|no function clause matching||no case clause matching||CaseClauseError||FunctionClauseError|fatal|没有函数/case 子句能匹配这些参数。检查子句的模式和守卫是否覆盖了这个输入。|运行时
 Elixir|UndefinedFunctionError||is undefined or private||function .* is undefined|fatal|函数没定义或是私有的。检查模块名、函数名和参数个数（如 x/2），确认模块已编译。|运行时
 Elixir|key :.* not found||KeyError||(KeyError) key|fatal|Map/Keyword 里没有这个键。用 Map.get/  Access.get 提供默认值，或先 has_key? 判断。|运行时
-Elixir|errors were found at the given arguments||ArgumentError|fatal|参数不合法。报错列出了每个参数的期望类型和实际值，对照修正。|运行时
+Elixir|errors were found at the given arguments||ArgumentError|fatal|参数校验失败，报错列出了每个不符的参数。对照修正类型或取值。|运行时
 Elixir|protocol.*not implemented|fatal|协议没有为这个类型实现。写 defimpl，或检查数据是不是预期的类型。|运行时
 Elixir|syntax error before||TokenMissingError||SyntaxError|fatal|语法错误。常见为缺 end、缺逗号、缺括号，看 before/after 指出的 token。|编译/链接
 Elixir|variable ".*" is unused|warning|变量绑定了但没用。重命名为 _x 表示有意忽略，或补上使用。|运行时
 Elixir|alias is unused|warning|alias 没有被使用。删除这条 alias。|运行时
-Elixir|immutable struct||cannot be modified after creation|fatal|Elixir 的结构体不可变。用 %{struct / field: 新值} 的更新语法创建新结构体。|运行时
+Elixir|immutable struct||cannot be modified after creation|fatal|Elixir 的结构体不可变。用结构体更新语法基于原值生成新结构体。|运行时
 Elixir|is not available (module||module .* is not available|fatal|模块不存在或没编译。确认文件在正确的目录、模块名与路径一致，重新 mix compile。|编译/链接
 Elixir|could not compile dependency|fatal|依赖编译失败。往上看依赖内部的具体报错。|编译/链接
 Elixir|dependency is not available|fatal|依赖没拉取。运行 mix deps.get。|依赖/环境
@@ -1990,7 +1990,7 @@ Elixir|File.Error|error|文件操作失败。检查路径、权限和文件是�
 Elixir|bad argument in arithmetic|fatal|对非数字做了算术运算。检查变量类型，必要时转换。|运行时
 Elixir|bad boolean expression|fatal|守卫表达式不合法。守卫只能用受限的函数集合。|运行时
 Elixir|undefined variable|fatal|变量未定义。注意 Elixir 里未绑定变量会被当成零参函数调用。|运行时
-Elixir|is not a function|fatal|把非函数的值当函数调用了。检查变量绑定和捕获语法 &。|运行时
+Elixir|is not a function|fatal|你当成函数调用的东西不是一个函数。检查变量是否被覆盖，或名字拼错了。|运行时
 Elixir|expected a map, got|fatal|更新语法 %{} 要求操作数是 map。检查变量实际类型。|编译/链接
 Elixir|is not a struct|fatal|更新结构体语法要求左边是 struct。检查变量和 defstruct。|运行时
 Elixir|wrong number of arguments.*expected|fatal|函数参数个数不对。对照定义检查（注意 Elixir 函数名带元数，如 x/2）。|编译/链接
@@ -2033,7 +2033,7 @@ Git|'lfs' is not a git command|fatal|Git LFS 没安装。安装后 git lfs insta
 Git|unmerged files|error|还有冲突文件没解决。编辑冲突标记后 git add，再继续操作。|文件/IO
 Git|could not read Username|fatal|无法交互输入凭据。配置 credential helper 或把令牌放进 remote URL。|运行时
 Git|src refspec|error|要推送的分支不存在，常见于空仓库还没提交。先 commit 再 push。|运行时
-Git|unknown revision|fatal|引用的提交/分支不存在。检查名字拼写，git log 确认存在。|运行时
+Git|unknown revision|fatal|引用的版本/提交不存在。检查 tag 或分支名拼写，确认远端存在。|运行时
 Git|could not apply|error|rebase/cherry-pick 时该提交冲突了。解决冲突后 git add 并 --continue。|运行时
 Git|dubious ownership|fatal|仓库所有者和当前用户不同，git 拒绝操作。git config --global --add safe.directory 路径。|数据库
 Git|RPC failed|fatal|推送/拉取传输中断，常见于大仓库。加大 http.postBuffer 或改用 SSH。|网络
@@ -2132,7 +2132,7 @@ PowerShell|Cannot bind argument to parameter|error|传给参数的值是 null。
 PowerShell|A parameter cannot be found that matches parameter name|error|这个 cmdlet 没有该参数。Get-Help 命令名 看支持的参数。|运行时
 PowerShell|Cannot validate argument on parameter|error|参数值没通过校验。看提示的 Validate 校验条件，修正取值。|运行时
 PowerShell|missing the terminator|fatal|字符串/引号没有闭合。检查单双引号和 here-string 的结尾标记。|运行时
-PowerShell|Unexpected token|fatal|语法错误，出现了不该出现的符号。检查管道符、括号和引号配对。|编译/链接
+PowerShell|in expression or statement|fatal|语法错误，出现了不该出现的符号。检查管道符、括号和引号配对。|运行时
 PowerShell|Missing closing '}'||Missing ')' in method call||Missing expression after|fatal|缺少闭合括号或表达式不完整。配对检查代码块。|运行时
 PowerShell|Cannot convert the|error|类型转换失败。看期望类型和实际值，必要时用 [类型] 强转。|运行时
 PowerShell|Cannot index into a null array||array index evaluated to null|error|对 null 数组取下标。先确认数组已创建、有元素。|运行时
@@ -2158,14 +2158,14 @@ PowerShell|Cannot find an overload|error|没有匹配参数个数/类型的重�
 PowerShell|The remote server returned an error||The operation has timed out|error|远程请求失败或超时。看状态码：404 地址错、401 认证、500 服务端问题。|权限
 VBA|Run-time error '424'||Object required|fatal|需要对象却拿到了别的值。检查 Set 是否漏写，或对象变量是否初始化。|依赖/环境
 VBA|Run-time error '1004'||Application-defined or object-defined error||of object '_Global' failed||Unable to get the|fatal|Excel/Office 内部操作失败。常见为区域引用错误、工作表不存在或宏安全限制，检查 Range 地址和表名。|运行时
-VBA|Run-time error '9'||Subscript out of range|fatal|下标越界：工作表名/数组下标/集合键不存在。检查 Sheets("名字") 拼写和数组边界。|运行时
+VBA|Run-time error '9'||Subscript out of range|fatal|下标越界：工作表名、数组下标或集合键不存在。检查工作表名拼写和数组边界。|运行时
 VBA|Run-time error '13'||Type mismatch|fatal|类型不匹配。检查变量声明和赋值，注意 Variant 与具体类型的转换。|运行时
 VBA|Run-time error '91'||Object variable or With block variable not set|fatal|对象变量没有 Set 初始化。声明后要用 Set obj = ... 赋值。|运行时
 VBA|Run-time error '438'||Object doesn't support this property or method|fatal|对象没有这个属性/方法。检查拼写和对象的实际类型，或引用库版本。|运行时
 VBA|Run-time error '6'||Overflow|fatal|数值超出类型范围。Integer 上限 32767，改用 Long 或 Double。|运行时
 VBA|Run-time error '5'||Invalid procedure call or argument|fatal|过程调用或参数非法。检查函数参数范围和拼写。|运行时
-VBA|Run-time error '7'||Out of memory|fatal|内存不足。检查是否有超大数组、对象循环创建未释放。|内存/资源
-VBA|Run-time error '70'||Permission denied|fatal|权限不足。文件被占用或需要管理员权限，检查文件属性。|权限
+VBA|Run-time error '7'||Out of memory|fatal|内存不足。检查是否有超大对象或对象循环创建未释放，必要时分块处理。|内存/资源
+VBA|Run-time error '70'|fatal|权限不足。文件被占用或需要管理员权限，检查文件属性。|运行时
 VBA|Run-time error '75'||Path/File access error|fatal|路径/文件访问失败。检查路径拼写、文件是否只读或被占用。|文件/IO
 VBA|Run-time error '76'||Path not found|fatal|路径不存在。检查目录拼写，需要先 MkDir 创建。|文件/IO
 VBA|Run-time error '53'||File not found|fatal|文件找不到。检查路径和当前目录，用 Dir() 先判断存在。|文件/IO
@@ -2187,7 +2187,7 @@ VBA|ActiveX component can't create object||File name or class name not found dur
 VBA|Run-time error '11'||Division by zero|fatal|除以零。除法前检查除数。|运行时
 VBA|Run-time error '94'||Invalid use of Null|fatal|把 Null 赋给了不接受它的类型。先 IsNull 判断，或用 Nz()/默认值。|运行时
 VBA|Run-time error '381'||Invalid property array index|fatal|属性数组下标越界。检查索引范围。|运行时
-MATLAB|Unrecognized function or variable||Undefined function or variable||Undefined variable|error|这个名字没定义。检查拼写、大小写（MATLAB 区分大小写），确认脚本/函数在路径上。|运行时
+MATLAB|Unrecognized function or variable||Undefined function or variable|error|这个名字没定义。检查拼写、大小写（MATLAB 区分大小写），确认脚本/函数在路径上。|运行时
 MATLAB|Index in position .* exceeds array bounds||Index exceeds the number of array elements||Index exceeds matrix dimensions|error|下标超出数组大小。MATLAB 索引从 1 开始，用 size 检查边界。|运行时
 MATLAB|Subscript indices must either be real positive integers or logicals||Array indices must be positive integers or logical values|error|下标必须是正整数或逻辑值。检查索引计算是否产生了 0、负数或小数。|运行时
 MATLAB|is not convertible to|error|赋值类型无法转换。检查左右两边的类型和尺寸。|运行时
@@ -2195,7 +2195,7 @@ MATLAB|Unable to resolve the name|error|解析不了这个名字。检查是否�
 MATLAB|Undefined operator||for input arguments of type|error|该类型不支持这个运算/函数。检查参数类型，可能需要转换或换函数。|运行时
 MATLAB|Too many input arguments|error|传入参数过多。对照函数定义减少参数。|运行时
 MATLAB|Not enough input arguments|error|必填参数没给够。对照函数定义补全。|运行时
-MATLAB|Out of memory|fatal|内存不足。数组太大，用 single/tiled 分块处理，或 clear 不用的大变量。|内存/资源
+MATLAB|Out of memory|fatal|内存不足。检查是否有超大对象或对象循环创建未释放，必要时分块处理。|内存/资源
 MATLAB|Dimensions of arrays being concatenated|error|拼接的数组维度不匹配。horzcat 要求行数一致，vertcat 要求列数一致。|运行时
 MATLAB|dimensions must agree|error|矩阵运算维度不一致。检查矩阵形状，必要时转置或 reshape。|运行时
 MATLAB|sizes of the left and right sides do not match||Subscripted assignment dimension mismatch|error|赋值两边尺寸不一致。检查下标个数和右侧元素个数。|运行时
@@ -2224,7 +2224,7 @@ Haskell|parse error|fatal|语法错误，常见为缩进不对或括号不配对
 Haskell|empty list||empty structure|fatal|对空结构调用了 head/tail/maximum 等部分函数。用模式匹配或 safe 版本处理空值。|运行时
 Haskell|index too large|fatal|!! 的下标超出列表长度。先检查长度或用安全取值。|运行时
 Haskell|fromJust: Nothing|fatal|对 Nothing 调了 fromJust。用 maybe/模式匹配处理 Nothing。|运行时
-Haskell|divide by zero|fatal|除以零。除法前检查除数，或用 Ratio/Maybe 包装。|运行时
+Haskell|divide by zero|fatal|除以零。除法前检查除数。|运行时
 Haskell|Non-exhaustive patterns|fatal|模式匹配没有覆盖所有情况，运行时崩了。补全分支或加通配兜底。|运行时
 Haskell|Irrefutable pattern failed|fatal|~ 惰性模式在真正取值时失败了。别用 ~ 掩盖匹配失败。|运行时
 Haskell|lacks an accompanying binding|error|写了类型签名但没有对应定义。补上实现，或检查名字拼写。|运行时
