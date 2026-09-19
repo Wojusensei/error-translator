@@ -65,6 +65,8 @@
 | 包管理器    | 15 | npm：missing script/EACCES/EINTEGRITY；pnpm/yarn：版本冲突、lockfile、corepack   |
 | 前端构建    | 12 | webpack/vite/rollup：loader 缺失、模块解析失败、dev server 启动错误、体积告警     |
 | Kubernetes  | 30 | `CrashLoopBackOff`、`ImagePullBackOff`、`OOMKilled`、驱逐、RBAC、探针失败、调度失败 |
+| Nginx       | 22 | 配置 `[emerg]`、端口占用、权限、SSL 证书、upstream 超时/无存活、worker_connections  |
+| Make/CMake  | 18 | `missing separator`、`No rule to make target`、找不到编译器/依赖、生成器不匹配       |
 
 ---
 

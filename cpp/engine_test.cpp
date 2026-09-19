@@ -128,6 +128,9 @@ int main(int argc, char** argv) {
         {"panic: runtime error: index out of range [5] with length 3", "Go"},
         {"Warning: FailedScheduling: 0/3 nodes are available:Insufficient cpu", "Kubernetes"},
         {"kubelet Logs for pod/app: Back-off restarting failed container", "Kubernetes"},
+        {"nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)", "Nginx"},
+        {"Makefile:12: *** missing separator.  Stop.", "Make/CMake"},
+        {"CMake Error at CMakeLists.txt:5 (find_package): Could NOT find OpenSSL", "Make/CMake"},
     };
     for (const auto& t : tests) {
         std::string json = translate(t[0], rules);

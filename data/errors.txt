@@ -2340,3 +2340,43 @@ Kubernetes|cannot resolve.*svc\.cluster\.local||no such host.*cluster\.local|err
 Kubernetes|exceeded quota|error|命名空间资源配额用尽。清理不用的资源或让管理员调大 ResourceQuota。|运行时
 Kubernetes|not found:.*pull secret||No pull secret|error|私有仓库缺拉取凭据。创建 docker-registry 类型的 Secret 并在 ServiceAccount/Pod 里引用。|运行时
 Kubernetes|node .* NotReady||NodeNotReady|fatal|节点失联。多为 kubelet 挂了或网络断开，ssh 上去看 kubelet 状态和系统日志。|运行时
+Nginx|unknown directive|fatal|nginx 不认识这个指令。检查拼写，或该指令需要加载对应模块（如 gzip_static 需要 http_gzip_static_module）。|网络
+Nginx|unexpected end of file, expecting|fatal|配置文件读到结尾还差内容，缺右花括号或分号。nginx -t 会给出文件和行号。|编译/链接
+Nginx|invalid parameter||unexpected .* in .*nginx.conf|fatal|配置里出现了不合法的参数。检查该指令的参数格式和引号。|编译/链接
+Nginx|bind\(\) to .* failed.*Address already in use||98: Address already in use|fatal|监听端口被占用。netstat/lsof 找到占用进程，或改 listen 端口。|运行时
+Nginx|bind\(\) to .* failed.*Permission denied|fatal|绑定 80/443 等特权端口需要 root。用 root 启动 master（worker 用 user 指令降权）或改端口。|权限
+Nginx|open\(\) .* failed.*Permission denied|fatal|worker 进程没权限读文件/目录。检查文件权限，worker 进程以 user 指令的用户运行。|权限
+Nginx|open\(\) .* failed.*No such file|error|文件或目录不存在。root/alias 路径拼接是否正确，注意 root 是全路径而 alias 是替换 location 部分。|文件/IO
+Nginx|no ssl_certificate is defined|fatal|listen ssl 但没配证书。补 ssl_certificate 和 ssl_certificate_key。|网络
+Nginx|key values mismatch|fatal|证书与私钥不配对。确认 .crt 和 .key 是同一套（可用 openssl x509/modulus 对比）。|网络
+Nginx|no live upstreams|fatal|上游组里所有后端都被标记失败。检查后端进程和 max_fails/fail_timeout 配置。|文件/IO
+Nginx|connect\(\) failed.*Connection refused|fatal|nginx 连不上上游。后端服务没起来或端口不对，检查 proxy_pass/fastcgi_pass 的地址。|网络
+Nginx|upstream timed out|fatal|上游响应超时。后端太慢，调大 proxy_read_timeout/proxy_connect_timeout 或优化后端。|网络
+Nginx|upstream sent too big header|error|上游响应头太大。调大 proxy_buffer_size 和 proxy_buffers。|网络
+Nginx|client intended to send too large body|error|请求体超过 client_max_body_size。调大该配置（默认 1m）。|运行时
+Nginx|rewrite or internal redirection cycle|fatal|重写规则成环。检查 rewrite/try_files 是否会反复匹配到自己。|文件/IO
+Nginx|no resolver defined to resolve|fatal|变量形式的域名需要 resolver。在配置里加 resolver 8.8.8.8 之类的 DNS 服务器。|网络
+Nginx|host not found in upstream|fatal|upstream 里的域名解析不了。nginx 启动时就要解析静态域名，检查 DNS 或改用变量+resolver。|网络
+Nginx|worker_connections are not enough|error|连接数超过 worker_connections。调大该值和 worker_rlimit_nofile，并同步系统 ulimit。|网络
+Nginx|accept\(\) failed.*Too many open files|error|文件描述符耗尽。调大 worker_rlimit_nofile 和系统限制。|文件/IO
+Nginx|open\(\) .*nginx.pid failed||stale pid file|fatal|PID 文件异常，可能有残留 nginx 进程。ps 确认后清理旧进程或删除陈旧 pid 文件。|文件/IO
+Nginx|nginx: \[emerg\]|fatal|nginx 配置错误无法启动。看这一行后面的具体原因，用 nginx -t 先验证。|运行时
+Nginx|worker process .* exited on signal|fatal|worker 异常崩溃。常见为段错误，看 error.log 的堆栈或 core dump，检查第三方模块。|运行时
+Make/CMake|missing separator|fatal|Makefile 语法错误：命令行必须用 Tab 开头（不能是空格），或变量赋值少了等号。报错指出了行号。|文件/IO
+Make/CMake|No rule to make target|fatal|找不到生成目标的规则。目标名拼错、依赖文件不存在，或没写对应的 target 规则。|运行时
+Make/CMake|Nothing to be done for||nothing to be done|warning|目标已是最新，没有要做的。想强制重跑可以 make clean 后再 make，或删目标文件。|运行时
+Make/CMake|No targets specified and no makefile found||*** No targets|fatal|找不到 Makefile 或没有可构建的目标。确认在正确目录、文件名是 Makefile 或用 -f 指定。|文件/IO
+Make/CMake|make: .*: No such file or directory||make: .* Stop.|fatal|make 没找到 Makefile 或包含的文件。检查目录和 -f 参数。|数据库
+Make/CMake|overriding recipe for target|warning|同一个目标定义了两次，后面的规则覆盖前面的。检查是否重复包含或目标重名。|运行时
+Make/CMake|unterminated variable reference|fatal|变量引用的括号没闭合。检查 $() 或 ${} 是否配对。|编译/链接
+Make/CMake|commands commence before first target|fatal|命令行出现在任何 target 之前。检查是不是 Tab 缩进用错了位置，或少了目标行。|运行时
+Make/CMake|Recursive variable|fatal|变量递归引用了自己（A = $(A) x）。改用 := 简单展开或理顺依赖。|运行时
+Make/CMake|make: .*: Command not found|fatal|规则里的命令不存在。检查工具是否安装、PATH 是否正确。|文件/IO
+Make/CMake|CMake Error at|fatal|CMake 配置/生成失败。看文件和行号，往 caused by 找根本原因。|运行时
+Make/CMake|No CMAKE_C_COMPILER could be found||No CMAKE_CXX_COMPILER could be found|fatal|找不到 C/C++ 编译器。安装 gcc/clang/MSVC，或清掉 build 目录重新指定生成器。|编译/链接
+Make/CMake|does not match the generator used|fatal|CMake 缓存里的生成器和现在指定的不一致。删除 build 目录（CMakeCache.txt）重新 cmake。|运行时
+Make/CMake|Could NOT find|fatal|找不到依赖库。安装库和开发头文件，或用 -DCMAKE_PREFIX_PATH 指明位置。|文件/IO
+Make/CMake|Cannot find source file|fatal|CMakeLists 引用的源文件不存在。检查文件名大小写和路径，或文件是否被删了。|文件/IO
+Make/CMake|contains mismatched sources|error|目标源文件列表在不同配置分支下不一致。统一各平台的 sources 列表。|运行时
+Make/CMake|Configuring incomplete|fatal|配置阶段失败。往上看第一个 CMake Error 才是根因。|运行时
+Make/CMake|Policy CMP|error|CMake 策略行为变更警告/错误。按提示用 cmake_policy(SET CMPxxxx NEW) 显式声明。|运行时

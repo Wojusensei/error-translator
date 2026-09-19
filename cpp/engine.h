@@ -207,6 +207,11 @@ std::string detect_language(const std::string& input) {
     if (input.find("SQLSTATE[") != std::string::npos || input.find("ORA-") != std::string::npos) return "SQL";
     if (input.find("RenderFlex") != std::string::npos ||
         input.find("Null check operator") != std::string::npos) return "Dart/Flutter";
+    if (input.find("nginx: [emerg]") != std::string::npos ||
+        input.find("nginx -t") != std::string::npos) return "Nginx";
+    if (input.find("missing separator") != std::string::npos ||
+        input.find("CMake Error") != std::string::npos ||
+        input.find("No rule to make target") != std::string::npos) return "Make/CMake";
     if (input.find("CrashLoopBackOff") != std::string::npos || input.find("ImagePullBackOff") != std::string::npos ||
         input.find("kubectl") != std::string::npos) return "Kubernetes";
     if (input.find("Module build failed") != std::string::npos ||
